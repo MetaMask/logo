@@ -54,9 +54,9 @@ module.exports = function(opts){
 	function animate() {
 		var time = Date.now()
 
-		object.rotation.x = 0.2;
-		object.rotation.y = 0.5 + (Math.sin(time/3000) * 0.08);
-		object.rotation.z = -0.1 + (Math.sin(time/1400) * 0.03);
+		object.rotation.x = 0.1 + (Math.sin(time/3000) * 0.1);
+		object.rotation.y = 0.5 + (Math.sin(time/3000) * 0.1);
+		object.rotation.z = -0.1 + (Math.sin(time/2000) * 0.03);
 
 		requestAnimationFrame( animate );
 		render();
