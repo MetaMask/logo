@@ -67,3 +67,13 @@ module.exports = function(opts){
 		renderer.render( scene, camera );
 	}
 }
+
+function setSize(opts){
+	if (!opts.pxNotRatio) {
+		var width = window.innerWidth * opts.width;
+		var height = width;
+		camera.aspect = height / width;
+		camera.updateProjectionMatrix();
+		renderer.setSize(width, height);
+	}
+}

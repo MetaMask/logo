@@ -69,6 +69,16 @@ module.exports = function(opts){
 	}
 }
 
+function setSize(opts){
+	if (!opts.pxNotRatio) {
+		var width = window.innerWidth * opts.width;
+		var height = width;
+		camera.aspect = height / width;
+		camera.updateProjectionMatrix();
+		renderer.setSize(width, height);
+	}
+}
+
 },{}],2:[function(require,module,exports){
 var viewer = require('./');
 
