@@ -13,5 +13,6 @@ viewer({
   pxNotRatio: false, // Dictates whether width & height are px or multiplied
   width: 0.9,
   height: 0.9,
-  targetDivId: 'modelDivLarge'
+  targetDivId: 'modelDivLarge',
+  followMouse: true
 })
