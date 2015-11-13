@@ -1,26 +1,26 @@
 module.exports = function(opts){
 	window.scene = new THREE.Scene();
 
-	// RENDERER OPTIONS
-	window.renderer = new THREE.WebGLRenderer( {
-		antialias: true,
-		alpha: true,
-	});
-	renderer.setSize(opts.width, opts.height);
-	renderer.setPixelRatio( window.devicePixelRatio );
-	renderer.gammaInput = true;
-	renderer.gammaOutput = true;
-	renderer.shadowMap.enabled = true;
-	renderer.shadowMap.cullFace = THREE.CullFaceBack;
-
-  // DOM STUFF
-	var container = document.getElementById(opts.targetDivId);
-	container.appendChild( renderer.domElement );
-
 	// CAMERA SETUP
 	window.camera = new THREE.PerspectiveCamera( 45, opts.width / opts.height, 1, 2000 );
 	camera.position.z = 400;
 	camera.lookAt(scene.position);
+
+  // RENDERER OPTIONS
+  window.renderer = new THREE.WebGLRenderer( {
+    antialias: true,
+    alpha: true,
+  });
+  setSize(opts)
+  renderer.setPixelRatio( window.devicePixelRatio );
+  renderer.gammaInput = true;
+  renderer.gammaOutput = true;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.cullFace = THREE.CullFaceBack;
+
+  // DOM STUFF
+  var container = document.getElementById(opts.targetDivId);
+  container.appendChild( renderer.domElement );
 
   // MODEL LOADING:
 	var loader = new THREE.OBJMTLLoader();
@@ -40,40 +40,68 @@ module.exports = function(opts){
 		animate();
 	});
 
-	window.onresize = function(){
-		if (!opts.pxNotRatio) {
-			var width = window.innerWidth * opts.width;
-			var height = width;
-			camera.aspect = height / width;
-			camera.updateProjectionMatrix();
-			console.log("SETTING SIZE")
-			renderer.setSize(width, height);
-		}
-	}
+  // handle screen resize
+	window.addEventListener('resize', setSize.bind(null, opts))
+
+  // track mouse movements
+  var mouseX = window.innerWidth/2, mouseY = window.innerHeight/2
+  window.addEventListener('mousemove', function(event){
+    mouseX = event.clientX
+    mouseY = event.clientY
+  })
 
 	function animate() {
-		var time = Date.now()
+    var time = Date.now()
 
-		object.rotation.x = 0.1 + (Math.sin(time/3000) * 0.1);
-		object.rotation.y = 0.5 + (Math.sin(time/3000) * 0.1);
-		object.rotation.z = -0.1 + (Math.sin(time/2000) * 0.03);
+    if (opts.followMouse) {
+      // look at mouse left-right
+      lookAtMouse(object)
+    } else {
+      // drift left-right
+      object.rotation.y = 0.5 + (Math.sin(time/3000) * 0.1);
+    }
+    // add other drift
+    object.rotation.x = 0.1 + (Math.sin(time/3000) * 0.1);
+    object.rotation.z = -0.1 + (Math.sin(time/2000) * 0.03);
 
 		requestAnimationFrame( animate );
 		render();
 	}
 
+  function lookAtMouse(object) {
+    var vector = new THREE.Vector3();
+    var softness = 32
+    var halfWidth = window.innerWidth/2
+    var halfHeight = window.innerHeight/2
+
+    vector.set(
+      (((mouseX - halfWidth)/softness + halfWidth) / window.innerWidth) * 2 - 1,
+      (((mouseY - halfHeight)/softness + halfHeight) / window.innerWidth) * -2 + 1,
+    0.5 );
+
+    vector.unproject( camera );
+    var dir = vector.sub( camera.position ).normalize();
+    var distance = - camera.position.z / dir.z;
+    var pos = camera.position.clone().add( dir.multiplyScalar( distance ) );
+    object.lookAt( pos )
+  }
+
 	function render() {
-		setSize(opts);
+		// setSize(opts);
 		renderer.render( scene, camera );
 	}
 }
 
 function setSize(opts){
-	if (!opts.pxNotRatio) {
-		var width = window.innerWidth * opts.width;
-		var height = width;
-		camera.aspect = height / width;
-		camera.updateProjectionMatrix();
-		renderer.setSize(width, height);
-	}
+  if (!opts.pxNotRatio) {
+    var width = window.innerWidth * opts.width;
+    width = Math.min(width, 800)
+    var height = width;
+    camera.aspect = height / width;
+    camera.updateProjectionMatrix();
+    console.log("SETTING SIZE:", width, height)
+    renderer.setSize(width, height);
+  } else {
+    renderer.setSize(opts.width, opts.height);
+  }
 }
