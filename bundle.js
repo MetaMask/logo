@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/danielfinlay/Documents/Development/eth/metamask-logo/index.js":[function(require,module,exports){
 module.exports = function(opts){
 	window.scene = new THREE.Scene();
 
@@ -29,9 +29,9 @@ module.exports = function(opts){
 		window.object = object;
 		object.position = scene.position;
 
-		object.rotation.x = 0.2;
-		object.rotation.y = 0.7;
-		object.rotation.z = -0.1;
+		object.rotation.x = 0;
+		object.rotation.y = 0;
+		object.rotation.z = 0;
 
 		scene.add( object );
 
@@ -60,31 +60,27 @@ module.exports = function(opts){
     } else {
       // drift left-right
       object.rotation.y = 0.5 + (Math.sin(time/3000) * 0.1);
+      object.rotation.x = 0.1 + (Math.sin(time/3000) * 0.1);
+      object.rotation.z = -0.1 + (Math.sin(time/2000) * 0.03);
     }
-    // add other drift
-    object.rotation.x = 0.1 + (Math.sin(time/3000) * 0.1);
-    object.rotation.z = -0.1 + (Math.sin(time/2000) * 0.03);
 
+    // add other drift
 		requestAnimationFrame( animate );
 		render();
 	}
 
   function lookAtMouse(object) {
-    var vector = new THREE.Vector3();
-    var softness = 32
-    var halfWidth = window.innerWidth/2
-    var halfHeight = window.innerHeight/2
+    var halfWidth = window.innerWidth/2;
+    var halfHeight = window.innerHeight/2;
+    var softness = 30;
 
-    vector.set(
-      (((mouseX - halfWidth)/softness + halfWidth) / window.innerWidth) * 2 - 1,
-      (((mouseY - halfHeight)/softness + halfHeight) / window.innerWidth) * -2 + 1,
-    0.5 );
+    var x = (mouseX - halfWidth) / softness;
+    var y = (mouseY - halfHeight) / softness * -1;
+    var z = 10;
 
-    vector.unproject( camera );
-    var dir = vector.sub( camera.position ).normalize();
-    var distance = - camera.position.z / dir.z;
-    var pos = camera.position.clone().add( dir.multiplyScalar( distance ) );
-    object.lookAt( pos )
+    var mousePos = new THREE.Vector3(x, y, z); 
+
+    object.lookAt( mousePos )
   }
 
 	function render() {
@@ -107,7 +103,7 @@ function setSize(opts){
   }
 }
 
-},{}],2:[function(require,module,exports){
+},{}],"/Users/danielfinlay/Documents/Development/eth/metamask-logo/sample.js":[function(require,module,exports){
 var viewer = require('./');
 
 // To render with fixed dimensions:
@@ -127,4 +123,4 @@ viewer({
   followMouse: true
 })
 
-},{"./":1}]},{},[2]);
+},{"./":"/Users/danielfinlay/Documents/Development/eth/metamask-logo/index.js"}]},{},["/Users/danielfinlay/Documents/Development/eth/metamask-logo/sample.js"]);
