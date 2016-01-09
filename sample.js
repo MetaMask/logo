@@ -7,12 +7,39 @@ var viewer = require('./');
 //   height: 400,
 //   targetDivId: 'modelDivLarge'
 // })
+//
+function detectmob() { 
+ if( navigator.userAgent.match(/Android/i)
+ || navigator.userAgent.match(/webOS/i)
+ || navigator.userAgent.match(/iPhone/i)
+ || navigator.userAgent.match(/iPad/i)
+ || navigator.userAgent.match(/iPod/i)
+ || navigator.userAgent.match(/BlackBerry/i)
+ || navigator.userAgent.match(/Windows Phone/i)
+ ){
+    return true;
+  }
+ else {
+    return false;
+  }
+}
 
 // To render as a ratio of the screen's width:
-viewer({
-  pxNotRatio: false, // Dictates whether width & height are px or multiplied
-  width: 0.9,
-  height: 0.9,
-  targetDivId: 'modelDivLarge',
-  followMouse: true
-})
+if (detectmob()) { // Mobile devices with no mouse to follow
+  viewer({
+    pxNotRatio: false, // Dictates whether width & height are px or multiplied
+    width: 0.9,
+    height: 0.9,
+    targetDivId: 'modelDivLarge',
+    followMouse: false
+  })
+} else {  // Desktop devices with a mouse to follow
+  viewer({
+    pxNotRatio: false, // Dictates whether width & height are px or multiplied
+    width: 0.9,
+    height: 0.9,
+    targetDivId: 'modelDivLarge',
+    followMouse: true
+  })
+}
+

@@ -59,8 +59,8 @@ module.exports = function(opts){
       lookAtMouse(object)
     } else {
       // drift left-right
-      object.rotation.y = 0.5 + (Math.sin(time/3000) * 0.1);
-      object.rotation.x = 0.1 + (Math.sin(time/3000) * 0.1);
+      object.rotation.y = 0.5 + (Math.sin(time/3000) * 0.2);
+      object.rotation.x = 0.1 + (Math.sin(time/3000) * 0.2);
       object.rotation.z = -0.1 + (Math.sin(time/2000) * 0.03);
     }
 
@@ -113,14 +113,41 @@ var viewer = require('./');
 //   height: 400,
 //   targetDivId: 'modelDivLarge'
 // })
+//
+function detectmob() { 
+ if( navigator.userAgent.match(/Android/i)
+ || navigator.userAgent.match(/webOS/i)
+ || navigator.userAgent.match(/iPhone/i)
+ || navigator.userAgent.match(/iPad/i)
+ || navigator.userAgent.match(/iPod/i)
+ || navigator.userAgent.match(/BlackBerry/i)
+ || navigator.userAgent.match(/Windows Phone/i)
+ ){
+    return true;
+  }
+ else {
+    return false;
+  }
+}
 
 // To render as a ratio of the screen's width:
-viewer({
-  pxNotRatio: false, // Dictates whether width & height are px or multiplied
-  width: 0.9,
-  height: 0.9,
-  targetDivId: 'modelDivLarge',
-  followMouse: true
-})
+if (detectmob()) { // Mobile devices with no mouse to follow
+  viewer({
+    pxNotRatio: false, // Dictates whether width & height are px or multiplied
+    width: 0.9,
+    height: 0.9,
+    targetDivId: 'modelDivLarge',
+    followMouse: false
+  })
+} else {  // Desktop devices with a mouse to follow
+  viewer({
+    pxNotRatio: false, // Dictates whether width & height are px or multiplied
+    width: 0.9,
+    height: 0.9,
+    targetDivId: 'modelDivLarge',
+    followMouse: true
+  })
+}
+
 
 },{"./":"/Users/danielfinlay/Documents/Development/eth/metamask-logo/index.js"}]},{},["/Users/danielfinlay/Documents/Development/eth/metamask-logo/sample.js"]);

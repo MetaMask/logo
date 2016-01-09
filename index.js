@@ -58,8 +58,8 @@ module.exports = function(opts){
       lookAtMouse(object)
     } else {
       // drift left-right
-      object.rotation.y = 0.5 + (Math.sin(time/3000) * 0.1);
-      object.rotation.x = 0.1 + (Math.sin(time/3000) * 0.1);
+      object.rotation.y = 0.5 + (Math.sin(time/3000) * 0.2);
+      object.rotation.x = 0.1 + (Math.sin(time/3000) * 0.2);
       object.rotation.z = -0.1 + (Math.sin(time/2000) * 0.03);
     }
 
