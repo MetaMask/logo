@@ -1,23 +1,17 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 module.exports = function(opts){
-	window.scene = new THREE.Scene()
+  window.scene = new THREE.Scene()
 
-	// CAMERA SETUP
-	window.camera = new THREE.PerspectiveCamera( 45, opts.width / opts.height, 1, 2000 )
-	camera.position.z = 400
-	camera.lookAt(scene.position)
+  // CAMERA SETUP
+  window.camera = new THREE.PerspectiveCamera( 45, opts.width / opts.height, 1, 2000 )
+  camera.position.z = 400
+  camera.lookAt(scene.position)
 
   // RENDERER OPTIONS
-  // window.renderer = new THREE.WebGLRenderer( {
-  //   antialias: true,
-  //   alpha: true,
-  // })
-
-  window.renderer = new THREE.SVGRenderer( {
+  window.renderer = new THREE.WebGLRenderer( {
     antialias: true,
     alpha: true,
   })
-  window.renderer.shadowMap = {}
 
   setSize(opts)
   renderer.setPixelRatio( window.devicePixelRatio )
@@ -31,25 +25,26 @@ module.exports = function(opts){
   container.appendChild( renderer.domElement )
 
   // MODEL LOADING:
-	var loader = new THREE.OBJMTLLoader()
-	loader.load( './fox.obj', './fox.mtl', function ( object ) {
-		window.object = object
-		object.position = scene.position
+  var loader = new THREE.OBJMTLLoader()
+  loader.load( './fox.obj', './fox.mtl', function ( object ) {
+    window.object = object
+    object.position = scene.position
 
-		object.rotation.x = 0
-		object.rotation.y = 0
-		object.rotation.z = 0
+    object.rotation.x = 0
+    object.rotation.y = 0
+    object.rotation.z = 0
 
-		scene.add( object )
+    scene.add( object )
 
-		var ambiColor = "#FFFFFF"
+    var ambiColor = '#FFFFFF'
     var ambientLight = new THREE.AmbientLight(ambiColor)
-		scene.add( ambientLight )
-		animate()
-	})
+    scene.add( ambientLight )
+
+    animate()
+  })
 
   // handle screen resize
-	window.addEventListener('resize', setSize.bind(null, opts))
+  window.addEventListener('resize', setSize.bind(null, opts))
 
   // track mouse movements
   var mouseX = window.innerWidth/2, mouseY = window.innerHeight/2
@@ -58,7 +53,7 @@ module.exports = function(opts){
     mouseY = event.clientY
   })
 
-	function animate() {
+  function animate() {
     var time = Date.now()
 
     if (opts.followMouse) {
@@ -72,9 +67,9 @@ module.exports = function(opts){
     }
 
     // add other drift
-		requestAnimationFrame( animate )
-		render()
-	}
+    requestAnimationFrame( animate )
+    render()
+  }
 
   function lookAtMouse(object) {
     var halfWidth = window.innerWidth/2
@@ -90,10 +85,10 @@ module.exports = function(opts){
     object.lookAt( mousePos )
   }
 
-	function render() {
-		// setSize(opts)
-		renderer.render( scene, camera )
-	}
+  function render() {
+    // setSize(opts)
+    renderer.render( scene, camera )
+  }
 }
 
 function setSize(opts){
@@ -103,7 +98,7 @@ function setSize(opts){
     var height = width
     camera.aspect = height / width
     camera.updateProjectionMatrix()
-    console.log("SETTING SIZE:", width, height)
+    console.log('SETTING SIZE:', width, height)
     renderer.setSize(width, height)
   } else {
     renderer.setSize(opts.width, opts.height)
@@ -122,6 +117,19 @@ var viewer = require('./');
 // })
 //
 
+viewer({
+  targetDivId: 'logo-container',
+  followMouse: !detectMobile(),
+  // Dictates whether width & height are px or multiplied
+  pxNotRatio: false,
+  width: 0.4,
+  height: 0.4,
+  // To render with fixed dimensions:
+  // pxNotRatio: true,
+  // width: 500,
+  // height: 400,
+})
+
 function detectMobile() {
   return (
       navigator.userAgent.match(/Android/i)
@@ -133,25 +141,4 @@ function detectMobile() {
    || navigator.userAgent.match(/Windows Phone/i)
   )
 }
-
-// To render as a ratio of the screen's width:
-if (detectMobile()) { // Mobile devices with no mouse to follow
-  viewer({
-    pxNotRatio: false, // Dictates whether width & height are px or multiplied
-    width: 0.9,
-    height: 0.9,
-    targetDivId: 'modelDivLarge',
-    followMouse: false
-  })
-} else {  // Desktop devices with a mouse to follow
-  viewer({
-    pxNotRatio: false, // Dictates whether width & height are px or multiplied
-    width: 0.9,
-    height: 0.9,
-    targetDivId: 'modelDivLarge',
-    followMouse: true
-  })
-}
-
-
 },{"./":1}]},{},[2]);
