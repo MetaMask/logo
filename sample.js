@@ -9,6 +9,19 @@ var viewer = require('./');
 // })
 //
 
+viewer({
+  targetDivId: 'logo-container',
+  followMouse: !detectMobile(),
+  // Dictates whether width & height are px or multiplied
+  pxNotRatio: false,
+  width: 0.4,
+  height: 0.4,
+  // To render with fixed dimensions:
+  // pxNotRatio: true,
+  // width: 500,
+  // height: 400,
+})
+
 function detectMobile() {
   return (
       navigator.userAgent.match(/Android/i)
@@ -20,23 +33,3 @@ function detectMobile() {
    || navigator.userAgent.match(/Windows Phone/i)
   )
 }
-
-// To render as a ratio of the screen's width:
-if (detectMobile()) { // Mobile devices with no mouse to follow
-  viewer({
-    pxNotRatio: false, // Dictates whether width & height are px or multiplied
-    width: 0.9,
-    height: 0.9,
-    targetDivId: 'modelDivLarge',
-    followMouse: false
-  })
-} else {  // Desktop devices with a mouse to follow
-  viewer({
-    pxNotRatio: false, // Dictates whether width & height are px or multiplied
-    width: 0.9,
-    height: 0.9,
-    targetDivId: 'modelDivLarge',
-    followMouse: true
-  })
-}
-

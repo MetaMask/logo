@@ -1,16 +1,17 @@
 module.exports = function(opts){
-	window.scene = new THREE.Scene()
+  window.scene = new THREE.Scene()
 
-	// CAMERA SETUP
-	window.camera = new THREE.PerspectiveCamera( 45, opts.width / opts.height, 1, 2000 )
-	camera.position.z = 400
-	camera.lookAt(scene.position)
+  // CAMERA SETUP
+  window.camera = new THREE.PerspectiveCamera( 45, opts.width / opts.height, 1, 2000 )
+  camera.position.z = 400
+  camera.lookAt(scene.position)
 
   // RENDERER OPTIONS
   window.renderer = new THREE.WebGLRenderer( {
     antialias: true,
     alpha: true,
   })
+
   setSize(opts)
   renderer.setPixelRatio( window.devicePixelRatio )
   renderer.gammaInput = true
@@ -23,25 +24,26 @@ module.exports = function(opts){
   container.appendChild( renderer.domElement )
 
   // MODEL LOADING:
-	var loader = new THREE.OBJMTLLoader()
-	loader.load( './fox.obj', './fox.mtl', function ( object ) {
-		window.object = object
-		object.position = scene.position
+  var loader = new THREE.OBJMTLLoader()
+  loader.load( './fox.obj', './fox.mtl', function ( object ) {
+    window.object = object
+    object.position = scene.position
 
-		object.rotation.x = 0
-		object.rotation.y = 0
-		object.rotation.z = 0
+    object.rotation.x = 0
+    object.rotation.y = 0
+    object.rotation.z = 0
 
-		scene.add( object )
+    scene.add( object )
 
-		var ambiColor = "#FFFFFF"
+    var ambiColor = '#FFFFFF'
     var ambientLight = new THREE.AmbientLight(ambiColor)
-		scene.add( ambientLight )
-		animate()
-	})
+    scene.add( ambientLight )
+
+    animate()
+  })
 
   // handle screen resize
-	window.addEventListener('resize', setSize.bind(null, opts))
+  window.addEventListener('resize', setSize.bind(null, opts))
 
   // track mouse movements
   var mouseX = window.innerWidth/2, mouseY = window.innerHeight/2
@@ -50,7 +52,7 @@ module.exports = function(opts){
     mouseY = event.clientY
   })
 
-	function animate() {
+  function animate() {
     var time = Date.now()
 
     if (opts.followMouse) {
@@ -64,9 +66,9 @@ module.exports = function(opts){
     }
 
     // add other drift
-		requestAnimationFrame( animate )
-		render()
-	}
+    requestAnimationFrame( animate )
+    render()
+  }
 
   function lookAtMouse(object) {
     var halfWidth = window.innerWidth/2
@@ -82,10 +84,10 @@ module.exports = function(opts){
     object.lookAt( mousePos )
   }
 
-	function render() {
-		// setSize(opts)
-		renderer.render( scene, camera )
-	}
+  function render() {
+    // setSize(opts)
+    renderer.render( scene, camera )
+  }
 }
 
 function setSize(opts){
@@ -95,7 +97,7 @@ function setSize(opts){
     var height = width
     camera.aspect = height / width
     camera.updateProjectionMatrix()
-    console.log("SETTING SIZE:", width, height)
+    console.log('SETTING SIZE:', width, height)
     renderer.setSize(width, height)
   } else {
     renderer.setSize(opts.width, opts.height)

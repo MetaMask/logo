@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>Sample 3d model viewer</title>
+    <title>MetaMask Logo</title>
 
     <script src="http://threejs.org/build/three.min.js"></script>
     <script src="http://threejs.org/examples/js/loaders/DDSLoader.js"></script>
@@ -9,12 +9,12 @@
     <script src="http://threejs.org/examples/js/loaders/OBJMTLLoader.js"></script>
 
     <style>
-      html, body, #modelDivLarge {
+      html, body, #logo-container {
         background-color: #DDD;
         width: 100%;
         height: 100%;
       }
-      html body #modelDivLarge canvas {
+      html body #logo-container canvas {
         display: block;
         margin: 0 auto;
       }
@@ -22,7 +22,7 @@
   </head>
 
   <body>
-    <div id="modelDivLarge"></div>
+    <div id="logo-container"></div>
   </body>
   <script src="./bundle.js"></script>
 </html>
