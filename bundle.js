@@ -1,4 +1,7 @@
 ;(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var mousePointer = require('./lib/mouse-pointer')
+var el, elBox
+
 module.exports = function(opts){
   window.scene = new THREE.Scene()
 
@@ -22,6 +25,8 @@ module.exports = function(opts){
 
   // DOM STUFF
   var container = document.getElementById(opts.targetDivId)
+  el = container.querySelector('canvas')
+  if (el) elBox = el.getBoundingClientRect()
   container.appendChild( renderer.domElement )
 
   // MODEL LOADING:
@@ -72,17 +77,17 @@ module.exports = function(opts){
   }
 
   function lookAtMouse(object) {
-    var halfWidth = window.innerWidth/2
-    var halfHeight = window.innerHeight/2
-    var softness = 30
+    var mouse = {
+      x: mouseX,
+      y: mouseY,
+    }
 
-    var x = (mouseX - halfWidth) / softness
-    var y = (mouseY - halfHeight) / softness * -1
-    var z = 10
-
-    var mousePos = new THREE.Vector3(x, y, z) 
-
-    object.lookAt( mousePos )
+    if (elBox) {
+      mousePointer(object, mouse, elBox);
+    } else {
+      el = container.querySelector('canvas')
+      if (el) elBox = el.getBoundingClientRect()
+    }
   }
 
   function render() {
@@ -92,6 +97,8 @@ module.exports = function(opts){
 }
 
 function setSize(opts){
+  if (el) elBox = el.getBoundingClientRect()
+
   if (!opts.pxNotRatio) {
     var width = window.innerWidth * opts.width
     width = Math.min(width, 800)
@@ -105,7 +112,30 @@ function setSize(opts){
   }
 }
 
-},{}],2:[function(require,module,exports){
+},{"./lib/mouse-pointer":2}],2:[function(require,module,exports){
+module.exports = lookAtMouse;
+
+function lookAtMouse (object, mouse, elBox) {
+  var elOrigin = getOriginFrom(elBox);
+
+  var softness = 30
+
+  var x = (mouse.x - elOrigin.x) / softness
+  var y = (mouse.y - elOrigin.y) / softness * -1
+  var z = 10
+
+  var mousePos = new THREE.Vector3(x, y, z) 
+  object.lookAt( mousePos )
+}
+
+function getOriginFrom(elBox) {
+  var x = elBox.left + (elBox.width / 2)
+  var hThird = elBox.height / 3
+  var y = elBox.top + (2 * hThird)
+  return {x: x, y: y}
+}
+
+},{}],3:[function(require,module,exports){
 var viewer = require('./');
 
 // To render with fixed dimensions:
@@ -141,5 +171,5 @@ function detectMobile() {
    || navigator.userAgent.match(/Windows Phone/i)
   )
 }
-},{"./":1}]},{},[2])
+},{"./":1}]},{},[3])
 ;
