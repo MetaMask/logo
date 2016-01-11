@@ -1,3 +1,6 @@
+var mousePointer = require('./lib/mouse-pointer')
+var el, elBox
+
 module.exports = function(opts){
   window.scene = new THREE.Scene()
 
@@ -21,6 +24,8 @@ module.exports = function(opts){
 
   // DOM STUFF
   var container = document.getElementById(opts.targetDivId)
+  el = container.querySelector('canvas')
+  if (el) elBox = el.getBoundingClientRect()
   container.appendChild( renderer.domElement )
 
   // MODEL LOADING:
@@ -71,17 +76,17 @@ module.exports = function(opts){
   }
 
   function lookAtMouse(object) {
-    var halfWidth = window.innerWidth/2
-    var halfHeight = window.innerHeight/2
-    var softness = 30
+    var mouse = {
+      x: mouseX,
+      y: mouseY,
+    }
 
-    var x = (mouseX - halfWidth) / softness
-    var y = (mouseY - halfHeight) / softness * -1
-    var z = 10
-
-    var mousePos = new THREE.Vector3(x, y, z) 
-
-    object.lookAt( mousePos )
+    if (elBox) {
+      mousePointer(object, mouse, elBox);
+    } else {
+      el = container.querySelector('canvas')
+      if (el) elBox = el.getBoundingClientRect()
+    }
   }
 
   function render() {
@@ -91,6 +96,8 @@ module.exports = function(opts){
 }
 
 function setSize(opts){
+  if (el) elBox = el.getBoundingClientRect()
+
   if (!opts.pxNotRatio) {
     var width = window.innerWidth * opts.width
     width = Math.min(width, 800)
