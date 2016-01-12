@@ -9,5 +9,12 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "brfs": "^1.4.2",
+    "three.js": "git://github.com/mrdoob/three.js.git#6e8b56b4ed2d2f6698bb5e9c44febbb07e47a355"
+  },
+  "browserify": {
+    "transform": ["brfs"]
+  }
 }

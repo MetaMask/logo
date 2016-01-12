@@ -1,4 +1,6 @@
-var mousePointer = require('./lib/mouse-pointer')
+window.THREE = require('three.js')
+const mousePointer = require('./lib/mouse-pointer')
+const objMtlLoader = require('./lib/loader')
 var el, elBox
 
 module.exports = function(opts){
@@ -28,25 +30,6 @@ module.exports = function(opts){
   if (el) elBox = el.getBoundingClientRect()
   container.appendChild( renderer.domElement )
 
-  // MODEL LOADING:
-  var loader = new THREE.OBJMTLLoader()
-  loader.load( './fox.obj', './fox.mtl', function ( object ) {
-    window.object = object
-    object.position = scene.position
-
-    object.rotation.x = 0
-    object.rotation.y = 0
-    object.rotation.z = 0
-
-    scene.add( object )
-
-    var ambiColor = '#FFFFFF'
-    var ambientLight = new THREE.AmbientLight(ambiColor)
-    scene.add( ambientLight )
-
-    animate()
-  })
-
   // handle screen resize
   window.addEventListener('resize', setSize.bind(null, opts))
 
@@ -56,6 +39,24 @@ module.exports = function(opts){
     mouseX = event.clientX
     mouseY = event.clientY
   })
+
+  // MODEL LOADING:
+  var object = objMtlLoader()
+  window.object = object
+  object.position = scene.position
+
+  object.rotation.x = 0
+  object.rotation.y = 0
+  object.rotation.z = 0
+
+  scene.add( object )
+
+  var ambiColor = '#FFFFFF'
+  var ambientLight = new THREE.AmbientLight(ambiColor)
+  scene.add( ambientLight )
+
+  animate()
+
 
   function animate() {
     var time = Date.now()
