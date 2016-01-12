@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "browserify sample.js -o bundle.js",
+    "build": "browserify sample.js -g uglifyify -o bundle.js",
     "dev": "wzrd sample.js:bundle.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,6 +15,11 @@
     "three.js": "git://github.com/mrdoob/three.js.git#6e8b56b4ed2d2f6698bb5e9c44febbb07e47a355"
   },
   "browserify": {
-    "transform": ["brfs"]
+    "transform": [
+      "brfs"
+    ]
+  },
+  "devDependencies": {
+    "uglifyify": "^3.0.1"
   }
 }

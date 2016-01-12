@@ -26,9 +26,9 @@ module.exports = function(opts){
 
   // DOM STUFF
   var container = document.getElementById(opts.targetDivId)
+  container.appendChild( renderer.domElement )
   el = container.querySelector('canvas')
   if (el) elBox = el.getBoundingClientRect()
-  container.appendChild( renderer.domElement )
 
   // handle screen resize
   window.addEventListener('resize', setSize.bind(null, opts))
