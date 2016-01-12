@@ -1,4 +1,4 @@
-var viewer = require('./');
+var ModelViewer = require('./');
 
 // To render with fixed dimensions:
 // viewer({
@@ -9,7 +9,7 @@ var viewer = require('./');
 // })
 //
 
-viewer({
+var viewer = ModelViewer({
   targetDivId: 'logo-container',
   followMouse: !detectMobile(),
   // Dictates whether width & height are px or multiplied
@@ -21,6 +21,9 @@ viewer({
   // width: 500,
   // height: 400,
 })
+
+var container = document.getElementById('logo-container')
+container.appendChild(viewer.canvas)
 
 function detectMobile() {
   return (
