@@ -8,7 +8,7 @@
     "dev": "wzrd sample.js:bundle.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "MetaMask",
   "license": "ISC",
   "dependencies": {
     "brfs": "^1.4.2",
