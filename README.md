@@ -25,6 +25,9 @@ var viewer = ModelViewer({
   // To make the face follow the mouse.
   followMouse: false,
 
+  // head should slowly drift (overrides lookAt)
+  slowDrift: false,
+
 })
 
 // add viewer to DOM

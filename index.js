@@ -1,17 +1,19 @@
 window.THREE = require('three.js')
-const mousePointer = require('./lib/mouse-pointer')
+const Looker = require('./lib/look-at')
 const objMtlLoader = require('./lib/loader')
 
 module.exports = function(opts){
 
   // parse options
   var followMouse = opts.followMouse
+  var slowDrift = opts.slowDrift
 
   // SCENE
   var scene = new THREE.Scene()
 
   // MODEL
   var object = objMtlLoader()
+  var looker = new Looker(object)
   object.position = scene.position
   object.rotation.x = 0
   object.rotation.y = 0
@@ -80,12 +82,27 @@ module.exports = function(opts){
   }
 
 
+  function setFollowMouse(state) {
+    followMouse = state
+  }
+
+  function lookAt(target) {
+    if (!boundingBox) updateBoundingBox()
+    looker.setPageTarget(target, boundingBox)
+  }
+
+  function updateBoundingBox(){
+    boundingBox = renderCanvas.getBoundingClientRect()
+  }
+
   function animate() {
+
+    looker.update()
 
     if (followMouse) {
       // look at mouse left-right
       lookAt(mousePos)
-    } else {
+    } else if (slowDrift) {
       // drift left-right
       var time = Date.now()
       object.rotation.y = 0.5 + (Math.sin(time/3000) * 0.2)
@@ -96,19 +113,6 @@ module.exports = function(opts){
     // loop
     requestAnimationFrame( animate )
     render()
-  }
-
-  function setFollowMouse(state) {
-    followMouse = state
-  }
-
-  function lookAt(target) {
-    if (!boundingBox) updateBoundingBox()
-    mousePointer(object, target, boundingBox)
-  }
-
-  function updateBoundingBox(){
-    boundingBox = renderCanvas.getBoundingClientRect()
   }
 
   function render() {

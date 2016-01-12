@@ -9,9 +9,12 @@ var ModelViewer = require('./');
 // })
 //
 
+var isMobile = detectMobile()
+
 var viewer = ModelViewer({
   targetDivId: 'logo-container',
-  followMouse: !detectMobile(),
+  followMouse: !isMobile,
+  slowDrift: isMobile,
   // Dictates whether width & height are px or multiplied
   pxNotRatio: false,
   width: 0.4,
