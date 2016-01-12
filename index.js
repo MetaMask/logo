@@ -8,7 +8,7 @@ module.exports = function(opts){
   var followMouse = opts.followMouse
 
   // SCENE
-  window.scene = new THREE.Scene()
+  var scene = new THREE.Scene()
 
   // MODEL
   var object = objMtlLoader()
@@ -28,7 +28,7 @@ module.exports = function(opts){
   camera.lookAt(scene.position)
 
   // RENDERER
-  window.renderer = new THREE.WebGLRenderer( {
+  var renderer = new THREE.WebGLRenderer( {
     antialias: true,
     alpha: true,
   })
@@ -68,11 +68,15 @@ module.exports = function(opts){
   })
 
   return {
-    object: object,
-    renderer: renderer,
+    // proeprties
     canvas: renderCanvas,
+    renderer: renderer,
+    scene: scene,
+    object: object,
+    // methods
     lookAt: lookAt,
     setFollowMouse: setFollowMouse,
+    updateBoundingBox: updateBoundingBox,
   }
 
 

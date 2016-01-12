@@ -9,22 +9,34 @@ The sample app javascript is `bundle.js`, which is built from `sample.js` using 
 
 ## API
 ```javascript
-var viewer = require('metamask-logo');
+var ModelViewer = require('metamask-logo')
 
 // To render with fixed dimensions:
-viewer({
-   pxNotRatio: true, // Dictates whether width & height are px or multiplied
-   width: 500,
-   height: 400,
-   targetDivId: 'modelDivLarge'
+var viewer = ModelViewer({
+
+  // Dictates whether width & height are px or multiplied
+  pxNotRatio: true, 
+  width: 500,
+  height: 400,
+  // pxNotRatio: false,
+  // width: 0.9,
+  // height: 0.9,
+
+  // To make the face follow the mouse.
+  followMouse: false,
+
 })
 
-// To render as a ratio of the screen's width:
-viewer({
-  pxNotRatio: false, // Dictates whether width & height are px or multiplied
-  width: 0.9,
-  height: 0.9,
-  targetDivId: 'modelDivLarge',
-  followMouse: true  // To make the face follow the mouse.
+// add viewer to DOM
+var container = document.getElementById('logo-container')
+container.appendChild(viewer.canvas)
+
+// look at something on the page
+viewer.lookAt({
+  x: 100,
+  y: 100,
 })
+
+// enable mouse follow
+viewer.setFollowMouse(true)
 ```
