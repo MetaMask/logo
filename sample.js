@@ -25,6 +25,8 @@ var viewer = ModelViewer({
   // height: 400,
 })
 
+window.viewer = viewer
+
 var container = document.getElementById('logo-container')
 container.appendChild(viewer.canvas)
 
