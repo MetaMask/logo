@@ -6,7 +6,7 @@ module.exports = function(opts){
 
   // check for webgl compatibility
   try {
-    var canvas = createElement('canvas')
+    var canvas = document.createElement('canvas')
     var context = canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
   } catch (err) {
     console.error('MetamaskLogo - WebGL not compatible: '+err.message)
