@@ -8,8 +8,12 @@ module.exports = function(opts){
   try {
     var canvas = document.createElement('canvas')
     var context = canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
+    if (!context) {
+      console.error('MetamaskLogo - WebGL not supported.')
+      return
+    }
   } catch (err) {
-    console.error('MetamaskLogo - WebGL not compatible: '+err.message)
+    console.error('MetamaskLogo - encountered a WebGL error: '+err.stack)
     return
   }
 
