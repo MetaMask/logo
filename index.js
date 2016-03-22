@@ -100,7 +100,7 @@ module.exports = function(opts){
   }
 
   function lookAt(target) {
-    if (!boundingBox) updateBoundingBox()
+    updateBoundingBox()
     looker.setPageTarget(target, boundingBox)
   }
 
