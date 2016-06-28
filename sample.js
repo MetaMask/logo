@@ -19,6 +19,7 @@ var viewer = ModelViewer({
   pxNotRatio: false,
   width: 0.4,
   height: 0.4,
+  minWidth: 200,
   // To render with fixed dimensions:
   // pxNotRatio: true,
   // width: 500,

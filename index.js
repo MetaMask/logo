@@ -135,7 +135,11 @@ module.exports = function(opts){
   function setSize(){
     if (!opts.pxNotRatio) {
       var width = window.innerWidth * opts.width
-      width = Math.min(width, 800)
+      if ('minWidth' in opts && width < opts.minWidth) {
+        width = opts.minWidth
+      }
+
+      width = Math.max(width, opts.minWidth || width)
       var height = width
       camera.aspect = height / width
       camera.updateProjectionMatrix()
