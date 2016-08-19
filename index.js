@@ -10,7 +10,7 @@ module.exports = function(opts){
     var context = canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
     if (!context) {
       var staticLogo = document.createElement('img')
-      staticLogo.src = './icon-256.png'
+      staticLogo.src = './icon-512.png'
       staticLogo.width = opts.width
       staticLogo.height = opts.height
       return {webGLSupport: false,
