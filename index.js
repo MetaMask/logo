@@ -9,8 +9,11 @@ module.exports = function(opts){
     var canvas = document.createElement('canvas')
     var context = canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
     if (!context) {
-      console.error('MetamaskLogo - WebGL not supported.')
-      return
+      var staticLogo = document.createElement('img')
+      staticLogo.src = './icon-128.png'
+      staticLogo.style.marginBottom = '20px'
+      return {webGLSupport: false,
+              staticLogo: staticLogo}
     }
   } catch (err) {
     console.error('MetamaskLogo - encountered a WebGL error: '+err.stack)
@@ -92,6 +95,8 @@ module.exports = function(opts){
     lookAt: lookAt,
     setFollowMouse: setFollowMouse,
     updateBoundingBox: updateBoundingBox,
+    // flags
+    webGLSupport: true,
   }
 
 
