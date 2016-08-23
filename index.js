@@ -9,15 +9,21 @@ module.exports = function(opts){
     var canvas = document.createElement('canvas')
     var context = canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
     if (!context) {
+      if (!opts.staticImage) {
+        return {webGLSupport: false,
+                imageSupport: false,}
+      }
       var staticLogo = document.createElement('img')
-      staticLogo.src = './icon-512.png'
+      staticLogo.src = opts.staticImage
       staticLogo.width = opts.width
       staticLogo.height = opts.height
       return {webGLSupport: false,
-              staticLogo: staticLogo}
+              staticLogo: staticLogo,
+              imageSupport: true,
+              }
     }
   } catch (err) {
-    console.error('MetamaskLogo - encountered a WebGL error: '+err.stack)
+    console.error('MetamaskLogo - encountered a WebGL error: ' + err.stack)
     return
   }
 
