@@ -13,7 +13,6 @@ function parseMTL (mtl) {
       var toks = line.split(/\s+/).slice(1)
       var label = toks[0]
       var data = toks.slice(1)
-
       if (data.length === 1) {
         props[label] = +data[0]
       } else {

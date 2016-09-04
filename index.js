@@ -1,8 +1,12 @@
 var regl = require('regl')()
 var perspective = require('gl-mat4/perspective')
 var lookAt = require('gl-mat4/lookAt')
-var identity = require('gl-mat4/identity')
+var mouse = require('mouse-change')()
 var foxJSON = require('./fox.json')
+
+var objectCenter = [0, 0, 0]
+var lookCurrent = [0, 0, -400]
+var lookRate = 0.2
 
 var drawLogo = regl({
   vert: `
@@ -59,8 +63,8 @@ var drawLogo = regl({
 
   uniforms: (function () {
     var projection = new Float32Array(16)
-    var view = new Float32Array(16)
     var model = new Float32Array(16)
+    var up = [0, 1, 0]
 
     return {
       projection: function (context) {
@@ -71,15 +75,17 @@ var drawLogo = regl({
           0.01,
           1000.0)
       },
-      view: function () {
-        return lookAt(
-          view,
-          [0, 0, 500],
-          [0, 0, 0],
-          [0, 1, 0])
-      },
+      view: lookAt(
+        new Float32Array(16),
+        [0, 0, 400],
+        objectCenter,
+        up),
       model: function () {
-        return identity(model)
+        return lookAt(
+          model,
+          objectCenter,
+          lookCurrent,
+          up)
       }
     }
   })(),
@@ -87,10 +93,19 @@ var drawLogo = regl({
   count: 3 * foxJSON.faces
 })
 
-regl.frame(() => {
+regl.frame(function (context) {
   regl.clear({
     color: [0, 0, 0, 0],
     depth: 1
   })
+
+  var pixelRatio = context.pixelRatio
+  var mx = 200.0 * (2.0 * pixelRatio * mouse.x / context.viewportWidth - 1.0)
+  var my = 200.0 * (1.0 - 2.0 * pixelRatio * mouse.y / context.viewportHeight)
+  var li = (1.0 - lookRate)
+
+  lookCurrent[0] = li * lookCurrent[0] + lookRate * mx
+  lookCurrent[1] = li * lookCurrent[1] + lookRate * my
+
   drawLogo()
 })
