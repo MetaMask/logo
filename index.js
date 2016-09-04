@@ -9,24 +9,24 @@ var lookCurrent = [0, 0, -400]
 var lookRate = 0.2
 
 var drawLogo = regl({
-  vert: `
-  precision mediump float;
-  attribute vec3 position, color;
-  uniform mat4 projection, view, model;
-  varying vec3 fragColor;
-  void main () {
-    fragColor = color;
-    gl_Position = projection * view * model * vec4(position, 1);
-  }
-  `,
+  vert: [
+    'precision mediump float;',
+    'attribute vec3 position, color;',
+    'uniform mat4 projection, view, model;',
+    'varying vec3 fragColor;',
+    'void main () {',
+    '  fragColor = color;',
+    '  gl_Position = projection * view * model * vec4(position, 1);',
+    '}'
+  ].join('\n'),
 
-  frag: `
-  precision mediump float;
-  varying vec3 fragColor;
-  void main () {
-    gl_FragColor = vec4(fragColor, 1);
-  }
-  `,
+  frag: [
+    'precision mediump float;',
+    'varying vec3 fragColor;',
+    'void main () {',
+    '  gl_FragColor = vec4(fragColor, 1);',
+    '}'
+  ].join('\n'),
 
   attributes: (function () {
     var numFaces = foxJSON.faces
