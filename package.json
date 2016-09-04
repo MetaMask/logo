@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "gl-mat4": "^1.1.4",
+    "gl-vec3": "^1.0.3",
     "regl": "^1.1.1"
   },
   "devDependencies": {

@@ -57,24 +57,30 @@ function parseOBJ (obj) {
         break
       case 'f':
         faceGroups[currentMTL].push(toks.slice(1, 4).map(function (tuple) {
-          return tuple.split('/')[0] | 0
+          return (tuple.split('/')[0] | 0) - 1
         }))
         break
     }
   })
 
+  var faceCount = 0
+
   var chunks = []
   Object.keys(faceGroups).forEach(function (name) {
     var material = mtl[name]
+    faceCount += faceGroups[name].length
     chunks.push({
-      color: material.Ka,
+      color: material.Ka.map(function (c, i) {
+        return c
+      }),
       faces: faceGroups[name]
     })
   })
 
   return {
     positions: positions,
-    chunks: chunks
+    chunks: chunks,
+    faces: faceCount
   }
 }
 
