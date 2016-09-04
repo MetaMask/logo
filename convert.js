@@ -17,7 +17,7 @@ function parseMTL (mtl) {
         props[label] = +data[0]
       } else {
         props[label] = data.map(function (x) {
-          return +x
+          return Math.sqrt(x).toPrecision(4)
         })
       }
     })

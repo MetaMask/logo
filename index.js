@@ -1,12 +1,14 @@
 var regl = require('regl')()
 var perspective = require('gl-mat4/perspective')
 var lookAt = require('gl-mat4/lookAt')
+var invert = require('gl-mat4/invert')
+var transform = require('gl-vec3/transformMat4')
 var mouse = require('mouse-change')()
 var foxJSON = require('./fox.json')
 
-var objectCenter = [0, 0, 0]
-var lookCurrent = [0, 0, -400]
-var lookRate = 0.2
+var DISTANCE = 400
+var lookCurrent = [0, 0]
+var lookRate = 0.25
 
 var drawLogo = regl({
   vert: [
@@ -62,9 +64,17 @@ var drawLogo = regl({
   })(),
 
   uniforms: (function () {
+    var objectCenter = new Float32Array(3)
+    var up = new Float32Array([0, 1, 0])
     var projection = new Float32Array(16)
     var model = new Float32Array(16)
-    var up = [0, 1, 0]
+    var view = lookAt(
+      new Float32Array(16),
+      new Float32Array([0, 0, DISTANCE]),
+      objectCenter,
+      up)
+    var invView = invert(new Float32Array(16), view)
+    var target = new Float32Array(3)
 
     return {
       projection: function (context) {
@@ -75,16 +85,24 @@ var drawLogo = regl({
           0.01,
           1000.0)
       },
-      view: lookAt(
-        new Float32Array(16),
-        [0, 0, 400],
-        objectCenter,
-        up),
-      model: function () {
+      view: view,
+      model: function (context) {
+        perspective(
+          projection,
+          Math.PI / 4.0,
+          context.viewportWidth / context.viewportHeight,
+          0.01,
+          1000.0)
+        invert(projection, projection)
+        target[0] = lookCurrent[0]
+        target[1] = lookCurrent[1]
+        target[2] = 1
+        transform(target, target, projection)
+        transform(target, target, invView)
         return lookAt(
           model,
           objectCenter,
-          lookCurrent,
+          target,
           up)
       }
     }
@@ -100,8 +118,8 @@ regl.frame(function (context) {
   })
 
   var pixelRatio = context.pixelRatio
-  var mx = 200.0 * (2.0 * pixelRatio * mouse.x / context.viewportWidth - 1.0)
-  var my = 200.0 * (1.0 - 2.0 * pixelRatio * mouse.y / context.viewportHeight)
+  var mx = (2.0 * pixelRatio * mouse.x / context.viewportWidth - 1.0)
+  var my = (1.0 - 2.0 * pixelRatio * mouse.y / context.viewportHeight)
   var li = (1.0 - lookRate)
 
   lookCurrent[0] = li * lookCurrent[0] + lookRate * mx
