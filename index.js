@@ -2,9 +2,12 @@ var regl = require('regl')()
 var perspective = require('gl-mat4/perspective')
 var lookAt = require('gl-mat4/lookAt')
 var invert = require('gl-mat4/invert')
+var identity = require('gl-mat4/identity')
 var transform = require('gl-vec3/transformMat4')
 var mouse = require('mouse-change')()
 var foxJSON = require('./fox.json')
+
+var followCursor = false
 
 var DISTANCE = 400
 var lookCurrent = [0, 0]
@@ -76,6 +79,10 @@ var drawLogo = regl({
     var invView = invert(new Float32Array(16), view)
     var target = new Float32Array(3)
 
+    var X = new Float32Array([1, 0, 0])
+    var Y = new Float32Array([0, 1, 0])
+    var Z = new Float32Array([0, 0, 1])
+
     return {
       projection: function (context) {
         return perspective(
@@ -87,23 +94,28 @@ var drawLogo = regl({
       },
       view: view,
       model: function (context) {
-        perspective(
-          projection,
-          Math.PI / 4.0,
-          context.viewportWidth / context.viewportHeight,
-          0.01,
-          1000.0)
-        invert(projection, projection)
-        target[0] = lookCurrent[0]
-        target[1] = lookCurrent[1]
-        target[2] = 1
-        transform(target, target, projection)
-        transform(target, target, invView)
-        return lookAt(
-          model,
-          objectCenter,
-          target,
-          up)
+        if (followCursor) {
+          perspective(
+            projection,
+            Math.PI / 4.0,
+            context.viewportWidth / context.viewportHeight,
+            0.01,
+            1000.0)
+          invert(projection, projection)
+          target[0] = lookCurrent[0]
+          target[1] = lookCurrent[1]
+          target[2] = 1
+          transform(target, target, projection)
+          transform(target, target, invView)
+          lookAt(
+            model,
+            objectCenter,
+            target,
+            up)
+        } else {
+          identity(model)
+        }
+        return model
       }
     }
   })(),
