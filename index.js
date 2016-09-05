@@ -8,12 +8,12 @@ var transform = require('gl-vec3/transformMat4')
 var mouse = require('mouse-change')()
 var foxJSON = require('./fox.json')
 
-var followCursor = false
-var slowDrift = true
+var followCursor = true
+var slowDrift = false
 
 var DISTANCE = 400
 var lookCurrent = [0, 0]
-var lookRate = 0.25
+var lookRate = 0.3
 
 var drawLogo = regl({
   vert: [
@@ -119,9 +119,9 @@ var drawLogo = regl({
         }
         if (slowDrift) {
           var time = context.time
-          rotate(model, model, -0.1 + (Math.sin(time / 2) * 0.03), Z)
-          rotate(model, model, 0.5 + (Math.sin(time / 3) * 0.2), Y)
           rotate(model, model, 0.1 + (Math.sin(time / 3) * 0.2), X)
+          rotate(model, model, 0.5 + (Math.sin(time / 3) * 0.2), Y)
+          rotate(model, model, -0.1 + (Math.sin(time / 2) * 0.03), Z)
         }
         return model
       }
