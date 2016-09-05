@@ -3,11 +3,13 @@ var perspective = require('gl-mat4/perspective')
 var lookAt = require('gl-mat4/lookAt')
 var invert = require('gl-mat4/invert')
 var identity = require('gl-mat4/identity')
+var rotate = require('gl-mat4/rotate')
 var transform = require('gl-vec3/transformMat4')
 var mouse = require('mouse-change')()
 var foxJSON = require('./fox.json')
 
 var followCursor = false
+var slowDrift = true
 
 var DISTANCE = 400
 var lookCurrent = [0, 0]
@@ -114,6 +116,12 @@ var drawLogo = regl({
             up)
         } else {
           identity(model)
+        }
+        if (slowDrift) {
+          var time = context.time
+          rotate(model, model, -0.1 + (Math.sin(time / 2) * 0.03), Z)
+          rotate(model, model, 0.5 + (Math.sin(time / 3) * 0.2), Y)
+          rotate(model, model, 0.1 + (Math.sin(time / 3) * 0.2), X)
         }
         return model
       }
