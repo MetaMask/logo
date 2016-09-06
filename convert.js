@@ -70,7 +70,7 @@ function parseOBJ (obj) {
     faceCount += faceGroups[name].length
     chunks.push({
       color: material.Ka.map(function (c, i) {
-        return c
+        return (255 * c) | 0
       }),
       faces: faceGroups[name]
     })
