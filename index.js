@@ -197,6 +197,21 @@ function updateFaces () {
   for (i = 0; i < polygons.length; ++i) {
     var poly = polygons[i]
     var indices = poly.indices
+
+    var i0 = indices[0]
+    var i1 = indices[1]
+    var i2 = indices[2]
+    var ax = transformed[3 * i0]
+    var ay = transformed[3 * i0 + 1]
+    var bx = transformed[3 * i1]
+    var by = transformed[3 * i1 + 1]
+    var cx = transformed[3 * i2]
+    var cy = transformed[3 * i2 + 1]
+    var det = (bx - ax) * (cy - ay) - (by - ay) * (cx - ax)
+    if (det < 0) {
+      continue
+    }
+
     var points = []
     var zmax = -Infinity
     var zmin = Infinity
@@ -210,7 +225,7 @@ function updateFaces () {
       zmax = Math.max(zmax, z)
       zmin = Math.min(zmin, z)
     }
-    poly.zIndex = zmax
+    poly.zIndex = zmax + 0.25 * zmin
     setAttribute(element, 'points', points.join(' '))
     toDraw.push(poly)
   }

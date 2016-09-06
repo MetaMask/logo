@@ -55,19 +55,19 @@ function parseOBJ (obj) {
         }
         break
       case 'f':
-        faceGroups[currentMTL].push(toks.slice(1, 4).map(function (tuple) {
+        var f = toks.slice(1, 4).map(function (tuple) {
           return (tuple.split('/')[0] | 0) - 1
-        }))
+        })
+        if (f[0] !== f[1] && f[1] !== f[2] && f[2] !== f[0]) {
+          faceGroups[currentMTL].push(f)
+        }
         break
     }
   })
 
-  var faceCount = 0
-
   var chunks = []
   Object.keys(faceGroups).forEach(function (name) {
     var material = mtl[name]
-    faceCount += faceGroups[name].length
     chunks.push({
       color: material.Ka.map(function (c, i) {
         return (255 * c) | 0
@@ -78,11 +78,10 @@ function parseOBJ (obj) {
 
   return {
     positions: positions,
-    chunks: chunks,
-    faces: faceCount
+    chunks: chunks
   }
 }
 
 var obj = parseOBJ(fs.readFileSync('fox.obj').toString('utf8'))
 
-console.log(JSON.stringify(obj))
+console.log(JSON.stringify(obj, null, 2))
