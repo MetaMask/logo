@@ -139,7 +139,7 @@ module.exports = function createLogo (options_) {
       invert(invProjection, projection)
       target[0] = lookCurrent[0]
       target[1] = lookCurrent[1]
-      target[2] = 1
+      target[2] = 1.2
       transform(target, target, invProjection)
       transform(target, target, invView)
       lookAt(
@@ -150,8 +150,8 @@ module.exports = function createLogo (options_) {
       if (slowDrift) {
         var time = (Date.now() / 1000.0)
         rotate(model, model, 0.1 + (Math.sin(time / 3) * 0.2), X)
-        rotate(model, model, 0.5 + (Math.sin(time / 3) * 0.2), Y)
         rotate(model, model, -0.1 + (Math.sin(time / 2) * 0.03), Z)
+        rotate(model, model, 0.5 + (Math.sin(time / 3) * 0.2), Y)
       }
 
       multiply(transformed, projection, view)
@@ -253,7 +253,7 @@ module.exports = function createLogo (options_) {
 
     var li = (1.0 - lookRate)
     lookCurrent[0] = li * lookCurrent[0] + lookRate * mouse.x
-    lookCurrent[1] = li * lookCurrent[1] + lookRate * mouse.y
+    lookCurrent[1] = li * lookCurrent[1] + lookRate * mouse.y + 0.085
 
     var matrix = computeMatrix()
     updatePositions(matrix)
