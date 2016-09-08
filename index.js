@@ -1,165 +1,277 @@
-window.THREE = require('three.js')
-const Looker = require('./lib/look-at')
-const objMtlLoader = require('./lib/loader')
+var perspective = require('gl-mat4/perspective')
+var multiply = require('gl-mat4/multiply')
+var lookAt = require('gl-mat4/lookAt')
+var invert = require('gl-mat4/invert')
+var rotate = require('gl-mat4/rotate')
+var transform = require('gl-vec3/transformMat4')
+var foxJSON = require('./fox.json')
 
-module.exports = function(opts){
+var SVG_NS = 'http://www.w3.org/2000/svg'
 
-  // check for webgl compatibility
-  try {
-    var canvas = document.createElement('canvas')
-    var context = canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
-    if (!context) {
-      if (!opts.staticImage) {
-        return {webGLSupport: false,
-                imageSupport: false,}
-      }
-      var staticLogo = document.createElement('img')
-      staticLogo.src = opts.staticImage
-      staticLogo.width = opts.width
-      staticLogo.height = opts.height
-      return {webGLSupport: false,
-              staticLogo: staticLogo,
-              imageSupport: true,
-              }
+function createNode (type) {
+  return document.createElementNS(SVG_NS, type)
+}
+
+function setAttribute (node, attribute, value) {
+  node.setAttributeNS(null, attribute, value)
+}
+
+module.exports = function createLogo (options_) {
+  var options = options_ || {}
+
+  var followCursor = !!options.followMouse
+  var slowDrift = !!options.slowDrift
+
+  var DISTANCE = 400
+  var lookCurrent = [0, 0]
+  var lookRate = 0.3
+
+  var width = options.width || 400
+  var height = options.height || 400
+  var container = createNode('svg')
+
+  if (!options.pxNotRatio) {
+    width = (window.innerWidth * (options.width || 0.25)) | 0
+    height = ((window.innerHeight * options.height) || width) | 0
+    if ('minWidth' in options && width < options.minWidth) {
+      width = options.minWidth
+      height = (options.minWidth * options.height / options.width) | 0
     }
-  } catch (err) {
-    console.error('MetamaskLogo - encountered a WebGL error: ' + err.stack)
-    return
   }
 
-  // parse options
-  var followMouse = opts.followMouse
-  var slowDrift = opts.slowDrift
+  setAttribute(container, 'width', width + 'px')
+  setAttribute(container, 'height', height + 'px')
 
-  // SCENE
-  var scene = new THREE.Scene()
-
-  // MODEL
-  var object = objMtlLoader()
-  var looker = new Looker(object)
-  object.position = scene.position
-  object.rotation.x = 0
-  object.rotation.y = 0
-  object.rotation.z = 0
-
-  // LIGHT
-  var ambiColor = '#FFFFFF'
-  var ambientLight = new THREE.AmbientLight(ambiColor)
-  scene.add( ambientLight )
-
-  // CAMERA
-  window.camera = new THREE.PerspectiveCamera( 45, opts.width / opts.height, 1, 2000 )
-  camera.position.z = 400
-  camera.lookAt(scene.position)
-
-  // RENDERER
-  var renderer = new THREE.WebGLRenderer( {
-    antialias: true,
-    alpha: true,
-  })
-
-  renderer.setPixelRatio( window.devicePixelRatio )
-  renderer.gammaInput = true
-  renderer.gammaOutput = true
-  renderer.shadowMap.enabled = true
-  renderer.shadowMap.cullFace = THREE.CullFaceBack
-
-  // DOM STUFF
-  var renderCanvas = renderer.domElement
-  var boundingBox = null
-
-  // handle screen resize
-  setSize(opts)
-  window.addEventListener('resize', setSize.bind(null, opts))
-
-  // track mouse movements
-  var mousePos = {
-    x: window.innerWidth/2,
-    y: window.innerHeight/2,
+  var mouse = {
+    x: 0,
+    y: 0
   }
-  window.addEventListener('mousemove', function(event){
-    mousePos.x = event.clientX
-    mousePos.y = event.clientY
+  window.addEventListener('mousemove', function (ev) {
+    if (followCursor) {
+      var bounds = container.getBoundingClientRect()
+      mouse.x = 1.0 - 2.0 * (ev.clientX - bounds.left) / bounds.width
+      mouse.y = 1.0 - 2.0 * (ev.clientY - bounds.top) / bounds.height
+    }
   })
 
+  document.body.appendChild(container)
 
-  animate()
+  var NUM_VERTS = foxJSON.positions.length
 
-  // wait until dom reflow
-  setTimeout(function(){
-    updateBoundingBox()
-    // finally add object
-    scene.add( object )
-  })
+  var positions = new Float32Array(3 * NUM_VERTS)
+  var transformed = new Float32Array(3 * NUM_VERTS)
+
+  ;(function () {
+    var pp = foxJSON.positions
+    var ptr = 0
+    for (var i = 0; i < pp.length; ++i) {
+      var p = pp[i]
+      for (var j = 0; j < 3; ++j) {
+        positions[ptr++] = p[j]
+      }
+    }
+  })()
+
+  function Polygon (svg, indices) {
+    this.svg = svg
+    this.indices = indices
+    this.zIndex = 0
+  }
+
+  var polygons = (function () {
+    var polygons = []
+    for (var i = 0; i < foxJSON.chunks.length; ++i) {
+      var chunk = foxJSON.chunks[i]
+      var color = 'rgb(' + chunk.color + ')'
+      var faces = chunk.faces
+      for (var j = 0; j < faces.length; ++j) {
+        var f = faces[j]
+        var polygon = createNode('polygon')
+        setAttribute(
+          polygon,
+          'fill',
+          color)
+        setAttribute(
+          polygon,
+          'stroke',
+          color)
+        setAttribute(
+          polygon,
+          'points',
+          '0,0, 10,0, 0,10')
+        container.appendChild(polygon)
+        polygons.push(new Polygon(polygon, f))
+      }
+    }
+    return polygons
+  })()
+
+  var computeMatrix = (function () {
+    var objectCenter = new Float32Array(3)
+    var up = new Float32Array([0, 1, 0])
+    var projection = new Float32Array(16)
+    var model = new Float32Array(16)
+    var view = lookAt(
+      new Float32Array(16),
+      new Float32Array([0, 0, DISTANCE]),
+      objectCenter,
+      up)
+    var invView = invert(new Float32Array(16), view)
+    var invProjection = new Float32Array(16)
+    var target = new Float32Array(3)
+    var transformed = new Float32Array(16)
+
+    var X = new Float32Array([1, 0, 0])
+    var Y = new Float32Array([0, 1, 0])
+    var Z = new Float32Array([0, 0, 1])
+
+    return function () {
+      var rect = container.getBoundingClientRect()
+      var viewportWidth = rect.width
+      var viewportHeight = rect.height
+      perspective(
+        projection,
+        Math.PI / 4.0,
+        viewportWidth / viewportHeight,
+        100.0,
+        1000.0)
+      invert(invProjection, projection)
+      target[0] = lookCurrent[0]
+      target[1] = lookCurrent[1]
+      target[2] = 1
+      transform(target, target, invProjection)
+      transform(target, target, invView)
+      lookAt(
+        model,
+        objectCenter,
+        target,
+        up)
+      if (slowDrift) {
+        var time = (Date.now() / 1000.0)
+        rotate(model, model, 0.1 + (Math.sin(time / 3) * 0.2), X)
+        rotate(model, model, 0.5 + (Math.sin(time / 3) * 0.2), Y)
+        rotate(model, model, -0.1 + (Math.sin(time / 2) * 0.03), Z)
+      }
+
+      multiply(transformed, projection, view)
+      multiply(transformed, transformed, model)
+
+      return transformed
+    }
+  })()
+
+  function updatePositions (M) {
+    var m00 = M[0]
+    var m01 = M[1]
+    var m02 = M[2]
+    var m03 = M[3]
+    var m10 = M[4]
+    var m11 = M[5]
+    var m12 = M[6]
+    var m13 = M[7]
+    var m20 = M[8]
+    var m21 = M[9]
+    var m22 = M[10]
+    var m23 = M[11]
+    var m30 = M[12]
+    var m31 = M[13]
+    var m32 = M[14]
+    var m33 = M[15]
+
+    for (var i = 0; i < NUM_VERTS; ++i) {
+      var x = positions[3 * i]
+      var y = positions[3 * i + 1]
+      var z = positions[3 * i + 2]
+
+      var tw = x * m03 + y * m13 + z * m23 + m33
+      transformed[3 * i] =
+        (x * m00 + y * m10 + z * m20 + m30) / tw
+      transformed[3 * i + 1] =
+        (x * m01 + y * m11 + z * m21 + m31) / tw
+      transformed[3 * i + 2] =
+        (x * m02 + y * m12 + z * m22 + m32) / tw
+    }
+  }
+
+  function compareZ (a, b) {
+    return b.zIndex - a.zIndex
+  }
+
+  var toDraw = []
+  function updateFaces () {
+    var i
+    var rect = container.getBoundingClientRect()
+    var w = rect.width
+    var h = rect.height
+    toDraw.length = 0
+    for (i = 0; i < polygons.length; ++i) {
+      var poly = polygons[i]
+      var indices = poly.indices
+
+      var i0 = indices[0]
+      var i1 = indices[1]
+      var i2 = indices[2]
+      var ax = transformed[3 * i0]
+      var ay = transformed[3 * i0 + 1]
+      var bx = transformed[3 * i1]
+      var by = transformed[3 * i1 + 1]
+      var cx = transformed[3 * i2]
+      var cy = transformed[3 * i2 + 1]
+      var det = (bx - ax) * (cy - ay) - (by - ay) * (cx - ax)
+      if (det < 0) {
+        continue
+      }
+
+      var points = []
+      var zmax = -Infinity
+      var zmin = Infinity
+      var element = poly.svg
+      for (var j = 0; j < 3; ++j) {
+        var idx = indices[j]
+        points.push(
+          0.5 * w * (1.0 - transformed[3 * idx]) + ',' +
+          0.5 * h * (1.0 - transformed[3 * idx + 1]))
+        var z = transformed[3 * idx + 2]
+        zmax = Math.max(zmax, z)
+        zmin = Math.min(zmin, z)
+      }
+      poly.zIndex = zmax + 0.25 * zmin
+      setAttribute(element, 'points', points.join(' '))
+      toDraw.push(poly)
+    }
+    toDraw.sort(compareZ)
+    container.innerHTML = ''
+    for (i = 0; i < toDraw.length; ++i) {
+      container.appendChild(toDraw[i].svg)
+    }
+  }
+
+  function renderScene () {
+    window.requestAnimationFrame(renderScene)
+
+    var li = (1.0 - lookRate)
+    lookCurrent[0] = li * lookCurrent[0] + lookRate * mouse.x
+    lookCurrent[1] = li * lookCurrent[1] + lookRate * mouse.y
+
+    var matrix = computeMatrix()
+    updatePositions(matrix)
+    updateFaces()
+  }
+
+  renderScene()
 
   return {
-    // proeprties
-    canvas: renderCanvas,
-    renderer: renderer,
-    scene: scene,
-    object: object,
-    // methods
-    lookAt: lookAt,
-    setFollowMouse: setFollowMouse,
-    updateBoundingBox: updateBoundingBox,
-    // flags
-    webGLSupport: true,
+    container: container,
+    lookAt: setLookAt,
+    setFollowMouse: setFollowMouse
   }
 
-
-  function setFollowMouse(state) {
-    followMouse = state
+  function setFollowMouse (state) {
+    followCursor = state
   }
 
-  function lookAt(target) {
-    updateBoundingBox()
-    looker.setPageTarget(target, boundingBox)
-  }
-
-  function updateBoundingBox(){
-    boundingBox = renderCanvas.getBoundingClientRect()
-  }
-
-  function animate() {
-
-    looker.update()
-
-    if (followMouse) {
-      // look at mouse left-right
-      lookAt(mousePos)
-    } else if (slowDrift) {
-      // drift left-right
-      var time = Date.now()
-      object.rotation.y = 0.5 + (Math.sin(time/3000) * 0.2)
-      object.rotation.x = 0.1 + (Math.sin(time/3000) * 0.2)
-      object.rotation.z = -0.1 + (Math.sin(time/2000) * 0.03)
-    }
-
-    // loop
-    requestAnimationFrame( animate )
-    render()
-  }
-
-  function render() {
-    renderer.render( scene, camera )
-  }
-
-  function setSize(){
-    if (!opts.pxNotRatio) {
-      var width = window.innerWidth * opts.width
-      if ('minWidth' in opts && width < opts.minWidth) {
-        width = opts.minWidth
-      }
-
-      width = Math.max(width, opts.minWidth || width)
-      var height = width
-      camera.aspect = height / width
-      camera.updateProjectionMatrix()
-      renderer.setSize(width, height)
-    } else {
-      renderer.setSize(opts.width, opts.height)
-    }
-
-    updateBoundingBox()
+  function setLookAt (target) {
+    mouse.x = target.x
+    mouse.y = target.y
   }
 }
