@@ -15,7 +15,7 @@ var ModelViewer = require('metamask-logo')
 var viewer = ModelViewer({
 
   // Dictates whether width & height are px or multiplied
-  pxNotRatio: true, 
+  pxNotRatio: true,
   width: 500,
   height: 400,
   // pxNotRatio: false,
@@ -42,4 +42,7 @@ viewer.lookAt({
 
 // enable mouse follow
 viewer.setFollowMouse(true)
+
+// deallocate nicely
+viewer.stopAnimation()
 ```

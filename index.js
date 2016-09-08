@@ -21,6 +21,7 @@ module.exports = function createLogo (options_) {
 
   var followCursor = !!options.followMouse
   var slowDrift = !!options.slowDrift
+  var shouldRender = true
 
   var DISTANCE = 400
   var lookCurrent = [0, 0]
@@ -247,6 +248,7 @@ module.exports = function createLogo (options_) {
   }
 
   function renderScene () {
+    if (!shouldRender) return
     window.requestAnimationFrame(renderScene)
 
     var li = (1.0 - lookRate)
@@ -263,7 +265,17 @@ module.exports = function createLogo (options_) {
   return {
     container: container,
     lookAt: setLookAt,
-    setFollowMouse: setFollowMouse
+    setFollowMouse: setFollowMouse,
+    stopAnimation: stopAnimation,
+    startAnimation: startAnimation,
+  }
+
+  function stopAnimation() {
+    shouldRender = false
+  }
+
+  function startAnimation() {
+    shouldRender = true
   }
 
   function setFollowMouse (state) {
