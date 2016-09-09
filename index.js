@@ -49,11 +49,19 @@ module.exports = function createLogo (options_) {
   }
   window.addEventListener('mousemove', function (ev) {
     if (followCursor) {
-      var bounds = container.getBoundingClientRect()
-      mouse.x = 1.0 - 2.0 * (ev.clientX - bounds.left) / bounds.width
-      mouse.y = 1.0 - 2.0 * (ev.clientY - bounds.top) / bounds.height
+      var target = {
+        x: ev.clientX,
+        y: ev.clientY,
+      }
+      setLookAt(target)
     }
   })
+
+  function setLookAt(target) {
+    var bounds = container.getBoundingClientRect()
+    mouse.x = 1.0 - 2.0 * (target.x - bounds.left) / bounds.width
+    mouse.y = 1.0 - 2.0 * (target.y - bounds.top) / bounds.height
+  }
 
   document.body.appendChild(container)
 
@@ -237,7 +245,12 @@ module.exports = function createLogo (options_) {
         zmin = Math.min(zmin, z)
       }
       poly.zIndex = zmax + 0.25 * zmin
-      setAttribute(element, 'points', points.join(' '))
+      var joinedPoints = points.join(' ')
+
+      if (joinedPoints.indexOf('NaN') === -1) {
+        setAttribute(element, 'points', joinedPoints)
+      }
+
       toDraw.push(poly)
     }
     toDraw.sort(compareZ)
@@ -252,6 +265,8 @@ module.exports = function createLogo (options_) {
     window.requestAnimationFrame(renderScene)
 
     var li = (1.0 - lookRate)
+    var bounds = container.getBoundingClientRect()
+
     lookCurrent[0] = li * lookCurrent[0] + lookRate * mouse.x
     lookCurrent[1] = li * lookCurrent[1] + lookRate * mouse.y + 0.085
 
@@ -282,8 +297,4 @@ module.exports = function createLogo (options_) {
     followCursor = state
   }
 
-  function setLookAt (target) {
-    mouse.x = target.x
-    mouse.y = target.y
-  }
 }
