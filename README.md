@@ -32,7 +32,7 @@ var viewer = ModelViewer({
 
 // add viewer to DOM
 var container = document.getElementById('logo-container')
-container.appendChild(viewer.canvas)
+container.appendChild(viewer.container)
 
 // look at something on the page
 viewer.lookAt({
