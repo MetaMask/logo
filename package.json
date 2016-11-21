@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "copy-to-clipboard": "^3.0.5",
-    "uglifyify": "3.0.1"
+    "uglifyify": "3.0.4"
   },
   "repository": {
     "type": "git",
