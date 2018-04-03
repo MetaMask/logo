@@ -30,10 +30,22 @@ module.exports = function createLogo (options_) {
   var width = options.width || 400
   var height = options.height || 400
   var container = createNode('svg')
+  var mouse = {
+    x: 0,
+    y: 0
+  }
+
+  var NUM_VERTS = foxJSON.positions.length
+
+  var positions = new Float32Array(3 * NUM_VERTS)
+  var transformed = new Float32Array(3 * NUM_VERTS)
+
+  var toDraw = []
 
   if (!options.pxNotRatio) {
     width = (window.innerWidth * (options.width || 0.25)) | 0
     height = ((window.innerHeight * options.height) || width) | 0
+
     if ('minWidth' in options && width < options.minWidth) {
       width = options.minWidth
       height = (options.minWidth * options.height / options.width) | 0
@@ -43,20 +55,6 @@ module.exports = function createLogo (options_) {
   setAttribute(container, 'width', width + 'px')
   setAttribute(container, 'height', height + 'px')
 
-  var mouse = {
-    x: 0,
-    y: 0
-  }
-  window.addEventListener('mousemove', function (ev) {
-    if (followCursor) {
-      var target = {
-        x: ev.clientX,
-        y: ev.clientY,
-      }
-      setLookAt(target)
-    }
-  })
-
   function setLookAt(target) {
     var bounds = container.getBoundingClientRect()
     mouse.x = 1.0 - 2.0 * (target.x - bounds.left) / bounds.width
@@ -64,11 +62,6 @@ module.exports = function createLogo (options_) {
   }
 
   document.body.appendChild(container)
-
-  var NUM_VERTS = foxJSON.positions.length
-
-  var positions = new Float32Array(3 * NUM_VERTS)
-  var transformed = new Float32Array(3 * NUM_VERTS)
 
   ;(function () {
     var pp = foxJSON.positions
@@ -206,7 +199,6 @@ module.exports = function createLogo (options_) {
     return b.zIndex - a.zIndex
   }
 
-  var toDraw = []
   function updateFaces () {
     var i
     var rect = container.getBoundingClientRect()
@@ -260,6 +252,21 @@ module.exports = function createLogo (options_) {
     }
   }
 
+  function stopAnimation() { shouldRender = false }
+  function startAnimation() { shouldRender = true }
+  function setFollowMouse (state) { followCursor = state }
+
+  window.addEventListener('mousemove', function (ev) {
+    if (!shouldRender) { startAnimation() }
+    if (followCursor) {
+      setLookAt({
+        x: ev.clientX,
+        y: ev.clientY,
+      })
+      renderScene()
+    }
+  })
+
   function renderScene () {
     if (!shouldRender) return
     window.requestAnimationFrame(renderScene)
@@ -273,6 +280,7 @@ module.exports = function createLogo (options_) {
     var matrix = computeMatrix()
     updatePositions(matrix)
     updateFaces()
+    stopAnimation()
   }
 
   renderScene()
@@ -284,17 +292,4 @@ module.exports = function createLogo (options_) {
     stopAnimation: stopAnimation,
     startAnimation: startAnimation,
   }
-
-  function stopAnimation() {
-    shouldRender = false
-  }
-
-  function startAnimation() {
-    shouldRender = true
-  }
-
-  function setFollowMouse (state) {
-    followCursor = state
-  }
-
 }

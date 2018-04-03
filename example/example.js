@@ -9,7 +9,7 @@ document.addEventListener('keypress', function (event) {
     + '<svg width="521px" height="521px" version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events">'
     var foot = '</svg>'
 
-     var full = head + inner + foot
+     var full = head + inner + foot;
 
      copy(full)
   }
