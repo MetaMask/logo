@@ -1,6 +1,6 @@
 {
   "name": "metamask-logo",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "description": "A browserifyable 3d metamask logo. [Live demo](http://metamask.github.io/metamask-logo/).",
   "main": "index.js",
   "scripts": {
