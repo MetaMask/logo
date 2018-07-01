@@ -11,4 +11,9 @@ body{
 
 div{
   height:140px;
+  overflow: visible;
+}
+
+svg {
+  overflow: visible;
 }
