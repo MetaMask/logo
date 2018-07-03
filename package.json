@@ -1,6 +1,6 @@
 {
   "name": "metamask-logo",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "description": "A browserifyable 3d metamask logo. [Live demo](http://metamask.github.io/metamask-logo/).",
   "main": "index.js",
   "scripts": {
@@ -15,8 +15,10 @@
     "gl-vec3": "1.0.3"
   },
   "devDependencies": {
+    "browserify": "^16.2.2",
     "copy-to-clipboard": "^3.0.5",
-    "uglifyify": "3.0.4"
+    "uglifyify": "3.0.4",
+    "wzrd": "^1.5.0"
   },
   "repository": {
     "type": "git",

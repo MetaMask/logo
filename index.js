@@ -20,6 +20,7 @@ module.exports = function createLogo (options_) {
   var options = options_ || {}
 
   var followCursor = !!options.followMouse
+  var followMotion = !!options.followMotion
   var slowDrift = !!options.slowDrift
   var shouldRender = true
 
@@ -255,6 +256,7 @@ module.exports = function createLogo (options_) {
   function stopAnimation() { shouldRender = false }
   function startAnimation() { shouldRender = true }
   function setFollowMouse (state) { followCursor = state }
+  function setFollowMotion (state) { followMotion = state }
 
   window.addEventListener('mousemove', function (ev) {
     if (!shouldRender) { startAnimation() }
@@ -262,6 +264,29 @@ module.exports = function createLogo (options_) {
       setLookAt({
         x: ev.clientX,
         y: ev.clientY,
+      })
+      renderScene()
+    }
+  })
+
+  window.addEventListener('deviceorientation', function (ev) {
+    if (!shouldRender) { startAnimation() }
+    if (followMotion) {
+      // gamma: left to right
+      const leftToRight = event.gamma,
+      // beta: front back motion
+      frontToBack = event.beta,
+      // x offset: needed to correct the intial position
+      xOffset = 200
+      // y offset: needed to correct the intial position
+      yOffset = -300
+      // acceleration
+      acceleration = 10
+
+
+      setLookAt({
+        x: xOffset + leftToRight * acceleration,
+        y: yOffset + frontToBack * acceleration,
       })
       renderScene()
     }
@@ -289,6 +314,7 @@ module.exports = function createLogo (options_) {
     container: container,
     lookAt: setLookAt,
     setFollowMouse: setFollowMouse,
+    setFollowMotion: setFollowMotion,
     stopAnimation: stopAnimation,
     startAnimation: startAnimation,
   }
