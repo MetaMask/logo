@@ -18,7 +18,7 @@
     "browserify": "^16.2.2",
     "copy-to-clipboard": "^3.0.5",
     "standard": "^14.3.1",
-    "uglifyify": "3.0.4",
+    "uglifyify": "^5.0.2",
     "wzrd": "^1.5.0"
   },
   "repository": {
