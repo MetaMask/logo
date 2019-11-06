@@ -6,7 +6,7 @@
   "scripts": {
     "build": "browserify example/example.js -g uglifyify -o bundle.js",
     "start": "wzrd example/example.js:bundle.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "standard index.js"
   },
   "author": "MetaMask",
   "license": "ISC",
@@ -17,6 +17,7 @@
   "devDependencies": {
     "browserify": "^16.2.2",
     "copy-to-clipboard": "^3.0.5",
+    "standard": "^14.3.1",
     "uglifyify": "3.0.4",
     "wzrd": "^1.5.0"
   },
