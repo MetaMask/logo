@@ -39,7 +39,102 @@ module.exports = function createLogo (options_) {
   var NUM_VERTS = foxJSON.positions.length
 
   var positions = new Float32Array(3 * NUM_VERTS)
+  let origPositions = new Float32Array(3 * NUM_VERTS)
   var transformed = new Float32Array(3 * NUM_VERTS)
+
+  let applyDistortions = distortFold
+
+  // glitch
+  function distortGlitch () {
+    const pointCount = positions.length / 3
+    for (let polygonIndex = 0; polygonIndex < pointCount; polygonIndex++) {
+      const x = polygonIndex * 3 + 0
+      const y = polygonIndex * 3 + 1
+      const z = polygonIndex * 3 + 2
+      // strong along x
+      positions[x] = origPositions[x] + 20 * getRandom()
+      positions[y] = origPositions[y] + 2 * getRandom()
+      positions[z] = origPositions[z] + 2 * getRandom()
+    }
+  }
+
+  // glitch up and down
+  function distortTime () {
+    const pointCount = positions.length / 3
+    for (let polygonIndex = 0; polygonIndex < pointCount; polygonIndex++) {
+      const x = polygonIndex * 3 + 0
+      const y = polygonIndex * 3 + 1
+      const z = polygonIndex * 3 + 2
+      // strong along x
+      positions[x] = origPositions[x] + 20 * getSinIntensity() * Math.random()
+      positions[y] = origPositions[y] + 20 * getSinIntensity() * Math.random()
+      positions[z] = origPositions[z] + 20 * getSinIntensity() * Math.random()
+    }
+  }
+
+  // bug: grow head slowly?
+  function distortGrow () {
+    const progress = getSinIntensity()
+    const pointCount = positions.length / 3
+    const polygonProgressWidth = 1/pointCount
+    for (let polygonIndex = 0; polygonIndex < pointCount; polygonIndex++) {
+      // calculate the current progress for each polygon
+      const polygonProgressStart = polygonIndex * polygonProgressWidth
+      const polygonProgressEnd = polygonProgressStart + polygonProgressWidth
+      const polygonProgressUncapped = (progress - polygonProgressStart) / (polygonProgressEnd - polygonProgressStart)
+      const polygonProgress = Math.min(Math.max(polygonProgressUncapped, 0), 1)
+      // the previous polygon (self referential for the first one)
+      const prevPolygonIndex = Math.max(polygonIndex, polygonIndex - 1)
+      const prevX = origPositions[prevPolygonIndex * 3 + 0]
+      const prevY = origPositions[prevPolygonIndex * 3 + 1]
+      const prevZ = origPositions[prevPolygonIndex * 3 + 2]
+      const x = polygonIndex * 3 + 0
+      const y = polygonIndex * 3 + 1
+      const z = polygonIndex * 3 + 2
+      // strong along x
+      positions[x] = prevX + polygonProgress * origPositions[x]
+      positions[y] = prevY + polygonProgress * origPositions[y]
+      positions[z] = prevZ + polygonProgress * origPositions[z]
+    }
+  }
+
+    // bug: grow head slowly?
+    function distortFold () {
+      const progress = getSinIntensity(5000)
+      const pointCount = positions.length / 3
+      const polygonProgressWidth = 1/pointCount
+      // reset positions
+      positions = origPositions.slice()
+      for (let polygonIndex = 0; polygonIndex < pointCount; polygonIndex++) {
+        // calculate the current progress for each polygon
+        const polygonProgressStart = polygonIndex * polygonProgressWidth
+        const polygonProgressEnd = polygonProgressStart + polygonProgressWidth
+        const polygonProgressUncapped = (progress - polygonProgressStart) / (polygonProgressEnd - polygonProgressStart)
+        const polygonProgress = Math.min(Math.max(polygonProgressUncapped, 0), 1)
+        // the previous polygon (self referential for the first one)
+        const prevPolygonIndex = Math.max(0, polygonIndex - 1)
+        const prevX = positions[prevPolygonIndex * 3 + 0]
+        const prevY = positions[prevPolygonIndex * 3 + 1]
+        const prevZ = positions[prevPolygonIndex * 3 + 2]
+        const x = polygonIndex * 3 + 0
+        const y = polygonIndex * 3 + 1
+        const z = polygonIndex * 3 + 2
+        // console.log(polygonIndex, polygonProgress)
+        positions[x] = (prevX + (polygonProgress * (origPositions[x] - prevX)))
+        positions[y] = (prevY + (polygonProgress * (origPositions[y] - prevY)))
+        positions[z] = (prevZ + (polygonProgress * (origPositions[z] - prevZ)))
+      }
+    }
+
+  // random between (-1, 1)
+  function getRandom () {
+    return (2 * Math.random()) - 1
+  }
+
+  // sin between 0-1
+  function getSinIntensity (speed = 1000) {
+    return (Math.sin(Date.now()/speed) + 1) / 2
+  }
 
   var toDraw = []
 
@@ -64,6 +159,8 @@ module.exports = function createLogo (options_) {
 
   document.body.appendChild(container)
 
+  // convert nested arrays into a single array
+  // [[x1,y1,z1],[x2,y2,z2]] -> [x1,y1,z1,x2,y2,z2]
   ;(function () {
     var pp = foxJSON.positions
     var ptr = 0
@@ -74,6 +171,8 @@ module.exports = function createLogo (options_) {
       }
     }
   })()
+
+  origPositions = positions.slice()
 
   function Polygon (svg, indices) {
     this.svg = svg
@@ -295,6 +394,8 @@ module.exports = function createLogo (options_) {
     if (!shouldRender) return
     window.requestAnimationFrame(renderScene)
 
+    applyDistortions()
+
     var li = (1.0 - lookRate)
     var bounds = container.getBoundingClientRect()
 
@@ -302,9 +403,10 @@ module.exports = function createLogo (options_) {
     lookCurrent[1] = li * lookCurrent[1] + lookRate * mouse.y + 0.085
 
     var matrix = computeMatrix()
+    // update svg
     updatePositions(matrix)
     updateFaces()
-    stopAnimation()
+    // stopAnimation()
   }
 
   renderScene()
