@@ -5,6 +5,19 @@ var invert = require('gl-mat4/invert')
 var rotate = require('gl-mat4/rotate')
 var transform = require('gl-vec3/transformMat4')
 var foxJSON = require('./fox.json')
+var colors = [
+	'#01888C', // teal
+  '#FC7500', // bright orange
+  '#034F5D', // dark teal
+  '#F73F01', // orangered
+  '#FC1960', // magenta
+  '#C7144C', // raspberry
+  '#F3C100', // goldenrod
+  '#1598F2', // lightning blue
+  '#2465E1', // sail blue
+  '#F19E02', // gold
+]
+var MersenneTwister = require('mersenne-twister');
 
 var SVG_NS = 'http://www.w3.org/2000/svg'
 
@@ -22,6 +35,11 @@ module.exports = function createLogo (options_) {
   var followCursor = !!options.followMouse
   var followMotion = !!options.followMotion
   var slowDrift = !!options.slowDrift
+  var colorSeed = options.colorSeed
+  var twister
+  if (colorSeed) {
+    twister = new MersenneTwister(colorSeed)
+  }
   var shouldRender = true
 
   var DISTANCE = 400
@@ -85,7 +103,12 @@ module.exports = function createLogo (options_) {
     var polygons = []
     for (var i = 0; i < foxJSON.chunks.length; ++i) {
       var chunk = foxJSON.chunks[i]
-      var color = 'rgb(' + chunk.color + ')'
+      var color
+      if (twister) {
+        color = colors[Math.floor(twister.random() * colors.length)]
+      } else {
+        color = 'rgb(' + chunk.color + ')'
+      }
       var faces = chunk.faces
       for (var j = 0; j < faces.length; ++j) {
         var f = faces[j]

@@ -1,5 +1,6 @@
 var copy = require('copy-to-clipboard')
 
+
 document.addEventListener('keypress', function (event) {
   if (event.keyCode === 99) { // the c key
     var svg = document.querySelector('svg')
@@ -22,6 +23,7 @@ var viewer = createViewer({
   height: 0.4,
   followMouse: true,
   followMotion: true,
+  colorSeed: Math.floor(Math.random() * 100000),
 })
 
 document.body.appendChild(viewer.container)
