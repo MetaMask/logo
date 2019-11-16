@@ -1,5 +1,4 @@
-var copy = require('copy-to-clipboard')
-
+const colorSeed = Math.floor(Math.random() * 100000)
 
 document.addEventListener('keypress', function (event) {
   if (event.keyCode === 99) { // the c key
@@ -12,7 +11,7 @@ document.addEventListener('keypress', function (event) {
 
      var full = head + inner + foot;
 
-     copy(full)
+     download(full, `custom-fox-${colorSeed}.svg`, 'image/svg+xml')
   }
 })
 
@@ -23,7 +22,27 @@ var viewer = createViewer({
   height: 0.4,
   followMouse: true,
   followMotion: true,
-  colorSeed: Math.floor(Math.random() * 100000),
+  colorSeed,
 })
 
 document.body.appendChild(viewer.container)
+
+// Function to download data to a file
+function download(data, filename, type) {
+    var file = new Blob([data], {type: type});
+    if (window.navigator.msSaveOrOpenBlob) // IE10+
+        window.navigator.msSaveOrOpenBlob(file, filename);
+    else { // Others
+        var a = document.createElement("a"),
+                url = URL.createObjectURL(file);
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function() {
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }, 0);
+    }
+}
+
