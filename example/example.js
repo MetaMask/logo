@@ -3,7 +3,27 @@ const colorSeed = Math.floor(Math.random() * 100000)
 window.addEventListener('load', () => {
   const saveButton = document.querySelector('button.save')
   saveButton.addEventListener('click', saveImage)
+
+  const recolorButton = document.querySelector('button.recolor')
+  recolorButton.addEventListener('click', recolor)
+
+  const cycleButton = document.querySelector('button.cycle')
+  cycleButton.addEventListener('click', toggleCycle)
 })
+
+let cycling = false
+let cycleInterval
+function toggleCycle () {
+  if (cycling && cycleInterval) {
+    console.dir(cycleInterval)
+    clearInterval(cycleInterval)
+    cycling = false
+  } else if (!cycling) {
+    cycleInterval = setInterval(recolor, 500)
+    cycling = true
+  }
+}
+
 
 document.addEventListener('keypress', (event) => {
   if (event.keyCode === 99) { // the C key
@@ -30,10 +50,15 @@ var viewer = createViewer({
   height: 0.4,
   followMouse: true,
   followMotion: true,
-  colorSeed,
+  // colorSeed,
 })
 
-document.body.appendChild(viewer.container)
+function recolor() {
+  viewer.recolor(Math.floor(Math.random() * 10000000))
+}
+
+const foxDiv = document.querySelector('body div.fox')
+foxDiv.appendChild(viewer.container)
 
 // Function to download data to a file
 function download(data, filename, type) {
