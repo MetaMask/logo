@@ -1,5 +1,33 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-var copy=require("copy-to-clipboard");document.addEventListener("keypress",function(e){if(99===e.keyCode){var o=document.querySelector("svg").innerHTML;copy('<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"> <svg width="521px" height="521px" version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events">'+o+"</svg>")}});var createViewer=require("../index"),viewer=createViewer({width:.4,height:.4,followMouse:!0,followMotion:!0,colorSeed:Math.floor(1e5*Math.random())});document.body.appendChild(viewer.container);
+var copy = require('copy-to-clipboard')
+
+
+document.addEventListener('keypress', function (event) {
+  if (event.keyCode === 99) { // the c key
+    var svg = document.querySelector('svg')
+    var inner = svg.innerHTML
+    var head = '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" '
+    + '"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"> '
+    + '<svg width="521px" height="521px" version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events">'
+    var foot = '</svg>'
+
+     var full = head + inner + foot;
+
+     copy(full)
+  }
+})
+
+var createViewer = require('../index')
+
+var viewer = createViewer({
+  width: 0.4,
+  height: 0.4,
+  followMouse: true,
+  followMotion: true,
+  colorSeed: Math.floor(Math.random() * 100000),
+})
+
+document.body.appendChild(viewer.container)
 
 },{"../index":3,"copy-to-clipboard":4}],2:[function(require,module,exports){
 module.exports={
@@ -1430,36 +1458,1019 @@ module.exports={
 }
 
 },{}],3:[function(require,module,exports){
-var perspective=require("gl-mat4/perspective"),multiply=require("gl-mat4/multiply"),lookAt=require("gl-mat4/lookAt"),invert=require("gl-mat4/invert"),rotate=require("gl-mat4/rotate"),transform=require("gl-vec3/transformMat4"),foxJSON=require("./fox.json"),colors=["#01888C","#FC7500","#034F5D","#F73F01","#FC1960","#C7144C","#F3C100","#1598F2","#2465E1","#F19E02"],MersenneTwister=require("mersenne-twister"),SVG_NS="http://www.w3.org/2000/svg";function createNode(t){return document.createElementNS(SVG_NS,t)}function setAttribute(t,e,n){t.setAttributeNS(null,e,n)}module.exports=function(t){var e,n=t||{},r=!!n.followMouse,o=!!n.followMotion,i=!!n.slowDrift,a=n.colorSeed;a&&(e=new MersenneTwister(a));var l=!0,s=[0,0],u=.3,h=n.width||400,f=n.height||400,c=createNode("svg"),d={x:0,y:0},w=foxJSON.positions.length,v=new Float32Array(3*w),g=new Float32Array(3*w),m=[];function p(t){var e=c.getBoundingClientRect();d.x=1-2*(t.x-e.left)/e.width,d.y=1-2*(t.y-e.top)/e.height}function A(t,e){this.svg=t,this.indices=e,this.zIndex=0}n.pxNotRatio||(h=window.innerWidth*(n.width||.25)|0,f=0|(window.innerHeight*n.height||h),"minWidth"in n&&h<n.minWidth&&(h=n.minWidth,f=n.minWidth*n.height/n.width|0)),setAttribute(c,"width",h+"px"),setAttribute(c,"height",f+"px"),document.body.appendChild(c),function(){for(var t=foxJSON.positions,e=0,n=0;n<t.length;++n)for(var r=t[n],o=0;o<3;++o)v[e++]=r[o]}();var y=function(){for(var t=[],n=0;n<foxJSON.chunks.length;++n){var r,o=foxJSON.chunks[n];r=e?colors[Math.floor(e.random()*colors.length)]:"rgb("+o.color+")";for(var i=o.faces,a=0;a<i.length;++a){var l=i[a],s=createNode("polygon");setAttribute(s,"fill",r),setAttribute(s,"stroke",r),setAttribute(s,"points","0,0, 10,0, 0,10"),c.appendChild(s),t.push(new A(s,l))}}return t}(),F=function(){var t=new Float32Array(3),e=new Float32Array([0,1,0]),n=new Float32Array(16),r=new Float32Array(16),o=lookAt(new Float32Array(16),new Float32Array([0,0,400]),t,e),a=invert(new Float32Array(16),o),l=new Float32Array(16),u=new Float32Array(3),h=new Float32Array(16),f=new Float32Array([1,0,0]),d=new Float32Array([0,1,0]),w=new Float32Array([0,0,1]);return function(){var v=c.getBoundingClientRect(),g=v.width,m=v.height;if(perspective(n,Math.PI/4,g/m,100,1e3),invert(l,n),u[0]=s[0],u[1]=s[1],u[2]=1.2,transform(u,u,l),transform(u,u,a),lookAt(r,t,u,e),i){var p=Date.now()/1e3;rotate(r,r,.1+.2*Math.sin(p/3),f),rotate(r,r,.03*Math.sin(p/2)-.1,w),rotate(r,r,.5+.2*Math.sin(p/3),d)}return multiply(h,n,o),multiply(h,h,r),h}}();function x(t,e){return e.zIndex-t.zIndex}function M(){l=!1}function N(){l=!0}function C(){if(l){window.requestAnimationFrame(C);var t=1-u;c.getBoundingClientRect();s[0]=t*s[0]+u*d.x,s[1]=t*s[1]+u*d.y+.085,!function(t){for(var e=t[0],n=t[1],r=t[2],o=t[3],i=t[4],a=t[5],l=t[6],s=t[7],u=t[8],h=t[9],f=t[10],c=t[11],d=t[12],m=t[13],p=t[14],A=t[15],y=0;y<w;++y){var F=v[3*y],x=v[3*y+1],M=v[3*y+2],N=F*o+x*s+M*c+A;g[3*y]=(F*e+x*i+M*u+d)/N,g[3*y+1]=(F*n+x*a+M*h+m)/N,g[3*y+2]=(F*r+x*l+M*f+p)/N}}(F()),function(){var t,e=c.getBoundingClientRect(),n=e.width,r=e.height;for(m.length=0,t=0;t<y.length;++t){var o=y[t],i=o.indices,a=i[0],l=i[1],s=i[2],u=g[3*a],h=g[3*a+1],f=g[3*l],d=g[3*l+1],w=g[3*s];if(!((f-u)*(g[3*s+1]-h)-(d-h)*(w-u)<0)){for(var v=[],p=-1/0,A=1/0,F=o.svg,M=0;M<3;++M){var N=i[M];v.push(.5*n*(1-g[3*N])+","+.5*r*(1-g[3*N+1]));var C=g[3*N+2];p=Math.max(p,C),A=Math.min(A,C)}o.zIndex=p+.25*A;var S=v.join(" ");-1===S.indexOf("NaN")&&setAttribute(F,"points",S),m.push(o)}}for(m.sort(x),c.innerHTML="",t=0;t<m.length;++t)c.appendChild(m[t].svg)}(),M()}}return window.addEventListener("mousemove",function(t){l||N(),r&&(p({x:t.clientX,y:t.clientY}),C())}),window.addEventListener("deviceorientation",function(t){if(l||N(),o){const e=10;p({x:200+t.gamma*e,y:-300+t.beta*e}),C()}}),C(),{container:c,lookAt:p,setFollowMouse:function(t){r=t},setFollowMotion:function(t){o=t},stopAnimation:M,startAnimation:N}};
+var perspective = require('gl-mat4/perspective')
+var multiply = require('gl-mat4/multiply')
+var lookAt = require('gl-mat4/lookAt')
+var invert = require('gl-mat4/invert')
+var rotate = require('gl-mat4/rotate')
+var transform = require('gl-vec3/transformMat4')
+var foxJSON = require('./fox.json')
+var colors = [
+	'#01888C', // teal
+  '#FC7500', // bright orange
+  '#034F5D', // dark teal
+  '#F73F01', // orangered
+  '#FC1960', // magenta
+  '#C7144C', // raspberry
+  '#F3C100', // goldenrod
+  '#1598F2', // lightning blue
+  '#2465E1', // sail blue
+  '#F19E02', // gold
+]
+var MersenneTwister = require('mersenne-twister');
+
+var SVG_NS = 'http://www.w3.org/2000/svg'
+
+function createNode (type) {
+  return document.createElementNS(SVG_NS, type)
+}
+
+function setAttribute (node, attribute, value) {
+  node.setAttributeNS(null, attribute, value)
+}
+
+module.exports = function createLogo (options_) {
+  var options = options_ || {}
+
+  var followCursor = !!options.followMouse
+  var followMotion = !!options.followMotion
+  var slowDrift = !!options.slowDrift
+  var colorSeed = options.colorSeed
+  var twister
+  if (colorSeed) {
+    twister = new MersenneTwister(colorSeed)
+  }
+  var shouldRender = true
+
+  var DISTANCE = 400
+  var lookCurrent = [0, 0]
+  var lookRate = 0.3
+
+  var width = options.width || 400
+  var height = options.height || 400
+  var container = createNode('svg')
+  var mouse = {
+    x: 0,
+    y: 0
+  }
+
+  var NUM_VERTS = foxJSON.positions.length
+
+  var positions = new Float32Array(3 * NUM_VERTS)
+  var transformed = new Float32Array(3 * NUM_VERTS)
+
+  var toDraw = []
+
+  if (!options.pxNotRatio) {
+    width = (window.innerWidth * (options.width || 0.25)) | 0
+    height = ((window.innerHeight * options.height) || width) | 0
+
+    if ('minWidth' in options && width < options.minWidth) {
+      width = options.minWidth
+      height = (options.minWidth * options.height / options.width) | 0
+    }
+  }
+
+  setAttribute(container, 'width', width + 'px')
+  setAttribute(container, 'height', height + 'px')
+
+  function setLookAt (target) {
+    var bounds = container.getBoundingClientRect()
+    mouse.x = 1.0 - 2.0 * (target.x - bounds.left) / bounds.width
+    mouse.y = 1.0 - 2.0 * (target.y - bounds.top) / bounds.height
+  }
+
+  document.body.appendChild(container)
+
+  ;(function () {
+    var pp = foxJSON.positions
+    var ptr = 0
+    for (var i = 0; i < pp.length; ++i) {
+      var p = pp[i]
+      for (var j = 0; j < 3; ++j) {
+        positions[ptr++] = p[j]
+      }
+    }
+  })()
+
+  function Polygon (svg, indices) {
+    this.svg = svg
+    this.indices = indices
+    this.zIndex = 0
+  }
+
+  var polygons = (function () {
+    var polygons = []
+    for (var i = 0; i < foxJSON.chunks.length; ++i) {
+      var chunk = foxJSON.chunks[i]
+      var color
+      if (twister) {
+        color = colors[Math.floor(twister.random() * colors.length)]
+      } else {
+        color = 'rgb(' + chunk.color + ')'
+      }
+      var faces = chunk.faces
+      for (var j = 0; j < faces.length; ++j) {
+        var f = faces[j]
+        var polygon = createNode('polygon')
+        setAttribute(
+          polygon,
+          'fill',
+          color)
+        setAttribute(
+          polygon,
+          'stroke',
+          color)
+        setAttribute(
+          polygon,
+          'points',
+          '0,0, 10,0, 0,10')
+        container.appendChild(polygon)
+        polygons.push(new Polygon(polygon, f))
+      }
+    }
+    return polygons
+  })()
+
+  var computeMatrix = (function () {
+    var objectCenter = new Float32Array(3)
+    var up = new Float32Array([0, 1, 0])
+    var projection = new Float32Array(16)
+    var model = new Float32Array(16)
+    var view = lookAt(
+      new Float32Array(16),
+      new Float32Array([0, 0, DISTANCE]),
+      objectCenter,
+      up)
+    var invView = invert(new Float32Array(16), view)
+    var invProjection = new Float32Array(16)
+    var target = new Float32Array(3)
+    var transformed = new Float32Array(16)
+
+    var X = new Float32Array([1, 0, 0])
+    var Y = new Float32Array([0, 1, 0])
+    var Z = new Float32Array([0, 0, 1])
+
+    return function () {
+      var rect = container.getBoundingClientRect()
+      var viewportWidth = rect.width
+      var viewportHeight = rect.height
+      perspective(
+        projection,
+        Math.PI / 4.0,
+        viewportWidth / viewportHeight,
+        100.0,
+        1000.0)
+      invert(invProjection, projection)
+      target[0] = lookCurrent[0]
+      target[1] = lookCurrent[1]
+      target[2] = 1.2
+      transform(target, target, invProjection)
+      transform(target, target, invView)
+      lookAt(
+        model,
+        objectCenter,
+        target,
+        up)
+      if (slowDrift) {
+        var time = (Date.now() / 1000.0)
+        rotate(model, model, 0.1 + (Math.sin(time / 3) * 0.2), X)
+        rotate(model, model, -0.1 + (Math.sin(time / 2) * 0.03), Z)
+        rotate(model, model, 0.5 + (Math.sin(time / 3) * 0.2), Y)
+      }
+
+      multiply(transformed, projection, view)
+      multiply(transformed, transformed, model)
+
+      return transformed
+    }
+  })()
+
+  function updatePositions (M) {
+    var m00 = M[0]
+    var m01 = M[1]
+    var m02 = M[2]
+    var m03 = M[3]
+    var m10 = M[4]
+    var m11 = M[5]
+    var m12 = M[6]
+    var m13 = M[7]
+    var m20 = M[8]
+    var m21 = M[9]
+    var m22 = M[10]
+    var m23 = M[11]
+    var m30 = M[12]
+    var m31 = M[13]
+    var m32 = M[14]
+    var m33 = M[15]
+
+    for (var i = 0; i < NUM_VERTS; ++i) {
+      var x = positions[3 * i]
+      var y = positions[3 * i + 1]
+      var z = positions[3 * i + 2]
+
+      var tw = x * m03 + y * m13 + z * m23 + m33
+      transformed[3 * i] =
+        (x * m00 + y * m10 + z * m20 + m30) / tw
+      transformed[3 * i + 1] =
+        (x * m01 + y * m11 + z * m21 + m31) / tw
+      transformed[3 * i + 2] =
+        (x * m02 + y * m12 + z * m22 + m32) / tw
+    }
+  }
+
+  function compareZ (a, b) {
+    return b.zIndex - a.zIndex
+  }
+
+  function updateFaces () {
+    var i
+    var rect = container.getBoundingClientRect()
+    var w = rect.width
+    var h = rect.height
+    toDraw.length = 0
+    for (i = 0; i < polygons.length; ++i) {
+      var poly = polygons[i]
+      var indices = poly.indices
+
+      var i0 = indices[0]
+      var i1 = indices[1]
+      var i2 = indices[2]
+      var ax = transformed[3 * i0]
+      var ay = transformed[3 * i0 + 1]
+      var bx = transformed[3 * i1]
+      var by = transformed[3 * i1 + 1]
+      var cx = transformed[3 * i2]
+      var cy = transformed[3 * i2 + 1]
+      var det = (bx - ax) * (cy - ay) - (by - ay) * (cx - ax)
+      if (det < 0) {
+        continue
+      }
+
+      var points = []
+      var zmax = -Infinity
+      var zmin = Infinity
+      var element = poly.svg
+      for (var j = 0; j < 3; ++j) {
+        var idx = indices[j]
+        points.push(
+          0.5 * w * (1.0 - transformed[3 * idx]) + ',' +
+          0.5 * h * (1.0 - transformed[3 * idx + 1]))
+        var z = transformed[3 * idx + 2]
+        zmax = Math.max(zmax, z)
+        zmin = Math.min(zmin, z)
+      }
+      poly.zIndex = zmax + 0.25 * zmin
+      var joinedPoints = points.join(' ')
+
+      if (joinedPoints.indexOf('NaN') === -1) {
+        setAttribute(element, 'points', joinedPoints)
+      }
+
+      toDraw.push(poly)
+    }
+    toDraw.sort(compareZ)
+    container.innerHTML = ''
+    for (i = 0; i < toDraw.length; ++i) {
+      container.appendChild(toDraw[i].svg)
+    }
+  }
+
+  function stopAnimation () { shouldRender = false }
+  function startAnimation () { shouldRender = true }
+  function setFollowMouse (state) { followCursor = state }
+  function setFollowMotion (state) { followMotion = state }
+
+  window.addEventListener('mousemove', function (ev) {
+    if (!shouldRender) { startAnimation() }
+    if (followCursor) {
+      setLookAt({
+        x: ev.clientX,
+        y: ev.clientY
+      })
+      renderScene()
+    }
+  })
+
+  window.addEventListener('deviceorientation', function (event) {
+    if (!shouldRender) { startAnimation() }
+    if (followMotion) {
+      // gamma: left to right
+      const leftToRight = event.gamma
+      // beta: front back motion
+      const frontToBack = event.beta
+      // x offset: needed to correct the intial position
+      const xOffset = 200
+      // y offset: needed to correct the intial position
+      const yOffset = -300
+      // acceleration
+      const acceleration = 10
+
+      setLookAt({
+        x: xOffset + leftToRight * acceleration,
+        y: yOffset + frontToBack * acceleration
+      })
+      renderScene()
+    }
+  })
+
+  function renderScene () {
+    if (!shouldRender) return
+    window.requestAnimationFrame(renderScene)
+
+    var li = (1.0 - lookRate)
+    var bounds = container.getBoundingClientRect()
+
+    lookCurrent[0] = li * lookCurrent[0] + lookRate * mouse.x
+    lookCurrent[1] = li * lookCurrent[1] + lookRate * mouse.y + 0.085
+
+    var matrix = computeMatrix()
+    updatePositions(matrix)
+    updateFaces()
+    stopAnimation()
+  }
+
+  renderScene()
+
+  return {
+    container: container,
+    lookAt: setLookAt,
+    setFollowMouse: setFollowMouse,
+    setFollowMotion: setFollowMotion,
+    stopAnimation: stopAnimation,
+    startAnimation: startAnimation
+  }
+}
 
 },{"./fox.json":2,"gl-mat4/invert":6,"gl-mat4/lookAt":7,"gl-mat4/multiply":8,"gl-mat4/perspective":9,"gl-mat4/rotate":10,"gl-vec3/transformMat4":11,"mersenne-twister":12}],4:[function(require,module,exports){
-"use strict";var deselectCurrent=require("toggle-selection"),defaultMessage="Copy to clipboard: #{key}, Enter";function format(e){var t=(/mac os x/i.test(navigator.userAgent)?"⌘":"Ctrl")+"+C";return e.replace(/#{\s*key\s*}/g,t)}function copy(e,t){var o,r,n,c,s,a,l=!1;t||(t={}),o=t.debug||!1;try{if(n=deselectCurrent(),c=document.createRange(),s=document.getSelection(),(a=document.createElement("span")).textContent=e,a.style.all="unset",a.style.position="fixed",a.style.top=0,a.style.clip="rect(0, 0, 0, 0)",a.style.whiteSpace="pre",a.style.webkitUserSelect="text",a.style.MozUserSelect="text",a.style.msUserSelect="text",a.style.userSelect="text",document.body.appendChild(a),c.selectNode(a),s.addRange(c),!document.execCommand("copy"))throw new Error("copy command was unsuccessful");l=!0}catch(n){o&&console.error("unable to copy using execCommand: ",n),o&&console.warn("trying IE specific stuff");try{window.clipboardData.setData("text",e),l=!0}catch(n){o&&console.error("unable to copy using clipboardData: ",n),o&&console.error("falling back to prompt"),r=format("message"in t?t.message:defaultMessage),window.prompt(r,e)}}finally{s&&("function"==typeof s.removeRange?s.removeRange(c):s.removeAllRanges()),a&&document.body.removeChild(a),n()}return l}module.exports=copy;
+'use strict';
+
+var deselectCurrent = require('toggle-selection');
+
+var defaultMessage = 'Copy to clipboard: #{key}, Enter';
+
+function format(message) {
+  var copyKey = (/mac os x/i.test(navigator.userAgent) ? '⌘' : 'Ctrl') + '+C';
+  return message.replace(/#{\s*key\s*}/g, copyKey);
+}
+
+function copy(text, options) {
+  var debug, message, reselectPrevious, range, selection, mark, success = false;
+  if (!options) { options = {}; }
+  debug = options.debug || false;
+  try {
+    reselectPrevious = deselectCurrent();
+
+    range = document.createRange();
+    selection = document.getSelection();
+
+    mark = document.createElement('span');
+    mark.textContent = text;
+    // reset user styles for span element
+    mark.style.all = 'unset';
+    // prevents scrolling to the end of the page
+    mark.style.position = 'fixed';
+    mark.style.top = 0;
+    mark.style.clip = 'rect(0, 0, 0, 0)';
+    // used to preserve spaces and line breaks
+    mark.style.whiteSpace = 'pre';
+    // do not inherit user-select (it may be `none`)
+    mark.style.webkitUserSelect = 'text';
+    mark.style.MozUserSelect = 'text';
+    mark.style.msUserSelect = 'text';
+    mark.style.userSelect = 'text';
+
+    document.body.appendChild(mark);
+
+    range.selectNode(mark);
+    selection.addRange(range);
+
+    var successful = document.execCommand('copy');
+    if (!successful) {
+      throw new Error('copy command was unsuccessful');
+    }
+    success = true;
+  } catch (err) {
+    debug && console.error('unable to copy using execCommand: ', err);
+    debug && console.warn('trying IE specific stuff');
+    try {
+      window.clipboardData.setData('text', text);
+      success = true;
+    } catch (err) {
+      debug && console.error('unable to copy using clipboardData: ', err);
+      debug && console.error('falling back to prompt');
+      message = format('message' in options ? options.message : defaultMessage);
+      window.prompt(message, text);
+    }
+  } finally {
+    if (selection) {
+      if (typeof selection.removeRange == 'function') {
+        selection.removeRange(range);
+      } else {
+        selection.removeAllRanges();
+      }
+    }
+
+    if (mark) {
+      document.body.removeChild(mark);
+    }
+    reselectPrevious();
+  }
+
+  return success;
+}
+
+module.exports = copy;
 
 },{"toggle-selection":13}],5:[function(require,module,exports){
-function identity(t){return t[0]=1,t[1]=0,t[2]=0,t[3]=0,t[4]=0,t[5]=1,t[6]=0,t[7]=0,t[8]=0,t[9]=0,t[10]=1,t[11]=0,t[12]=0,t[13]=0,t[14]=0,t[15]=1,t}module.exports=identity;
+module.exports = identity;
 
+/**
+ * Set a mat4 to the identity matrix
+ *
+ * @param {mat4} out the receiving matrix
+ * @returns {mat4} out
+ */
+function identity(out) {
+    out[0] = 1;
+    out[1] = 0;
+    out[2] = 0;
+    out[3] = 0;
+    out[4] = 0;
+    out[5] = 1;
+    out[6] = 0;
+    out[7] = 0;
+    out[8] = 0;
+    out[9] = 0;
+    out[10] = 1;
+    out[11] = 0;
+    out[12] = 0;
+    out[13] = 0;
+    out[14] = 0;
+    out[15] = 1;
+    return out;
+};
 },{}],6:[function(require,module,exports){
-function invert(n,r){var e=r[0],t=r[1],u=r[2],i=r[3],l=r[4],o=r[5],v=r[6],a=r[7],c=r[8],d=r[9],f=r[10],m=r[11],p=r[12],s=r[13],x=r[14],b=r[15],g=e*o-t*l,h=e*v-u*l,j=e*a-i*l,k=t*v-u*o,q=t*a-i*o,w=u*a-i*v,y=c*s-d*p,z=c*x-f*p,A=c*b-m*p,B=d*x-f*s,C=d*b-m*s,D=f*b-m*x,E=g*D-h*C+j*B+k*A-q*z+w*y;return E?(E=1/E,n[0]=(o*D-v*C+a*B)*E,n[1]=(u*C-t*D-i*B)*E,n[2]=(s*w-x*q+b*k)*E,n[3]=(f*q-d*w-m*k)*E,n[4]=(v*A-l*D-a*z)*E,n[5]=(e*D-u*A+i*z)*E,n[6]=(x*j-p*w-b*h)*E,n[7]=(c*w-f*j+m*h)*E,n[8]=(l*C-o*A+a*y)*E,n[9]=(t*A-e*C-i*y)*E,n[10]=(p*q-s*j+b*g)*E,n[11]=(d*j-c*q-m*g)*E,n[12]=(o*z-l*B-v*y)*E,n[13]=(e*B-t*z+u*y)*E,n[14]=(s*h-p*k-x*g)*E,n[15]=(c*k-d*h+f*g)*E,n):null}module.exports=invert;
+module.exports = invert;
 
+/**
+ * Inverts a mat4
+ *
+ * @param {mat4} out the receiving matrix
+ * @param {mat4} a the source matrix
+ * @returns {mat4} out
+ */
+function invert(out, a) {
+    var a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3],
+        a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7],
+        a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11],
+        a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15],
+
+        b00 = a00 * a11 - a01 * a10,
+        b01 = a00 * a12 - a02 * a10,
+        b02 = a00 * a13 - a03 * a10,
+        b03 = a01 * a12 - a02 * a11,
+        b04 = a01 * a13 - a03 * a11,
+        b05 = a02 * a13 - a03 * a12,
+        b06 = a20 * a31 - a21 * a30,
+        b07 = a20 * a32 - a22 * a30,
+        b08 = a20 * a33 - a23 * a30,
+        b09 = a21 * a32 - a22 * a31,
+        b10 = a21 * a33 - a23 * a31,
+        b11 = a22 * a33 - a23 * a32,
+
+        // Calculate the determinant
+        det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
+
+    if (!det) { 
+        return null; 
+    }
+    det = 1.0 / det;
+
+    out[0] = (a11 * b11 - a12 * b10 + a13 * b09) * det;
+    out[1] = (a02 * b10 - a01 * b11 - a03 * b09) * det;
+    out[2] = (a31 * b05 - a32 * b04 + a33 * b03) * det;
+    out[3] = (a22 * b04 - a21 * b05 - a23 * b03) * det;
+    out[4] = (a12 * b08 - a10 * b11 - a13 * b07) * det;
+    out[5] = (a00 * b11 - a02 * b08 + a03 * b07) * det;
+    out[6] = (a32 * b02 - a30 * b05 - a33 * b01) * det;
+    out[7] = (a20 * b05 - a22 * b02 + a23 * b01) * det;
+    out[8] = (a10 * b10 - a11 * b08 + a13 * b06) * det;
+    out[9] = (a01 * b08 - a00 * b10 - a03 * b06) * det;
+    out[10] = (a30 * b04 - a31 * b02 + a33 * b00) * det;
+    out[11] = (a21 * b02 - a20 * b04 - a23 * b00) * det;
+    out[12] = (a11 * b07 - a10 * b09 - a12 * b06) * det;
+    out[13] = (a00 * b09 - a01 * b07 + a02 * b06) * det;
+    out[14] = (a31 * b01 - a30 * b03 - a32 * b00) * det;
+    out[15] = (a20 * b03 - a21 * b01 + a22 * b00) * det;
+
+    return out;
+};
 },{}],7:[function(require,module,exports){
-var identity=require("./identity");function lookAt(t,a,e,r){var i,o,s,h,n,M,d,q,u,b,l=a[0],y=a[1],k=a[2],v=r[0],A=r[1],c=r[2],f=e[0],m=e[1],p=e[2];return Math.abs(l-f)<1e-6&&Math.abs(y-m)<1e-6&&Math.abs(k-p)<1e-6?identity(t):(d=l-f,q=y-m,u=k-p,i=A*(u*=b=1/Math.sqrt(d*d+q*q+u*u))-c*(q*=b),o=c*(d*=b)-v*u,s=v*q-A*d,(b=Math.sqrt(i*i+o*o+s*s))?(i*=b=1/b,o*=b,s*=b):(i=0,o=0,s=0),h=q*s-u*o,n=u*i-d*s,M=d*o-q*i,(b=Math.sqrt(h*h+n*n+M*M))?(h*=b=1/b,n*=b,M*=b):(h=0,n=0,M=0),t[0]=i,t[1]=h,t[2]=d,t[3]=0,t[4]=o,t[5]=n,t[6]=q,t[7]=0,t[8]=s,t[9]=M,t[10]=u,t[11]=0,t[12]=-(i*l+o*y+s*k),t[13]=-(h*l+n*y+M*k),t[14]=-(d*l+q*y+u*k),t[15]=1,t)}module.exports=lookAt;
+var identity = require('./identity');
 
+module.exports = lookAt;
+
+/**
+ * Generates a look-at matrix with the given eye position, focal point, and up axis
+ *
+ * @param {mat4} out mat4 frustum matrix will be written into
+ * @param {vec3} eye Position of the viewer
+ * @param {vec3} center Point the viewer is looking at
+ * @param {vec3} up vec3 pointing up
+ * @returns {mat4} out
+ */
+function lookAt(out, eye, center, up) {
+    var x0, x1, x2, y0, y1, y2, z0, z1, z2, len,
+        eyex = eye[0],
+        eyey = eye[1],
+        eyez = eye[2],
+        upx = up[0],
+        upy = up[1],
+        upz = up[2],
+        centerx = center[0],
+        centery = center[1],
+        centerz = center[2];
+
+    if (Math.abs(eyex - centerx) < 0.000001 &&
+        Math.abs(eyey - centery) < 0.000001 &&
+        Math.abs(eyez - centerz) < 0.000001) {
+        return identity(out);
+    }
+
+    z0 = eyex - centerx;
+    z1 = eyey - centery;
+    z2 = eyez - centerz;
+
+    len = 1 / Math.sqrt(z0 * z0 + z1 * z1 + z2 * z2);
+    z0 *= len;
+    z1 *= len;
+    z2 *= len;
+
+    x0 = upy * z2 - upz * z1;
+    x1 = upz * z0 - upx * z2;
+    x2 = upx * z1 - upy * z0;
+    len = Math.sqrt(x0 * x0 + x1 * x1 + x2 * x2);
+    if (!len) {
+        x0 = 0;
+        x1 = 0;
+        x2 = 0;
+    } else {
+        len = 1 / len;
+        x0 *= len;
+        x1 *= len;
+        x2 *= len;
+    }
+
+    y0 = z1 * x2 - z2 * x1;
+    y1 = z2 * x0 - z0 * x2;
+    y2 = z0 * x1 - z1 * x0;
+
+    len = Math.sqrt(y0 * y0 + y1 * y1 + y2 * y2);
+    if (!len) {
+        y0 = 0;
+        y1 = 0;
+        y2 = 0;
+    } else {
+        len = 1 / len;
+        y0 *= len;
+        y1 *= len;
+        y2 *= len;
+    }
+
+    out[0] = x0;
+    out[1] = y0;
+    out[2] = z0;
+    out[3] = 0;
+    out[4] = x1;
+    out[5] = y1;
+    out[6] = z1;
+    out[7] = 0;
+    out[8] = x2;
+    out[9] = y2;
+    out[10] = z2;
+    out[11] = 0;
+    out[12] = -(x0 * eyex + x1 * eyey + x2 * eyez);
+    out[13] = -(y0 * eyex + y1 * eyey + y2 * eyez);
+    out[14] = -(z0 * eyex + z1 * eyey + z2 * eyez);
+    out[15] = 1;
+
+    return out;
+};
 },{"./identity":5}],8:[function(require,module,exports){
-function multiply(l,t,u){var r=t[0],e=t[1],i=t[2],m=t[3],n=t[4],o=t[5],p=t[6],y=t[7],a=t[8],c=t[9],d=t[10],f=t[11],s=t[12],v=t[13],x=t[14],b=t[15],g=u[0],h=u[1],j=u[2],k=u[3];return l[0]=g*r+h*n+j*a+k*s,l[1]=g*e+h*o+j*c+k*v,l[2]=g*i+h*p+j*d+k*x,l[3]=g*m+h*y+j*f+k*b,g=u[4],h=u[5],j=u[6],k=u[7],l[4]=g*r+h*n+j*a+k*s,l[5]=g*e+h*o+j*c+k*v,l[6]=g*i+h*p+j*d+k*x,l[7]=g*m+h*y+j*f+k*b,g=u[8],h=u[9],j=u[10],k=u[11],l[8]=g*r+h*n+j*a+k*s,l[9]=g*e+h*o+j*c+k*v,l[10]=g*i+h*p+j*d+k*x,l[11]=g*m+h*y+j*f+k*b,g=u[12],h=u[13],j=u[14],k=u[15],l[12]=g*r+h*n+j*a+k*s,l[13]=g*e+h*o+j*c+k*v,l[14]=g*i+h*p+j*d+k*x,l[15]=g*m+h*y+j*f+k*b,l}module.exports=multiply;
+module.exports = multiply;
 
+/**
+ * Multiplies two mat4's
+ *
+ * @param {mat4} out the receiving matrix
+ * @param {mat4} a the first operand
+ * @param {mat4} b the second operand
+ * @returns {mat4} out
+ */
+function multiply(out, a, b) {
+    var a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3],
+        a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7],
+        a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11],
+        a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15];
+
+    // Cache only the current line of the second matrix
+    var b0  = b[0], b1 = b[1], b2 = b[2], b3 = b[3];  
+    out[0] = b0*a00 + b1*a10 + b2*a20 + b3*a30;
+    out[1] = b0*a01 + b1*a11 + b2*a21 + b3*a31;
+    out[2] = b0*a02 + b1*a12 + b2*a22 + b3*a32;
+    out[3] = b0*a03 + b1*a13 + b2*a23 + b3*a33;
+
+    b0 = b[4]; b1 = b[5]; b2 = b[6]; b3 = b[7];
+    out[4] = b0*a00 + b1*a10 + b2*a20 + b3*a30;
+    out[5] = b0*a01 + b1*a11 + b2*a21 + b3*a31;
+    out[6] = b0*a02 + b1*a12 + b2*a22 + b3*a32;
+    out[7] = b0*a03 + b1*a13 + b2*a23 + b3*a33;
+
+    b0 = b[8]; b1 = b[9]; b2 = b[10]; b3 = b[11];
+    out[8] = b0*a00 + b1*a10 + b2*a20 + b3*a30;
+    out[9] = b0*a01 + b1*a11 + b2*a21 + b3*a31;
+    out[10] = b0*a02 + b1*a12 + b2*a22 + b3*a32;
+    out[11] = b0*a03 + b1*a13 + b2*a23 + b3*a33;
+
+    b0 = b[12]; b1 = b[13]; b2 = b[14]; b3 = b[15];
+    out[12] = b0*a00 + b1*a10 + b2*a20 + b3*a30;
+    out[13] = b0*a01 + b1*a11 + b2*a21 + b3*a31;
+    out[14] = b0*a02 + b1*a12 + b2*a22 + b3*a32;
+    out[15] = b0*a03 + b1*a13 + b2*a23 + b3*a33;
+    return out;
+};
 },{}],9:[function(require,module,exports){
-function perspective(e,t,r,p,n){var a=1/Math.tan(t/2),c=1/(p-n);return e[0]=a/r,e[1]=0,e[2]=0,e[3]=0,e[4]=0,e[5]=a,e[6]=0,e[7]=0,e[8]=0,e[9]=0,e[10]=(n+p)*c,e[11]=-1,e[12]=0,e[13]=0,e[14]=2*n*p*c,e[15]=0,e}module.exports=perspective;
+module.exports = perspective;
 
+/**
+ * Generates a perspective projection matrix with the given bounds
+ *
+ * @param {mat4} out mat4 frustum matrix will be written into
+ * @param {number} fovy Vertical field of view in radians
+ * @param {number} aspect Aspect ratio. typically viewport width/height
+ * @param {number} near Near bound of the frustum
+ * @param {number} far Far bound of the frustum
+ * @returns {mat4} out
+ */
+function perspective(out, fovy, aspect, near, far) {
+    var f = 1.0 / Math.tan(fovy / 2),
+        nf = 1 / (near - far);
+    out[0] = f / aspect;
+    out[1] = 0;
+    out[2] = 0;
+    out[3] = 0;
+    out[4] = 0;
+    out[5] = f;
+    out[6] = 0;
+    out[7] = 0;
+    out[8] = 0;
+    out[9] = 0;
+    out[10] = (far + near) * nf;
+    out[11] = -1;
+    out[12] = 0;
+    out[13] = 0;
+    out[14] = (2 * far * near) * nf;
+    out[15] = 0;
+    return out;
+};
 },{}],10:[function(require,module,exports){
-function rotate(t,a,r,e){var o,n,s,h,u,M,l,c,i,b,d,f,m,p,q,v,x,g,j,k,w,y,z,A,B=e[0],C=e[1],D=e[2],E=Math.sqrt(B*B+C*C+D*D);return Math.abs(E)<1e-6?null:(B*=E=1/E,C*=E,D*=E,o=Math.sin(r),s=1-(n=Math.cos(r)),h=a[0],u=a[1],M=a[2],l=a[3],c=a[4],i=a[5],b=a[6],d=a[7],f=a[8],m=a[9],p=a[10],q=a[11],v=B*B*s+n,x=C*B*s+D*o,g=D*B*s-C*o,j=B*C*s-D*o,k=C*C*s+n,w=D*C*s+B*o,y=B*D*s+C*o,z=C*D*s-B*o,A=D*D*s+n,t[0]=h*v+c*x+f*g,t[1]=u*v+i*x+m*g,t[2]=M*v+b*x+p*g,t[3]=l*v+d*x+q*g,t[4]=h*j+c*k+f*w,t[5]=u*j+i*k+m*w,t[6]=M*j+b*k+p*w,t[7]=l*j+d*k+q*w,t[8]=h*y+c*z+f*A,t[9]=u*y+i*z+m*A,t[10]=M*y+b*z+p*A,t[11]=l*y+d*z+q*A,a!==t&&(t[12]=a[12],t[13]=a[13],t[14]=a[14],t[15]=a[15]),t)}module.exports=rotate;
+module.exports = rotate;
 
+/**
+ * Rotates a mat4 by the given angle
+ *
+ * @param {mat4} out the receiving matrix
+ * @param {mat4} a the matrix to rotate
+ * @param {Number} rad the angle to rotate the matrix by
+ * @param {vec3} axis the axis to rotate around
+ * @returns {mat4} out
+ */
+function rotate(out, a, rad, axis) {
+    var x = axis[0], y = axis[1], z = axis[2],
+        len = Math.sqrt(x * x + y * y + z * z),
+        s, c, t,
+        a00, a01, a02, a03,
+        a10, a11, a12, a13,
+        a20, a21, a22, a23,
+        b00, b01, b02,
+        b10, b11, b12,
+        b20, b21, b22;
+
+    if (Math.abs(len) < 0.000001) { return null; }
+    
+    len = 1 / len;
+    x *= len;
+    y *= len;
+    z *= len;
+
+    s = Math.sin(rad);
+    c = Math.cos(rad);
+    t = 1 - c;
+
+    a00 = a[0]; a01 = a[1]; a02 = a[2]; a03 = a[3];
+    a10 = a[4]; a11 = a[5]; a12 = a[6]; a13 = a[7];
+    a20 = a[8]; a21 = a[9]; a22 = a[10]; a23 = a[11];
+
+    // Construct the elements of the rotation matrix
+    b00 = x * x * t + c; b01 = y * x * t + z * s; b02 = z * x * t - y * s;
+    b10 = x * y * t - z * s; b11 = y * y * t + c; b12 = z * y * t + x * s;
+    b20 = x * z * t + y * s; b21 = y * z * t - x * s; b22 = z * z * t + c;
+
+    // Perform rotation-specific matrix multiplication
+    out[0] = a00 * b00 + a10 * b01 + a20 * b02;
+    out[1] = a01 * b00 + a11 * b01 + a21 * b02;
+    out[2] = a02 * b00 + a12 * b01 + a22 * b02;
+    out[3] = a03 * b00 + a13 * b01 + a23 * b02;
+    out[4] = a00 * b10 + a10 * b11 + a20 * b12;
+    out[5] = a01 * b10 + a11 * b11 + a21 * b12;
+    out[6] = a02 * b10 + a12 * b11 + a22 * b12;
+    out[7] = a03 * b10 + a13 * b11 + a23 * b12;
+    out[8] = a00 * b20 + a10 * b21 + a20 * b22;
+    out[9] = a01 * b20 + a11 * b21 + a21 * b22;
+    out[10] = a02 * b20 + a12 * b21 + a22 * b22;
+    out[11] = a03 * b20 + a13 * b21 + a23 * b22;
+
+    if (a !== out) { // If the source and destination differ, copy the unchanged last row
+        out[12] = a[12];
+        out[13] = a[13];
+        out[14] = a[14];
+        out[15] = a[15];
+    }
+    return out;
+};
 },{}],11:[function(require,module,exports){
-function transformMat4(r,t,a){var n=t[0],o=t[1],e=t[2],f=a[3]*n+a[7]*o+a[11]*e+a[15];return f=f||1,r[0]=(a[0]*n+a[4]*o+a[8]*e+a[12])/f,r[1]=(a[1]*n+a[5]*o+a[9]*e+a[13])/f,r[2]=(a[2]*n+a[6]*o+a[10]*e+a[14])/f,r}module.exports=transformMat4;
+module.exports = transformMat4;
 
+/**
+ * Transforms the vec3 with a mat4.
+ * 4th vector component is implicitly '1'
+ *
+ * @param {vec3} out the receiving vector
+ * @param {vec3} a the vector to transform
+ * @param {mat4} m matrix to transform with
+ * @returns {vec3} out
+ */
+function transformMat4(out, a, m) {
+    var x = a[0], y = a[1], z = a[2],
+        w = m[3] * x + m[7] * y + m[11] * z + m[15]
+    w = w || 1.0
+    out[0] = (m[0] * x + m[4] * y + m[8] * z + m[12]) / w
+    out[1] = (m[1] * x + m[5] * y + m[9] * z + m[13]) / w
+    out[2] = (m[2] * x + m[6] * y + m[10] * z + m[14]) / w
+    return out
+}
 },{}],12:[function(require,module,exports){
-var MersenneTwister=function(t){null==t&&(t=(new Date).getTime()),this.N=624,this.M=397,this.MATRIX_A=2567483615,this.UPPER_MASK=2147483648,this.LOWER_MASK=2147483647,this.mt=new Array(this.N),this.mti=this.N+1,t.constructor==Array?this.init_by_array(t,t.length):this.init_seed(t)};MersenneTwister.prototype.init_seed=function(t){for(this.mt[0]=t>>>0,this.mti=1;this.mti<this.N;this.mti++){t=this.mt[this.mti-1]^this.mt[this.mti-1]>>>30;this.mt[this.mti]=(1812433253*((4294901760&t)>>>16)<<16)+1812433253*(65535&t)+this.mti,this.mt[this.mti]>>>=0}},MersenneTwister.prototype.init_by_array=function(t,i){var s,h,n;for(this.init_seed(19650218),s=1,h=0,n=this.N>i?this.N:i;n;n--){var r=this.mt[s-1]^this.mt[s-1]>>>30;this.mt[s]=(this.mt[s]^(1664525*((4294901760&r)>>>16)<<16)+1664525*(65535&r))+t[h]+h,this.mt[s]>>>=0,h++,++s>=this.N&&(this.mt[0]=this.mt[this.N-1],s=1),h>=i&&(h=0)}for(n=this.N-1;n;n--){r=this.mt[s-1]^this.mt[s-1]>>>30;this.mt[s]=(this.mt[s]^(1566083941*((4294901760&r)>>>16)<<16)+1566083941*(65535&r))-s,this.mt[s]>>>=0,++s>=this.N&&(this.mt[0]=this.mt[this.N-1],s=1)}this.mt[0]=2147483648},MersenneTwister.prototype.random_int=function(){var t,i=new Array(0,this.MATRIX_A);if(this.mti>=this.N){var s;for(this.mti==this.N+1&&this.init_seed(5489),s=0;s<this.N-this.M;s++)t=this.mt[s]&this.UPPER_MASK|this.mt[s+1]&this.LOWER_MASK,this.mt[s]=this.mt[s+this.M]^t>>>1^i[1&t];for(;s<this.N-1;s++)t=this.mt[s]&this.UPPER_MASK|this.mt[s+1]&this.LOWER_MASK,this.mt[s]=this.mt[s+(this.M-this.N)]^t>>>1^i[1&t];t=this.mt[this.N-1]&this.UPPER_MASK|this.mt[0]&this.LOWER_MASK,this.mt[this.N-1]=this.mt[this.M-1]^t>>>1^i[1&t],this.mti=0}return t=this.mt[this.mti++],t^=t>>>11,t^=t<<7&2636928640,t^=t<<15&4022730752,(t^=t>>>18)>>>0},MersenneTwister.prototype.random_int31=function(){return this.random_int()>>>1},MersenneTwister.prototype.random_incl=function(){return this.random_int()*(1/4294967295)},MersenneTwister.prototype.random=function(){return this.random_int()*(1/4294967296)},MersenneTwister.prototype.random_excl=function(){return(this.random_int()+.5)*(1/4294967296)},MersenneTwister.prototype.random_long=function(){return(67108864*(this.random_int()>>>5)+(this.random_int()>>>6))*(1/9007199254740992)},module.exports=MersenneTwister;
+/*
+  https://github.com/banksean wrapped Makoto Matsumoto and Takuji Nishimura's code in a namespace
+  so it's better encapsulated. Now you can have multiple random number generators
+  and they won't stomp all over eachother's state.
+
+  If you want to use this as a substitute for Math.random(), use the random()
+  method like so:
+
+  var m = new MersenneTwister();
+  var randomNumber = m.random();
+
+  You can also call the other genrand_{foo}() methods on the instance.
+
+  If you want to use a specific seed in order to get a repeatable random
+  sequence, pass an integer into the constructor:
+
+  var m = new MersenneTwister(123);
+
+  and that will always produce the same random sequence.
+
+  Sean McCullough (banksean@gmail.com)
+*/
+
+/*
+   A C-program for MT19937, with initialization improved 2002/1/26.
+   Coded by Takuji Nishimura and Makoto Matsumoto.
+
+   Before using, initialize the state by using init_seed(seed)
+   or init_by_array(init_key, key_length).
+
+   Copyright (C) 1997 - 2002, Makoto Matsumoto and Takuji Nishimura,
+   All rights reserved.
+
+   Redistribution and use in source and binary forms, with or without
+   modification, are permitted provided that the following conditions
+   are met:
+
+     1. Redistributions of source code must retain the above copyright
+        notice, this list of conditions and the following disclaimer.
+
+     2. Redistributions in binary form must reproduce the above copyright
+        notice, this list of conditions and the following disclaimer in the
+        documentation and/or other materials provided with the distribution.
+
+     3. The names of its contributors may not be used to endorse or promote
+        products derived from this software without specific prior written
+        permission.
+
+   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+   CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+   EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+   PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+   PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+   LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+   Any feedback is very welcome.
+   http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html
+   email: m-mat @ math.sci.hiroshima-u.ac.jp (remove space)
+*/
+
+var MersenneTwister = function(seed) {
+	if (seed == undefined) {
+		seed = new Date().getTime();
+	}
+
+	/* Period parameters */
+	this.N = 624;
+	this.M = 397;
+	this.MATRIX_A = 0x9908b0df;   /* constant vector a */
+	this.UPPER_MASK = 0x80000000; /* most significant w-r bits */
+	this.LOWER_MASK = 0x7fffffff; /* least significant r bits */
+
+	this.mt = new Array(this.N); /* the array for the state vector */
+	this.mti=this.N+1; /* mti==N+1 means mt[N] is not initialized */
+
+	if (seed.constructor == Array) {
+		this.init_by_array(seed, seed.length);
+	}
+	else {
+		this.init_seed(seed);
+	}
+}
+
+/* initializes mt[N] with a seed */
+/* origin name init_genrand */
+MersenneTwister.prototype.init_seed = function(s) {
+	this.mt[0] = s >>> 0;
+	for (this.mti=1; this.mti<this.N; this.mti++) {
+		var s = this.mt[this.mti-1] ^ (this.mt[this.mti-1] >>> 30);
+		this.mt[this.mti] = (((((s & 0xffff0000) >>> 16) * 1812433253) << 16) + (s & 0x0000ffff) * 1812433253)
+		+ this.mti;
+		/* See Knuth TAOCP Vol2. 3rd Ed. P.106 for multiplier. */
+		/* In the previous versions, MSBs of the seed affect   */
+		/* only MSBs of the array mt[].                        */
+		/* 2002/01/09 modified by Makoto Matsumoto             */
+		this.mt[this.mti] >>>= 0;
+		/* for >32 bit machines */
+	}
+}
+
+/* initialize by an array with array-length */
+/* init_key is the array for initializing keys */
+/* key_length is its length */
+/* slight change for C++, 2004/2/26 */
+MersenneTwister.prototype.init_by_array = function(init_key, key_length) {
+	var i, j, k;
+	this.init_seed(19650218);
+	i=1; j=0;
+	k = (this.N>key_length ? this.N : key_length);
+	for (; k; k--) {
+		var s = this.mt[i-1] ^ (this.mt[i-1] >>> 30)
+		this.mt[i] = (this.mt[i] ^ (((((s & 0xffff0000) >>> 16) * 1664525) << 16) + ((s & 0x0000ffff) * 1664525)))
+		+ init_key[j] + j; /* non linear */
+		this.mt[i] >>>= 0; /* for WORDSIZE > 32 machines */
+		i++; j++;
+		if (i>=this.N) { this.mt[0] = this.mt[this.N-1]; i=1; }
+		if (j>=key_length) j=0;
+	}
+	for (k=this.N-1; k; k--) {
+		var s = this.mt[i-1] ^ (this.mt[i-1] >>> 30);
+		this.mt[i] = (this.mt[i] ^ (((((s & 0xffff0000) >>> 16) * 1566083941) << 16) + (s & 0x0000ffff) * 1566083941))
+		- i; /* non linear */
+		this.mt[i] >>>= 0; /* for WORDSIZE > 32 machines */
+		i++;
+		if (i>=this.N) { this.mt[0] = this.mt[this.N-1]; i=1; }
+	}
+
+	this.mt[0] = 0x80000000; /* MSB is 1; assuring non-zero initial array */
+}
+
+/* generates a random number on [0,0xffffffff]-interval */
+/* origin name genrand_int32 */
+MersenneTwister.prototype.random_int = function() {
+	var y;
+	var mag01 = new Array(0x0, this.MATRIX_A);
+	/* mag01[x] = x * MATRIX_A  for x=0,1 */
+
+	if (this.mti >= this.N) { /* generate N words at one time */
+		var kk;
+
+		if (this.mti == this.N+1)  /* if init_seed() has not been called, */
+			this.init_seed(5489);  /* a default initial seed is used */
+
+		for (kk=0;kk<this.N-this.M;kk++) {
+			y = (this.mt[kk]&this.UPPER_MASK)|(this.mt[kk+1]&this.LOWER_MASK);
+			this.mt[kk] = this.mt[kk+this.M] ^ (y >>> 1) ^ mag01[y & 0x1];
+		}
+		for (;kk<this.N-1;kk++) {
+			y = (this.mt[kk]&this.UPPER_MASK)|(this.mt[kk+1]&this.LOWER_MASK);
+			this.mt[kk] = this.mt[kk+(this.M-this.N)] ^ (y >>> 1) ^ mag01[y & 0x1];
+		}
+		y = (this.mt[this.N-1]&this.UPPER_MASK)|(this.mt[0]&this.LOWER_MASK);
+		this.mt[this.N-1] = this.mt[this.M-1] ^ (y >>> 1) ^ mag01[y & 0x1];
+
+		this.mti = 0;
+	}
+
+	y = this.mt[this.mti++];
+
+	/* Tempering */
+	y ^= (y >>> 11);
+	y ^= (y << 7) & 0x9d2c5680;
+	y ^= (y << 15) & 0xefc60000;
+	y ^= (y >>> 18);
+
+	return y >>> 0;
+}
+
+/* generates a random number on [0,0x7fffffff]-interval */
+/* origin name genrand_int31 */
+MersenneTwister.prototype.random_int31 = function() {
+	return (this.random_int()>>>1);
+}
+
+/* generates a random number on [0,1]-real-interval */
+/* origin name genrand_real1 */
+MersenneTwister.prototype.random_incl = function() {
+	return this.random_int()*(1.0/4294967295.0);
+	/* divided by 2^32-1 */
+}
+
+/* generates a random number on [0,1)-real-interval */
+MersenneTwister.prototype.random = function() {
+	return this.random_int()*(1.0/4294967296.0);
+	/* divided by 2^32 */
+}
+
+/* generates a random number on (0,1)-real-interval */
+/* origin name genrand_real3 */
+MersenneTwister.prototype.random_excl = function() {
+	return (this.random_int() + 0.5)*(1.0/4294967296.0);
+	/* divided by 2^32 */
+}
+
+/* generates a random number on [0,1) with 53-bit resolution*/
+/* origin name genrand_res53 */
+MersenneTwister.prototype.random_long = function() {
+	var a=this.random_int()>>>5, b=this.random_int()>>>6;
+	return(a*67108864.0+b)*(1.0/9007199254740992.0);
+}
+
+/* These real versions are due to Isaku Wada, 2002/01/09 added */
+
+module.exports = MersenneTwister;
 
 },{}],13:[function(require,module,exports){
-module.exports=function(){var e=document.getSelection();if(!e.rangeCount)return function(){};for(var n=document.activeElement,t=[],a=0;a<e.rangeCount;a++)t.push(e.getRangeAt(a));switch(n.tagName.toUpperCase()){case"INPUT":case"TEXTAREA":n.blur();break;default:n=null}return e.removeAllRanges(),function(){"Caret"===e.type&&e.removeAllRanges(),e.rangeCount||t.forEach(function(n){e.addRange(n)}),n&&n.focus()}};
+
+module.exports = function () {
+  var selection = document.getSelection();
+  if (!selection.rangeCount) {
+    return function () {};
+  }
+  var active = document.activeElement;
+
+  var ranges = [];
+  for (var i = 0; i < selection.rangeCount; i++) {
+    ranges.push(selection.getRangeAt(i));
+  }
+
+  switch (active.tagName.toUpperCase()) { // .toUpperCase handles XHTML
+    case 'INPUT':
+    case 'TEXTAREA':
+      active.blur();
+      break;
+
+    default:
+      active = null;
+      break;
+  }
+
+  selection.removeAllRanges();
+  return function () {
+    selection.type === 'Caret' &&
+    selection.removeAllRanges();
+
+    if (!selection.rangeCount) {
+      ranges.forEach(function(range) {
+        selection.addRange(range);
+      });
+    }
+
+    active &&
+    active.focus();
+  };
+};
 
 },{}]},{},[1]);
