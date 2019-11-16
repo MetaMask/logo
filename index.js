@@ -93,16 +93,22 @@ module.exports = function createLogo (options_) {
     }
   })()
 
-  function Polygon (svg, indices) {
+  function Polygon (svg, indices, chunk) {
     this.svg = svg
     this.indices = indices
     this.zIndex = 0
+    this.chunk = chunk
   }
 
   var polygons = (function () {
     var polygons = []
     for (var i = 0; i < foxJSON.chunks.length; ++i) {
       var chunk = foxJSON.chunks[i]
+
+      if (!chunk.polygons) {
+        chunk.polygons = []
+      }
+
       var color
       if (twister) {
         color = colors[Math.floor(twister.random() * colors.length)]
@@ -126,7 +132,9 @@ module.exports = function createLogo (options_) {
           'points',
           '0,0, 10,0, 0,10')
         container.appendChild(polygon)
-        polygons.push(new Polygon(polygon, f))
+        const poly = new Polygon(polygon, f, chunk)
+        polygons.push(poly)
+        chunk.polygons.push(poly)
       }
     }
     return polygons
@@ -330,11 +338,40 @@ module.exports = function createLogo (options_) {
     stopAnimation()
   }
 
+  function recolor (colorSeed) {
+    var twister
+    if (colorSeed) {
+      twister = new MersenneTwister(colorSeed)
+    }
+
+    for(const chunk of foxJSON.chunks) {
+      let color
+      if (twister) {
+        color = colors[Math.floor(twister.random() * colors.length)]
+      } else {
+        color = 'rgb(' + chunk.color + ')'
+      }
+
+      for (const polygon of chunk.polygons) {
+        setAttribute(
+          polygon.svg,
+          'fill',
+          color)
+          setAttribute(
+            polygon.svg,
+            'stroke',
+            color)
+      }
+    }    
+    renderScene()
+  }
+
   renderScene()
 
   return {
     container: container,
     lookAt: setLookAt,
+    recolor: recolor,
     setFollowMouse: setFollowMouse,
     setFollowMotion: setFollowMotion,
     stopAnimation: stopAnimation,
