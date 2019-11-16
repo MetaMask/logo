@@ -28,6 +28,8 @@ var viewer = ModelViewer({
   // head should slowly drift (overrides lookAt)
   slowDrift: false,
 
+  // An optional seed number for uniquely coloring this fox.
+  colorSeed: 123,
 })
 
 // add viewer to DOM

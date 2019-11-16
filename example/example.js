@@ -23,7 +23,6 @@ var viewer = createViewer({
   height: 0.4,
   followMouse: true,
   followMotion: true,
-  colorSeed: Math.floor(Math.random() * 100000),
 })
 
 document.body.appendChild(viewer.container)
