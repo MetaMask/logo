@@ -40,14 +40,12 @@ const recolorDuration = 5000
 let recolorStartTime = 0
 let recolorRemaining = 0
 function startRecolor () {
-  console.log('startRecolor')
   recolorStartTime = Date.now()
   recolorRemaining = recolorDuration
   const colorSeed = Math.floor(Math.random() * 10000000)
   recolor(colorSeed)
 }
 function recolor(colorSeed) {
-  console.log('recolor',colorSeed)
   const recolorCompleted = Date.now() - recolorStartTime
   recolorRemaining = recolorDuration - recolorCompleted
 
@@ -56,7 +54,6 @@ function recolor(colorSeed) {
   const endTime = recolorDuration + recolorStartTime;
 
   const fractionComplete = (recolorDuration-recolorRemaining) / recolorDuration
-  console.log('fraction', fractionComplete)
 
   viewer.recolor({
     colorSeed,
