@@ -36,7 +36,7 @@ var viewer = createViewer({
   // colorSeed,
 })
 
-const recolorDuration = 5000
+const recolorDuration = 20000
 let recolorStartTime = 0
 let recolorRemaining = 0
 function startRecolor () {
@@ -49,20 +49,26 @@ function recolor(colorSeed) {
   const recolorCompleted = Date.now() - recolorStartTime
   recolorRemaining = recolorDuration - recolorCompleted
 
-  if (recolorRemaining <= 0) return
+  if (recolorRemaining <= 0) {
+    return viewer.recolor({
+      colorSeed,
+    })
+  }
 
   const endTime = recolorDuration + recolorStartTime;
 
   const fractionComplete = (recolorDuration-recolorRemaining) / recolorDuration
 
+  const oddsOfPolygonVisibility = ((Math.cos(fractionComplete * 2) / -2) + 0.5)
+
   viewer.recolor({
     colorSeed,
-    oddsOfPolygonVisibility: fractionComplete,
+    oddsOfPolygonVisibility,
     colorByBlock: fractionComplete > 0.5,
     randomness: recolorRemaining / recolorDuration,
   })
 
-  const delay = fractionComplete * 100
+  const delay = (Math.cos(fractionComplete * 2)/2 + 0.5) * 100
   setTimeout(() => {
     window.requestAnimationFrame(() => recolor(colorSeed))
   }, delay)

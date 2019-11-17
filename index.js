@@ -355,7 +355,6 @@ module.exports = function createLogo (options_) {
 
     for(const chunk of foxJSON.chunks) {
       let color, opacity
-      console.log('odds of visiiblity ', oddsOfPolygonVisibility)
       if (oddsOfPolygonVisibility &&
         oddsOfPolygonVisibility < 1 && Math.random() > oddsOfPolygonVisibility) {
         opacity = '0.0'
