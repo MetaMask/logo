@@ -338,14 +338,30 @@ module.exports = function createLogo (options_) {
     stopAnimation()
   }
 
-  function recolor (colorSeed) {
+  function recolor (opts) {
+    const {
+      colorSeed, // The seed from which to deterministically generate
+      oddsOfPolygonVisibility, // 0 to 1, odds that a given polygon is visible.
+      colorByBlock, // Whether polygons or blocks should be colored.
+                    // Defaults to true.
+      randomness, // 0 to 1, divergence from colorSeed result.
+    } = opts
+    
+
     var twister
     if (colorSeed) {
       twister = new MersenneTwister(colorSeed)
     }
 
     for(const chunk of foxJSON.chunks) {
-      let color
+      let color, opacity
+      console.log('odds of visiiblity ', oddsOfPolygonVisibility)
+      if (oddsOfPolygonVisibility &&
+        oddsOfPolygonVisibility < 1 && Math.random() > oddsOfPolygonVisibility) {
+        opacity = '0.0'
+      } else {
+        opacity = '1'
+      }
       if (twister) {
         color = colors[Math.floor(twister.random() * colors.length)]
       } else {
@@ -353,14 +369,21 @@ module.exports = function createLogo (options_) {
       }
 
       for (const polygon of chunk.polygons) {
+
+        setAttribute(polygon.svg, 'opacity', opacity)
+        let localColor = color
+        if (randomness && Math.random() < randomness) {
+          localColor = colors[Math.floor(Math.random() * colors.length)]
+        }
+
         setAttribute(
           polygon.svg,
           'fill',
-          color)
+          localColor)
           setAttribute(
             polygon.svg,
             'stroke',
-            color)
+            localColor)
       }
     }    
     renderScene()

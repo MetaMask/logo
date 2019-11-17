@@ -7,7 +7,7 @@ window.addEventListener('load', () => {
   saveButton.addEventListener('click', saveImage)
 
   const recolorButton = document.querySelector('button.recolor')
-  recolorButton.addEventListener('click', recolor)
+  recolorButton.addEventListener('click', startRecolor)
 
   const cycleButton = document.querySelector('button.cycle')
   cycleButton.addEventListener('click', toggleCycle)
@@ -53,8 +53,39 @@ var viewer = createViewer({
   // colorSeed,
 })
 
-function recolor() {
-  viewer.recolor(Math.floor(Math.random() * 10000000))
+const recolorDuration = 5000
+let recolorStartTime = 0
+let recolorRemaining = 0
+function startRecolor () {
+  console.log('startRecolor')
+  recolorStartTime = Date.now()
+  recolorRemaining = recolorDuration
+  const colorSeed = Math.floor(Math.random() * 10000000)
+  recolor(colorSeed)
+}
+function recolor(colorSeed) {
+  console.log('recolor',colorSeed)
+  const recolorCompleted = Date.now() - recolorStartTime
+  recolorRemaining = recolorDuration - recolorCompleted
+
+  if (recolorRemaining <= 0) return
+
+  const endTime = recolorDuration + recolorStartTime;
+
+  const fractionComplete = (recolorDuration-recolorRemaining) / recolorDuration
+  console.log('fraction', fractionComplete)
+
+  viewer.recolor({
+    colorSeed,
+    oddsOfPolygonVisibility: fractionComplete,
+    colorByBlock: fractionComplete > 0.5,
+    randomness: recolorRemaining / recolorDuration,
+  })
+
+  const delay = fractionComplete * 100
+  setTimeout(() => {
+    window.requestAnimationFrame(() => recolor(colorSeed))
+  }, delay)
 }
 
 const foxDiv = document.querySelector('body div.fox')
