@@ -8,24 +8,7 @@ window.addEventListener('load', () => {
 
   const recolorButton = document.querySelector('button.recolor')
   recolorButton.addEventListener('click', startRecolor)
-
-  const cycleButton = document.querySelector('button.cycle')
-  cycleButton.addEventListener('click', toggleCycle)
 })
-
-let cycling = false
-let cycleInterval
-function toggleCycle () {
-  if (cycling && cycleInterval) {
-    console.dir(cycleInterval)
-    clearInterval(cycleInterval)
-    cycling = false
-  } else if (!cycling) {
-    cycleInterval = setInterval(recolor, 500)
-    cycling = true
-  }
-}
-
 
 document.addEventListener('keypress', (event) => {
   if (event.keyCode === 99) { // the C key
