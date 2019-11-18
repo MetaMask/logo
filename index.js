@@ -355,12 +355,7 @@ module.exports = function createLogo (options_) {
 
     for(const chunk of foxJSON.chunks) {
       let color, opacity
-      if (oddsOfPolygonVisibility &&
-        oddsOfPolygonVisibility < 1 && Math.random() > oddsOfPolygonVisibility) {
-        opacity = '0.0'
-      } else {
-        opacity = '1'
-      }
+      
       if (twister) {
         color = colors[Math.floor(twister.random() * colors.length)]
       } else {
@@ -368,6 +363,13 @@ module.exports = function createLogo (options_) {
       }
 
       for (const polygon of chunk.polygons) {
+
+        if (oddsOfPolygonVisibility &&
+          oddsOfPolygonVisibility < 1 && Math.random() > oddsOfPolygonVisibility) {
+          opacity = '0.0'
+        } else {
+          opacity = '1'
+        }
 
         setAttribute(polygon.svg, 'opacity', opacity)
         let localColor = color
