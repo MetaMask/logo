@@ -76,7 +76,7 @@ function recolor(colorSeed) {
     randomness: recolorRemaining / recolorDuration,
   })
 
-  const delay = ((Math.cos(fractionComplete * Math.PI) / 2) + 0.5) * 100
+  const delay = ((Math.cos(fractionComplete * Math.PI * 2) / 2) + 0.5) * 150
   console.log({ delay, fractionComplete})
   setTimeout(() => {
     window.requestAnimationFrame(() => recolor(colorSeed))
