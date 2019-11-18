@@ -364,7 +364,7 @@ module.exports = function createLogo (options_) {
 
       for (const polygon of chunk.polygons) {
 
-        if (oddsOfPolygonVisibility &&
+        if (oddsOfPolygonVisibility !== undefined &&
           oddsOfPolygonVisibility < 1 && Math.random() > oddsOfPolygonVisibility) {
           opacity = '0.0'
         } else {
