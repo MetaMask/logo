@@ -67,7 +67,6 @@ function recolor(colorSeed) {
   const negateFirstHalf = isFirstHalf ? 0 : 1
 
   const oddsOfPolygonVisibility = (((Math.cos(fractionComplete * Math.PI ) / -2)  + 0.5) + negateFirstHalf) / 2
-  console.log('odds of visibility', oddsOfPolygonVisibility)
 
   viewer.recolor({
     colorSeed,
@@ -77,7 +76,6 @@ function recolor(colorSeed) {
   })
 
   const delay = ((Math.cos(fractionComplete * Math.PI * 2) / 2) + 0.5) * 150
-  console.log({ delay, fractionComplete})
   setTimeout(() => {
     window.requestAnimationFrame(() => recolor(colorSeed))
   }, delay)
