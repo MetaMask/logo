@@ -86,11 +86,17 @@ for (const mtlKey in mtl) {
     };
 
     model.faces.forEach((f) => {
-        chunk.faces.push([
-            f.vertices[0][VI],
-            f.vertices[2][VI],
-            f.vertices[1][VI],
-        ])
+
+        // Only if this face matches the material!
+        if (
+            f.material === mtlKey
+        ) {
+            chunk.faces.push([
+                f.vertices[0][VI] -1,
+                f.vertices[1][VI] -1,
+                f.vertices[2][VI] -1,
+            ])
+        }
     })
 
     output.chunks.push(chunk);
