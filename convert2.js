@@ -65,23 +65,29 @@ model.vertices.forEach(function (v) {
 });
 var _loop_1 = function (mtlKey) {
     var m = mtl[mtlKey];
-    var chunk = {
-        color: m.Ka.map(function (c, i) {
-            return (255 * c) | 0;
-        }),
-        faces: []
-    };
-    model.faces.forEach(function (f) {
-        // Only if this face matches the material!
-        if (f.material === mtlKey) {
-            chunk.faces.push([
-                f.vertices[0][VI] - 1,
-                f.vertices[1][VI] - 1,
-                f.vertices[2][VI] - 1,
-            ]);
-        }
-    });
-    output.chunks.push(chunk);
+    if (!m.Ka) {
+        console.log('PROBLEM!');
+        console.dir(m);
+    }
+    else {
+        var chunk_1 = {
+            color: m.Ka.map(function (c, i) {
+                return (255 * c) | 0;
+            }),
+            faces: []
+        };
+        model.faces.forEach(function (f) {
+            // Only if this face matches the material!
+            if (f.material === mtlKey) {
+                chunk_1.faces.push([
+                    f.vertices[0][VI] - 1,
+                    f.vertices[1][VI] - 1,
+                    f.vertices[2][VI] - 1,
+                ]);
+            }
+        });
+        output.chunks.push(chunk_1);
+    }
 };
 for (var mtlKey in mtl) {
     _loop_1(mtlKey);
