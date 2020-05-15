@@ -78,6 +78,14 @@ model.vertices.forEach((v) => {
 
 for (const mtlKey in mtl) {
     const m = mtl[mtlKey];
+
+    if (!m.Ka) {
+      
+      console.log('PROBLEM!')
+      console.dir(m)
+    } else {
+
+
     const chunk = {
         color: m.Ka.map(function (c, i) {
             return (255 * c) | 0
@@ -100,6 +108,7 @@ for (const mtlKey in mtl) {
     })
 
     output.chunks.push(chunk);
+  }
 }
 
 fs.writeFileSync(outpath, JSON.stringify(output, null, 2));
