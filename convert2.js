@@ -8,14 +8,15 @@ var mtlRaw = fs.readFileSync("./fox.mtl").toString('utf8');
 function parseMTL(mtl) {
     var output = {};
     mtl.split('newmtl ').slice(1).forEach(function (block) {
-        var lines = block.split('\r\n');
+        var lines = block.split('\n');
         var label = lines[0];
         var props = {};
         lines.slice(1).forEach(function (line) {
-            if (line.charAt(0) !== '\t') {
+            // Skip illum lines
+            if (line.indexOf('illum') === 0) {
                 return;
             }
-            var toks = line.split(/\s+/).slice(1);
+            var toks = line.split(/\s+/);
             var label = toks[0];
             var data = toks.slice(1);
             if (data.length === 1) {
@@ -66,7 +67,7 @@ model.vertices.forEach(function (v) {
 var _loop_1 = function (mtlKey) {
     var m = mtl[mtlKey];
     if (!m.Ka) {
-        console.log('PROBLEM!');
+        console.log('PROBLEM with ' + mtlKey);
         console.dir(m);
     }
     else {
