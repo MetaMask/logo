@@ -45,7 +45,6 @@ const objF = new OBJFile(obj);
 
 const data = objF.parse(objF);
 
-console.log('parser output:', data.toString())
 var outpath = path.join(__dirname, 'fox.json');
 
 const output: EfficientModel = {
@@ -88,11 +87,17 @@ for (const mtlKey in mtl) {
       console.dir(m)
     } else {
 
+    const color = m.Ka.map(function (c, i) {
+      return (255 * c) | 0
+    })
+    m.Kd.forEach((c, i) => {
+      if (color[i] === 0) {
+        color[i] = (255 * c) | 0
+      } 
+    })
 
     const chunk = {
-        color: m.Ka.map(function (c, i) {
-            return (255 * c) | 0
-        }),
+        color,
         faces: [],
     };
 
@@ -107,6 +112,9 @@ for (const mtlKey in mtl) {
                 f.vertices[1][VI] -1,
                 f.vertices[2][VI] -1,
             ])
+          console.log('we pushed some faces, eh?', chunk.faces)
+        } else {
+          console.log(`I guess ${f.material} !== ${mtlKey}`)
         }
     })
 
