@@ -35,7 +35,6 @@ function parseMTL(mtl) {
 var mtl = parseMTL(mtlRaw);
 var objF = new OBJFile(obj);
 var data = objF.parse(objF);
-console.log('parser output:', data.toString());
 var outpath = path.join(__dirname, 'fox.json');
 var output = {
     positions: [],
@@ -71,10 +70,16 @@ var _loop_1 = function (mtlKey) {
         console.dir(m);
     }
     else {
+        var color_1 = m.Ka.map(function (c, i) {
+            return (255 * c) | 0;
+        });
+        m.Kd.forEach(function (c, i) {
+            if (color_1[i] === 0) {
+                color_1[i] = (255 * c) | 0;
+            }
+        });
         var chunk_1 = {
-            color: m.Ka.map(function (c, i) {
-                return (255 * c) | 0;
-            }),
+            color: color_1,
             faces: []
         };
         model.faces.forEach(function (f) {
@@ -85,6 +90,10 @@ var _loop_1 = function (mtlKey) {
                     f.vertices[1][VI] - 1,
                     f.vertices[2][VI] - 1,
                 ]);
+                console.log('we pushed some faces, eh?', chunk_1.faces);
+            }
+            else {
+                console.log("I guess " + f.material + " !== " + mtlKey);
             }
         });
         output.chunks.push(chunk_1);
