@@ -4,6 +4,7 @@ const copy=require("copy-to-clipboard");document.addEventListener("keypress",fun
 
 },{"..":3,"copy-to-clipboard":4}],2:[function(require,module,exports){
 
+
 module.exports={
   "positions": [
     [

@@ -9,7 +9,8 @@
     "lint": "eslint . --ext js,json",
     "lint:fix": "yarn lint --fix",
     "start": "wzrd example/example.js:bundle.js",
-    "test": "node test"
+    "convert": "node convert.js > fox.json",
+    "test": "standard index.js"
   },
   "files": [
     "bundle.js",
@@ -36,6 +37,9 @@
     "@types/node": "^14.14.0",
     "obj-file-parser": "^0.5.0",
     "obj-file-parser-ts": "^0.6.4",
+    "uglifyify": "3.0.4",
+    "standard": "^14.3.1",
+    "uglifyify": "^5.0.2",
     "wzrd": "^1.5.0"
   },
   "repository": {
