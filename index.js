@@ -20,7 +20,6 @@ module.exports = function createLogo (options_) {
   var options = options_ || {}
 
   var followCursor = !!options.followMouse
-  var followMotion = !!options.followMotion
   var slowDrift = !!options.slowDrift
   var shouldRender = true
 
@@ -81,11 +80,15 @@ module.exports = function createLogo (options_) {
     this.zIndex = 0
   }
 
-  var polygons = (function () {
-    var polygons = []
+  var generatePolygons = function (colors = []) {
+    console.log('generating polygons with colors: ', colors)
+    var _polygons = []
     for (var i = 0; i < foxJSON.chunks.length; ++i) {
       var chunk = foxJSON.chunks[i]
-      var color = 'rgb(' + chunk.color + ')'
+      console.log('otherwise falling back to ', chunk.color)
+      var colorArr = Boolean(colors[i]) ? colors[i] : chunk.color
+      var color = 'rgb(' + colorArr + ')'
+      console.log(color)
       var faces = chunk.faces
       for (var j = 0; j < faces.length; ++j) {
         var f = faces[j]
@@ -103,11 +106,13 @@ module.exports = function createLogo (options_) {
           'points',
           '0,0, 10,0, 0,10')
         container.appendChild(polygon)
-        polygons.push(new Polygon(polygon, f))
+        _polygons.push(new Polygon(polygon, f))
       }
     }
-    return polygons
-  })()
+    return _polygons
+  }
+
+  var polygons = generatePolygons(options.colors)
 
   var computeMatrix = (function () {
     var objectCenter = new Float32Array(3)
@@ -200,14 +205,15 @@ module.exports = function createLogo (options_) {
     return b.zIndex - a.zIndex
   }
 
-  function updateFaces () {
+  function updateFaces (_polygons) {
     var i
     var rect = container.getBoundingClientRect()
     var w = rect.width
     var h = rect.height
     toDraw.length = 0
-    for (i = 0; i < polygons.length; ++i) {
-      var poly = polygons[i]
+    _polygons = _polygons || polygons
+    for (i = 0; i < _polygons.length; ++i) {
+      var poly = _polygons[i]
       var indices = poly.indices
 
       var i0 = indices[0]
@@ -256,7 +262,6 @@ module.exports = function createLogo (options_) {
   function stopAnimation() { shouldRender = false }
   function startAnimation() { shouldRender = true }
   function setFollowMouse (state) { followCursor = state }
-  function setFollowMotion (state) { followMotion = state }
 
   window.addEventListener('mousemove', function (ev) {
     if (!shouldRender) { startAnimation() }
@@ -269,24 +274,23 @@ module.exports = function createLogo (options_) {
     }
   })
 
-  window.addEventListener('deviceorientation', function (ev) {
+  window.addEventListener('deviceorientation', function (event) {
     if (!shouldRender) { startAnimation() }
     if (followMotion) {
       // gamma: left to right
-      const leftToRight = event.gamma,
+      const leftToRight = event.gamma
       // beta: front back motion
-      frontToBack = event.beta,
+      const frontToBack = event.beta
       // x offset: needed to correct the intial position
-      xOffset = 200
+      const xOffset = 200
       // y offset: needed to correct the intial position
-      yOffset = -300
+      const yOffset = -300
       // acceleration
-      acceleration = 10
-
+      const acceleration = 10
 
       setLookAt({
         x: xOffset + leftToRight * acceleration,
-        y: yOffset + frontToBack * acceleration,
+        y: yOffset + frontToBack * acceleration
       })
       renderScene()
     }
@@ -304,18 +308,23 @@ module.exports = function createLogo (options_) {
 
     var matrix = computeMatrix()
     updatePositions(matrix)
-    updateFaces()
+    updateFaces(polygons)
     stopAnimation()
   }
 
-  renderScene()
+  function reRender (colors) {
+    polygons = generatePolygons(colors)
+    renderScene(polygons)
+  }
+
+  renderScene(polygons)
 
   return {
     container: container,
     lookAt: setLookAt,
     setFollowMouse: setFollowMouse,
-    setFollowMotion: setFollowMotion,
     stopAnimation: stopAnimation,
     startAnimation: startAnimation,
+    reRender: reRender,
   }
 }
