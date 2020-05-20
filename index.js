@@ -81,15 +81,16 @@ module.exports = function createLogo (options_) {
     this.zIndex = 0
   }
 
-  const polygons = (function () {
+  const generatePolygons = function (colors = []) {
     const _polygons = []
     for (let i = 0; i < foxJSON.chunks.length; ++i) {
       const chunk = foxJSON.chunks[i]
-      const color = `rgb(${chunk.color})`
+      const color = 'rgb(' + colors[i] || chunk.color + ')'
       const { faces } = chunk
       for (let j = 0; j < faces.length; ++j) {
         const f = faces[j]
         const polygon = createNode('polygon')
+
         setAttribute(
           polygon,
           'fill',
@@ -110,7 +111,9 @@ module.exports = function createLogo (options_) {
       }
     }
     return _polygons
-  })()
+  }
+
+  const polygons = generatePolygons(options.colors)
 
   const computeMatrix = (function () {
     const objectCenter = new Float32Array(3)
@@ -206,14 +209,15 @@ module.exports = function createLogo (options_) {
     return b.zIndex - a.zIndex
   }
 
-  function updateFaces () {
+  function updateFaces (_polygons) {
     let i
     const rect = container.getBoundingClientRect()
     const w = rect.width
     const h = rect.height
     toDraw.length = 0
-    for (i = 0; i < polygons.length; ++i) {
-      const poly = polygons[i]
+    _polygons = _polygons || polygons
+    for (i = 0; i < _polygons.length; ++i) {
+      const poly = _polygons[i]
       const { indices } = poly
 
       const i0 = indices[0]
@@ -226,6 +230,7 @@ module.exports = function createLogo (options_) {
       const cx = transformed[3 * i2]
       const cy = transformed[(3 * i2) + 1]
       const det = ((bx - ax) * (cy - ay)) - ((by - ay) * (cx - ax))
+
       if (det < 0) {
         continue
       }
@@ -335,11 +340,16 @@ module.exports = function createLogo (options_) {
 
     const matrix = computeMatrix()
     updatePositions(matrix)
-    updateFaces()
+    updateFaces(polygons)
     stopAnimation()
   }
 
-  renderScene()
+  function reRender (colors) {
+    polygons = generatePolygons(colors)
+    renderScene(polygons)
+  }
+
+  renderScene(polygons)
 
   return {
     container,
@@ -349,5 +359,6 @@ module.exports = function createLogo (options_) {
     stopAnimation,
     startAnimation,
     lookAtAndRender,
+    reRender,
   }
 }
