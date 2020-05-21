@@ -13,7 +13,8 @@
   "license": "ISC",
   "dependencies": {
     "gl-mat4": "1.1.4",
-    "gl-vec3": "1.0.3"
+    "gl-vec3": "1.0.3",
+    "mersenne-twister": "^1.1.0"
   },
   "devDependencies": {
     "browserify": "^16.2.2",

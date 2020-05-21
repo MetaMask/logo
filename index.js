@@ -5,6 +5,19 @@ var invert = require('gl-mat4/invert')
 var rotate = require('gl-mat4/rotate')
 var transform = require('gl-vec3/transformMat4')
 var foxJSON = require('./fox.json')
+var colors = [
+	'#01888C', // teal
+  '#FC7500', // bright orange
+  '#034F5D', // dark teal
+  '#F73F01', // orangered
+  '#FC1960', // magenta
+  '#C7144C', // raspberry
+  '#F3C100', // goldenrod
+  '#1598F2', // lightning blue
+  '#2465E1', // sail blue
+  '#F19E02', // gold
+]
+var MersenneTwister = require('mersenne-twister');
 
 var SVG_NS = 'http://www.w3.org/2000/svg'
 
@@ -21,6 +34,11 @@ module.exports = function createLogo (options_) {
 
   var followCursor = !!options.followMouse
   var slowDrift = !!options.slowDrift
+  var colorSeed = options.colorSeed
+  var twister
+  if (colorSeed) {
+    twister = new MersenneTwister(colorSeed)
+  }
   var shouldRender = true
 
   var DISTANCE = 400
@@ -41,6 +59,10 @@ module.exports = function createLogo (options_) {
   var transformed = new Float32Array(3 * NUM_VERTS)
 
   var toDraw = []
+
+  const recolorDuration = options.recolorDuration || 12000
+  let recolorStartTime = 0
+  let recolorRemaining = 0
 
   if (!options.pxNotRatio) {
     width = (window.innerWidth * (options.width || 0.25)) | 0
@@ -74,17 +96,39 @@ module.exports = function createLogo (options_) {
     }
   })()
 
-  function Polygon (svg, indices) {
+  function Polygon (svg, indices, chunk) {
     this.svg = svg
     this.indices = indices
     this.zIndex = 0
+    this.chunk = chunk
   }
 
   var generatePolygons = function (colors = []) {
     var _polygons = []
     for (var i = 0; i < foxJSON.chunks.length; ++i) {
       var chunk = foxJSON.chunks[i]
-      var color = 'rgb(' + colors[i] || chunk.color + ')'
+
+      var color
+
+      // if colors[i] is defined, we prepare to use its color. Otherwise, the default.
+      var colorStr = colors[i] ? colors[i] : chunk.color
+
+      if (!chunk.polygons) {
+        chunk.polygons = []
+      }
+
+      var color
+
+      // When twister is available, it means the logo was initialized with a `colorSeed`.
+      // That random coloring seed will override the otherwise set colors:
+      if (twister) {
+        color = colors[Math.floor(twister.random() * colors.length)]
+      } else {
+
+        // Otherwise, we default to the colorStr
+        color = 'rgb(' + colorStr + ')'
+      }
+
       var faces = chunk.faces
       for (var j = 0; j < faces.length; ++j) {
         var f = faces[j]
@@ -102,7 +146,9 @@ module.exports = function createLogo (options_) {
           'points',
           '0,0, 10,0, 0,10')
         container.appendChild(polygon)
-        _polygons.push(new Polygon(polygon, f))
+        const poly = new Polygon(polygon, f, chunk)
+        _polygons.push(poly)
+        chunk.polygons.push(poly)
       }
     }
     return _polygons
@@ -308,12 +354,117 @@ module.exports = function createLogo (options_) {
     stopAnimation()
   }
 
-  function reRender (colors) {
-    polygons = generatePolygons(colors)
-    renderScene(polygons)
+  /*
+   * Used to regenerate a random set of colors. Only used for random color mode.
+   */
+  function reRender (opts) {
+    const {
+      colorSeed, // The seed from which to deterministically generate
+      oddsOfPolygonVisibility, // 0 to 1, odds that a given polygon is visible.
+      colorByBlock, // Whether polygons or blocks should be colored.
+                    // Defaults to true.
+      randomness, // 0 to 1, divergence from colorSeed result.
+    } = opts
+
+    const _colors = opts.colors || colors
+
+    var twister
+    if (colorSeed) {
+      twister = new MersenneTwister(colorSeed)
+    }
+
+    for(const chunk of foxJSON.chunks) {
+      let color, opacity
+
+      // If we have a twister, randomize the colors per chunk:
+      if (twister) {
+        color = _colors[Math.floor(twister.random() * _colors.length)]
+
+      } else {
+
+        // if colors[i] is defined, we prepare to use its color. Otherwise, the default.
+        var colorStr = _colors[i] ? _colors[i] : chunk.color
+
+        if (!chunk.polygons) {
+          chunk.polygons = []
+        }
+
+        // Otherwise, we default to the colorStr
+        color = 'rgb(' + colorStr + ')'
+      }
+
+      for (const polygon of chunk.polygons) {
+
+        if (oddsOfPolygonVisibility !== undefined &&
+          oddsOfPolygonVisibility < 1 && Math.random() > oddsOfPolygonVisibility) {
+          opacity = '0.0'
+        } else {
+          opacity = '1'
+        }
+
+        setAttribute(polygon.svg, 'opacity', opacity)
+        let localColor = color
+        if (randomness && Math.random() < randomness) {
+          localColor = _colors[Math.floor(Math.random() * _colors.length)]
+        }
+
+        setAttribute(
+          polygon.svg,
+          'fill',
+          localColor)
+          setAttribute(
+            polygon.svg,
+            'stroke',
+            localColor)
+      }
+    }
+    renderScene()
   }
 
-  renderScene(polygons)
+  function dramaticReveal (opts) {
+    viewer.reRender({
+      ...opts,
+      oddsOfPolygonVisibility: 0,
+    })
+
+    recolorStartTime = Date.now()
+    recolorRemaining = recolorDuration
+    recolor(opts)
+  }
+
+  function recolor(opts) {
+    const colorSeed = opts.colorSeed
+
+    const recolorCompleted = Date.now() - recolorStartTime
+    recolorRemaining = recolorDuration - recolorCompleted
+
+    if (recolorRemaining <= 0) {
+      return viewer.reRender(opts)
+    }
+
+    const endTime = recolorDuration + recolorStartTime;
+
+    const fractionComplete = (recolorDuration-recolorRemaining) / recolorDuration
+    const isFirstHalf = fractionComplete < 0.5
+    const negateFirstHalf = isFirstHalf ? 0 : 1
+
+    const oddsOfPolygonVisibility = (((Math.cos(fractionComplete * Math.PI ) / -2)  + 0.5) + negateFirstHalf) / 2
+
+    viewer.reRender({
+      colorSeed: opts.colorSeed,
+      colors: opts.colors,
+      oddsOfPolygonVisibility,
+      colorByBlock: fractionComplete > 0.5,
+      randomness: recolorRemaining / recolorDuration,
+    })
+
+    const delay = ((Math.cos(fractionComplete * Math.PI * 2) / 2) + 0.5) * 150
+    setTimeout(() => {
+      window.requestAnimationFrame(() => recolor(opts))
+    }, delay)
+  }
+
+  renderScene()
 
   return {
     container: container,
@@ -322,5 +473,6 @@ module.exports = function createLogo (options_) {
     stopAnimation: stopAnimation,
     startAnimation: startAnimation,
     reRender: reRender,
+    dramaticReveal: dramaticReveal,
   }
 }

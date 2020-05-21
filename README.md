@@ -28,6 +28,8 @@ var viewer = ModelViewer({
   // head should slowly drift (overrides lookAt)
   slowDrift: false,
 
+  // An optional seed number for uniquely coloring this fox.
+  colorSeed: 123,
 })
 
 // add viewer to DOM
@@ -45,4 +47,15 @@ viewer.setFollowMouse(true)
 
 // deallocate nicely
 viewer.stopAnimation()
+
+viewer.dramaticReveal()
 ```
+
+A `dramaticReveal(opts)` method is available.
+
+This method accepts an options object that is equivalent to the existing `reRender({ colors })` method, except it will perform a dramatic
+animated reveal.
+
+The dramatic animated reveal timing can be adjusted by including an additional option parameter `recolorDuration`, which should be a
+`Number` in miliseconds.
+

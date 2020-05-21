@@ -9,9 +9,9 @@ body{
   font-family: roboto;
 }
 
-div{
-  height:140px;
+div.fox{
   overflow: visible;
+  cursor: none;
 }
 
 svg {
