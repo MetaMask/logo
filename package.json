@@ -4,7 +4,7 @@
   "description": "A browserifyable 3d metamask logo. [Live demo](http://metamask.github.io/metamask-logo/).",
   "main": "index.js",
   "scripts": {
-    "build": "tsc convert2.ts && browserify example/example.js -g uglifyify -o bundle.js",
+    "build": "tsc convert2.ts && node convert2.js && browserify example/example.js -g uglifyify -o bundle.js",
     "start": "wzrd example/example.js:bundle.js",
     "convert": "node convert.js > fox.json",
     "test": "standard index.js"

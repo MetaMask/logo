@@ -130,11 +130,6 @@ module.exports={
       60.055424
     ],
     [
-      38.2486,
-      -67.13163,
-      38.909901
-    ],
-    [
       -12.321624,
       -39.968758,
       139.476212
@@ -143,16 +138,6 @@ module.exports={
       -10.694413,
       -64.844215,
       132.139084
-    ],
-    [
-      17.802099,
-      -74.393341,
-      77.749626
-    ],
-    [
-      19.1243,
-      -71.560905,
-      49.420101
     ],
     [
       38.2486,
@@ -217,7 +202,7 @@ module.exports={
     [
       70.236504,
       61.396553,
-      -7.033077
+      12.995434
     ],
     [
       47.263401,
@@ -258,11 +243,6 @@ module.exports={
       103.65123,
       22.17098,
       25.342825
-    ],
-    [
-      -19.1243,
-      -71.560905,
-      49.420101
     ],
     [
       -38.2486,
@@ -370,16 +350,6 @@ module.exports={
       77.749626
     ],
     [
-      -38.2486,
-      -67.13163,
-      38.909901
-    ],
-    [
-      -17.802099,
-      -74.393341,
-      77.749626
-    ],
-    [
       -15.519303,
       -26.465714,
       136.407211
@@ -412,7 +382,7 @@ module.exports={
     [
       -68.55442,
       61.329212,
-      -6.205668
+      13.822844
     ],
     [
       -28.7302,
@@ -488,52 +458,13 @@ module.exports={
   "chunks": [
     {
       "color": [
-        36,
-        51,
-        67
-      ],
-      "faces": [
-        [
-          11,
-          90,
-          13
-        ],
-        [
-          94,
-          65,
-          93
-        ],
-        [
-          91,
-          90,
-          12
-        ],
-        [
-          94,
-          93,
-          66
-        ],
-        [
-          13,
-          90,
-          91
-        ],
-        [
-          64,
-          65,
-          94
-        ]
-      ]
-    },
-    {
-      "color": [
         226,
         119,
         25
       ],
       "faces": [
         [
-          31,
+          28,
           24,
           18
         ],
@@ -544,338 +475,377 @@ module.exports={
         ],
         [
           16,
-          92,
+          86,
           6
         ],
         [
           24,
-          32,
-          33
+          29,
+          30
         ],
         [
-          33,
-          34,
+          30,
+          31,
           24
         ],
         [
           5,
           4,
-          35
+          32
         ],
         [
           11,
           15,
-          31
+          28
         ],
         [
-          35,
+          32,
           4,
-          42
+          39
         ],
         [
           4,
           1,
-          42
+          39
+        ],
+        [
+          39,
+          40,
+          41
+        ],
+        [
+          41,
+          32,
+          39
         ],
         [
           42,
-          43,
+          40,
+          39
+        ],
+        [
+          39,
+          10,
+          42
+        ],
+        [
+          27,
+          29,
+          24
+        ],
+        [
+          27,
+          30,
+          29
+        ],
+        [
+          30,
+          27,
+          10
+        ],
+        [
+          41,
+          40,
+          43
+        ],
+        [
+          40,
+          42,
           44
         ],
         [
           44,
-          35,
-          42
+          43,
+          40
         ],
         [
           45,
-          43,
-          42
-        ],
-        [
-          42,
-          10,
-          45
-        ],
-        [
-          30,
-          32,
-          24
-        ],
-        [
-          30,
-          33,
-          32
-        ],
-        [
-          33,
-          30,
-          10
-        ],
-        [
           44,
-          43,
-          46
+          42
         ],
         [
-          43,
-          45,
-          47
-        ],
-        [
-          47,
-          46,
-          43
-        ],
-        [
-          48,
-          47,
+          42,
+          27,
           45
         ],
         [
-          45,
-          30,
-          48
-        ],
-        [
-          30,
-          45,
+          27,
+          42,
           10
         ],
         [
-          49,
-          42,
+          46,
+          39,
           0
         ],
         [
           8,
           7,
-          42
+          39
         ],
         [
-          50,
-          42,
+          47,
+          39,
           7
         ],
         [
-          50,
+          47,
           10,
-          42
+          39
         ],
         [
           1,
           0,
-          42
+          39
         ],
         [
-          42,
+          39,
           9,
           8
         ],
         [
-          42,
-          49,
+          39,
+          46,
           9
         ],
         [
-          75,
-          68,
-          71
+          69,
+          64,
+          67
         ],
         [
-          58,
+          54,
+          63,
+          89
+        ],
+        [
+          37,
+          55,
+          54
+        ],
+        [
           67,
-          95
-        ],
-        [
-          40,
-          59,
-          58
+          70,
+          71
         ],
         [
           71,
+          72,
+          67
+        ],
+        [
+          53,
+          55,
+          73
+        ],
+        [
+          73,
+          75,
+          53
+        ],
+        [
+          53,
+          75,
+          52
+        ],
+        [
           76,
-          77
+          73,
+          32
         ],
         [
+          32,
+          41,
+          76
+        ],
+        [
+          75,
+          73,
+          76
+        ],
+        [
+          76,
           77,
-          78,
-          71
+          75
         ],
         [
-          57,
+          78,
           59,
+          75
+        ],
+        [
+          75,
+          77,
+          78
+        ],
+        [
+          41,
+          43,
           79
         ],
         [
           79,
-          81,
-          57
+          76,
+          41
         ],
         [
-          57,
-          81,
-          56
+          67,
+          72,
+          48
         ],
         [
-          82,
-          79,
-          35
-        ],
-        [
-          35,
-          44,
-          82
-        ],
-        [
-          81,
-          79,
-          82
-        ],
-        [
-          82,
-          83,
-          81
-        ],
-        [
-          84,
-          63,
-          81
-        ],
-        [
-          81,
-          83,
-          84
-        ],
-        [
-          44,
-          46,
-          85
-        ],
-        [
-          85,
-          82,
-          44
+          48,
+          72,
+          71
         ],
         [
           71,
-          78,
-          52
+          59,
+          48
         ],
         [
-          52,
-          78,
+          76,
+          79,
           77
         ],
         [
           77,
-          63,
-          52
+          79,
+          80
+        ],
+        [
+          80,
+          78,
+          77
+        ],
+        [
+          81,
+          48,
+          78
+        ],
+        [
+          78,
+          80,
+          81
+        ],
+        [
+          48,
+          59,
+          78
         ],
         [
           82,
-          85,
-          83
-        ],
-        [
-          83,
-          85,
-          86
-        ],
-        [
-          86,
-          84,
-          83
-        ],
-        [
-          87,
-          52,
-          84
-        ],
-        [
-          84,
-          86,
-          87
-        ],
-        [
-          52,
-          63,
-          84
-        ],
-        [
-          88,
-          53,
-          81
-        ],
-        [
-          62,
-          81,
-          60
-        ],
-        [
-          89,
-          60,
-          81
-        ],
-        [
-          89,
-          81,
-          63
-        ],
-        [
-          56,
-          81,
-          53
-        ],
-        [
-          81,
-          62,
-          61
-        ],
-        [
-          81,
-          61,
-          88
-        ],
-        [
-          48,
-          87,
-          86
-        ],
-        [
-          86,
-          47,
-          48
-        ],
-        [
-          47,
-          86,
-          85
-        ],
-        [
-          85,
-          46,
-          47
-        ],
-        [
-          48,
-          30,
-          52
-        ],
-        [
-          52,
-          87,
-          48
+          49,
+          75
         ],
         [
           58,
-          95,
-          40
+          75,
+          56
+        ],
+        [
+          83,
+          56,
+          75
+        ],
+        [
+          83,
+          75,
+          59
+        ],
+        [
+          52,
+          75,
+          49
+        ],
+        [
+          75,
+          58,
+          57
+        ],
+        [
+          75,
+          57,
+          82
+        ],
+        [
+          45,
+          81,
+          80
+        ],
+        [
+          80,
+          44,
+          45
+        ],
+        [
+          44,
+          80,
+          79
+        ],
+        [
+          79,
+          43,
+          44
+        ],
+        [
+          45,
+          27,
+          48
+        ],
+        [
+          48,
+          81,
+          45
+        ],
+        [
+          54,
+          89,
+          37
         ],
         [
           6,
-          92,
+          86,
           17
+        ]
+      ]
+    },
+    {
+      "color": [
+        36,
+        51,
+        67
+      ],
+      "faces": [
+        [
+          11,
+          84,
+          13
+        ],
+        [
+          88,
+          61,
+          87
+        ],
+        [
+          85,
+          84,
+          12
+        ],
+        [
+          88,
+          87,
+          62
+        ],
+        [
+          13,
+          84,
+          85
+        ],
+        [
+          60,
+          61,
+          88
         ]
       ]
     },
@@ -887,74 +857,74 @@ module.exports={
       ],
       "faces": [
         [
-          36,
+          33,
           15,
-          37
+          34
         ],
         [
-          37,
-          38,
-          36
+          34,
+          35,
+          33
         ],
         [
-          31,
-          39,
+          28,
+          36,
           22
         ],
         [
           22,
           21,
-          31
+          28
         ],
         [
-          31,
+          28,
           15,
+          33
+        ],
+        [
+          33,
+          36,
+          28
+        ],
+        [
+          69,
+          65,
+          25
+        ],
+        [
+          25,
+          74,
+          69
+        ],
+        [
+          69,
+          74,
+          35
+        ],
+        [
+          35,
+          34,
+          69
+        ],
+        [
+          35,
+          74,
           36
         ],
         [
           36,
-          39,
-          31
+          33,
+          35
         ],
         [
-          75,
-          69,
-          26
-        ],
-        [
-          26,
-          80,
-          75
-        ],
-        [
-          75,
-          80,
-          38
-        ],
-        [
-          38,
-          37,
-          75
-        ],
-        [
-          38,
-          80,
-          39
-        ],
-        [
-          39,
           36,
-          38
+          74,
+          25
         ],
         [
-          39,
-          80,
-          26
-        ],
-        [
-          26,
+          25,
           22,
-          39
+          36
         ]
       ]
     },
@@ -986,114 +956,64 @@ module.exports={
           20
         ],
         [
+          24,
           23,
-          25,
-          24
+          27
         ],
         [
           19,
           22,
+          25
+        ],
+        [
+          25,
+          26,
+          19
+        ],
+        [
+          26,
+          25,
+          65
+        ],
+        [
+          65,
+          66,
           26
         ],
         [
+          66,
+          67,
+          68
+        ],
+        [
+          68,
           26,
-          27,
-          19
+          66
         ],
         [
-          23,
-          28,
-          29
-        ],
-        [
-          23,
-          29,
-          30
-        ],
-        [
-          24,
-          25,
-          30
-        ],
-        [
-          29,
-          51,
-          52
-        ],
-        [
-          52,
-          30,
-          29
-        ],
-        [
-          27,
-          26,
-          69
-        ],
-        [
-          69,
-          70,
-          27
-        ],
-        [
-          70,
-          71,
-          72
-        ],
-        [
-          72,
-          27,
-          70
-        ],
-        [
-          72,
-          71,
-          73
-        ],
-        [
-          51,
-          74,
-          72
-        ],
-        [
-          52,
-          51,
-          72
-        ],
-        [
-          52,
-          73,
-          71
+          68,
+          67,
+          48
         ],
         [
           19,
-          27,
-          74
+          68,
+          23
         ],
         [
-          74,
-          28,
-          19
-        ],
-        [
-          51,
-          29,
-          28
-        ],
-        [
-          28,
-          74,
-          51
-        ],
-        [
-          74,
-          27,
-          72
-        ],
-        [
-          28,
           23,
-          19
+          48,
+          27
+        ],
+        [
+          23,
+          68,
+          48
+        ],
+        [
+          19,
+          26,
+          68
         ]
       ]
     },
@@ -1111,18 +1031,18 @@ module.exports={
         ],
         [
           24,
-          31,
+          28,
           21
         ],
         [
-          69,
-          71,
-          70
+          65,
+          67,
+          66
         ],
         [
-          71,
-          69,
-          75
+          67,
+          65,
+          69
         ]
       ]
     },
@@ -1136,40 +1056,40 @@ module.exports={
         [
           14,
           16,
-          40
-        ],
-        [
-          40,
-          41,
-          14
-        ],
-        [
-          59,
-          5,
-          35
-        ],
-        [
-          35,
-          79,
-          59
-        ],
-        [
-          14,
-          41,
           37
         ],
         [
           37,
+          38,
+          14
+        ],
+        [
+          55,
+          5,
+          32
+        ],
+        [
+          32,
+          73,
+          55
+        ],
+        [
+          14,
+          38,
+          34
+        ],
+        [
+          34,
           15,
           14
         ],
         [
           5,
-          59,
-          40
+          55,
+          37
         ],
         [
-          40,
+          37,
           16,
           5
         ]
@@ -1184,17 +1104,17 @@ module.exports={
       "faces": [
         [
           17,
-          33,
+          30,
           10
         ],
         [
           17,
           18,
-          34
+          31
         ],
         [
-          34,
-          33,
+          31,
+          30,
           17
         ],
         [
@@ -1203,58 +1123,58 @@ module.exports={
           17
         ],
         [
-          31,
+          28,
           18,
           11
         ],
         [
           18,
           12,
-          90
-        ],
-        [
-          67,
-          63,
-          77
-        ],
-        [
-          67,
-          77,
-          76
-        ],
-        [
-          76,
-          68,
-          67
+          84
         ],
         [
           63,
-          67,
-          58
+          59,
+          71
+        ],
+        [
+          63,
+          71,
+          70
+        ],
+        [
+          70,
+          64,
+          63
+        ],
+        [
+          59,
+          63,
+          54
+        ],
+        [
+          60,
+          64,
+          69
+        ],
+        [
+          69,
+          34,
+          60
         ],
         [
           64,
-          68,
-          75
+          60,
+          88
         ],
         [
-          75,
-          37,
-          64
-        ],
-        [
-          68,
           64,
-          94
-        ],
-        [
-          68,
-          94,
-          66
+          88,
+          62
         ],
         [
           18,
-          90,
+          84,
           11
         ]
       ]
@@ -1269,12 +1189,12 @@ module.exports={
         [
           16,
           13,
-          91
+          85
         ],
         [
           12,
-          92,
-          91
+          86,
+          85
         ],
         [
           13,
@@ -1282,39 +1202,39 @@ module.exports={
           11
         ],
         [
-          66,
-          95,
-          67
+          62,
+          89,
+          63
         ],
         [
-          93,
-          65,
-          40
+          87,
+          61,
+          37
         ],
         [
-          65,
-          64,
-          40
+          61,
+          60,
+          37
         ],
         [
-          91,
-          92,
+          85,
+          86,
           16
         ],
         [
-          40,
-          95,
-          93
+          37,
+          89,
+          87
         ],
         [
-          93,
-          95,
-          66
+          87,
+          89,
+          62
         ],
         [
           12,
           17,
-          92
+          86
         ]
       ]
     },
@@ -1327,13 +1247,13 @@ module.exports={
       "faces": [
         [
           24,
-          34,
+          31,
           18
         ],
         [
-          71,
-          68,
-          76
+          67,
+          64,
+          70
         ]
       ]
     },
@@ -1360,19 +1280,19 @@ module.exports={
           18
         ],
         [
-          41,
-          64,
+          38,
+          60,
+          34
+        ],
+        [
+          60,
+          38,
           37
         ],
         [
+          63,
           64,
-          41,
-          40
-        ],
-        [
-          67,
-          68,
-          66
+          62
         ]
       ]
     },
@@ -1420,7 +1340,7 @@ module.exports={
         ],
         [
           10,
-          50,
+          47,
           7
         ],
         [
@@ -1434,7 +1354,7 @@ module.exports={
           3
         ],
         [
-          49,
+          46,
           0,
           9
         ],
@@ -1444,64 +1364,64 @@ module.exports={
           0
         ],
         [
+          49,
+          50,
+          51
+        ],
+        [
+          51,
+          52,
+          49
+        ],
+        [
           53,
+          52,
+          51
+        ],
+        [
           54,
-          55
-        ],
-        [
           55,
-          56,
-          53
+          51
         ],
         [
+          51,
+          50,
+          54
+        ],
+        [
+          56,
           57,
-          56,
-          55
-        ],
-        [
-          58,
-          59,
-          55
-        ],
-        [
-          55,
-          54,
           58
         ],
         [
-          60,
-          61,
-          62
-        ],
-        [
-          63,
-          58,
-          54
-        ],
-        [
-          63,
-          60,
-          89
-        ],
-        [
-          60,
-          63,
-          54
-        ],
-        [
-          60,
+          59,
           54,
-          61
+          50
         ],
         [
-          88,
-          61,
-          53
+          59,
+          56,
+          83
         ],
         [
-          54,
-          53,
-          61
+          56,
+          59,
+          50
+        ],
+        [
+          56,
+          50,
+          57
+        ],
+        [
+          82,
+          57,
+          49
+        ],
+        [
+          50,
+          49,
+          57
         ],
         [
           2,
@@ -1509,35 +1429,16 @@ module.exports={
           4
         ],
         [
+          51,
           55,
-          59,
-          57
-        ]
-      ]
-    },
-    {
-      "color": [
-        241,
-        210,
-        187
-      ],
-      "faces": [
-        [
-          25,
-          23,
-          30
-        ],
-        [
-          73,
-          52,
-          72
+          53
         ]
       ]
     }
   ]
 }
 },{}],3:[function(require,module,exports){
-var perspective=require("gl-mat4/perspective"),multiply=require("gl-mat4/multiply"),lookAt=require("gl-mat4/lookAt"),invert=require("gl-mat4/invert"),rotate=require("gl-mat4/rotate"),transform=require("gl-vec3/transformMat4"),foxJSON=require("./fox.json"),SVG_NS="http://www.w3.org/2000/svg";function createNode(t){return document.createElementNS(SVG_NS,t)}function setAttribute(t,e,n){t.setAttributeNS(null,e,n)}module.exports=function(t){var e=t||{},n=!!e.followMouse,r=!!e.slowDrift,i=!0,o=[0,0],a=.3,l=e.width||400,u=e.height||400,s=createNode("svg"),h={x:0,y:0},f=foxJSON.positions.length,d=new Float32Array(3*f),c=new Float32Array(3*f),w=[];function g(t){var e=s.getBoundingClientRect();h.x=1-2*(t.x-e.left)/e.width,h.y=1-2*(t.y-e.top)/e.height}function v(t,e){this.svg=t,this.indices=e,this.zIndex=0}e.pxNotRatio||(l=window.innerWidth*(e.width||.25)|0,u=0|(window.innerHeight*e.height||l),"minWidth"in e&&l<e.minWidth&&(l=e.minWidth,u=e.minWidth*e.height/e.width|0)),setAttribute(s,"width",l+"px"),setAttribute(s,"height",u+"px"),document.body.appendChild(s),function(){for(var t=foxJSON.positions,e=0,n=0;n<t.length;++n)for(var r=t[n],i=0;i<3;++i)d[e++]=r[i]}();var m=function(t=[]){for(var e=[],n=0;n<foxJSON.chunks.length;++n)for(var r=foxJSON.chunks[n],i="rgb("+t[n]||r.color+")",o=r.faces,a=0;a<o.length;++a){var l=o[a],u=createNode("polygon");setAttribute(u,"fill",i),setAttribute(u,"stroke",i),setAttribute(u,"points","0,0, 10,0, 0,10"),s.appendChild(u),e.push(new v(u,l))}return e},p=m(e.colors),A=function(){var t=new Float32Array(3),e=new Float32Array([0,1,0]),n=new Float32Array(16),i=new Float32Array(16),a=lookAt(new Float32Array(16),new Float32Array([0,0,400]),t,e),l=invert(new Float32Array(16),a),u=new Float32Array(16),h=new Float32Array(3),f=new Float32Array(16),d=new Float32Array([1,0,0]),c=new Float32Array([0,1,0]),w=new Float32Array([0,0,1]);return function(){var g=s.getBoundingClientRect(),v=g.width,m=g.height;if(perspective(n,Math.PI/4,v/m,100,1e3),invert(u,n),h[0]=o[0],h[1]=o[1],h[2]=1.2,transform(h,h,u),transform(h,h,l),lookAt(i,t,h,e),r){var p=Date.now()/1e3;rotate(i,i,.1+.2*Math.sin(p/3),d),rotate(i,i,.03*Math.sin(p/2)-.1,w),rotate(i,i,.5+.2*Math.sin(p/3),c)}return multiply(f,n,a),multiply(f,f,i),f}}();function y(t,e){return e.zIndex-t.zIndex}function x(){i=!1}function F(){i=!0}function N(){if(i){window.requestAnimationFrame(N);var t=1-a;s.getBoundingClientRect();o[0]=t*o[0]+a*h.x,o[1]=t*o[1]+a*h.y+.085,!function(t){for(var e=t[0],n=t[1],r=t[2],i=t[3],o=t[4],a=t[5],l=t[6],u=t[7],s=t[8],h=t[9],w=t[10],g=t[11],v=t[12],m=t[13],p=t[14],A=t[15],y=0;y<f;++y){var x=d[3*y],F=d[3*y+1],N=d[3*y+2],b=x*i+F*u+N*g+A;c[3*y]=(x*e+F*o+N*s+v)/b,c[3*y+1]=(x*n+F*a+N*h+m)/b,c[3*y+2]=(x*r+F*l+N*w+p)/b}}(A()),function(t){var e,n=s.getBoundingClientRect(),r=n.width,i=n.height;for(w.length=0,t=t||p,e=0;e<t.length;++e){var o=t[e],a=o.indices,l=a[0],u=a[1],h=a[2],f=c[3*l],d=c[3*l+1],g=c[3*u],v=c[3*u+1],m=c[3*h];if(!((g-f)*(c[3*h+1]-d)-(v-d)*(m-f)<0)){for(var A=[],x=-1/0,F=1/0,N=o.svg,b=0;b<3;++b){var M=a[b];A.push(.5*r*(1-c[3*M])+","+.5*i*(1-c[3*M+1]));var S=c[3*M+2];x=Math.max(x,S),F=Math.min(F,S)}o.zIndex=x+.25*F;var k=A.join(" ");-1===k.indexOf("NaN")&&setAttribute(N,"points",k),w.push(o)}}for(w.sort(y),s.innerHTML="",e=0;e<w.length;++e)s.appendChild(w[e].svg)}(p),x()}}return window.addEventListener("mousemove",function(t){i||F(),n&&(g({x:t.clientX,y:t.clientY}),N())}),window.addEventListener("deviceorientation",function(t){if(i||F(),followMotion){const e=10;g({x:200+t.gamma*e,y:-300+t.beta*e}),N()}}),N(),{container:s,lookAt:g,setFollowMouse:function(t){n=t},stopAnimation:x,startAnimation:F,reRender:function(t){p=m(t),N()}}};
+var perspective=require("gl-mat4/perspective"),multiply=require("gl-mat4/multiply"),lookAt=require("gl-mat4/lookAt"),invert=require("gl-mat4/invert"),rotate=require("gl-mat4/rotate"),transform=require("gl-vec3/transformMat4"),foxJSON=require("./fox.json"),SVG_NS="http://www.w3.org/2000/svg";function createNode(t){return document.createElementNS(SVG_NS,t)}function setAttribute(t,e,n){t.setAttributeNS(null,e,n)}module.exports=function(t){var e=t||{},n=!!e.followMouse,o=!!e.slowDrift,r=!0,i=[0,0],a=.3,l=e.width||400,s=e.height||400,u=createNode("svg"),h={x:0,y:0},c=foxJSON.positions.length,f=new Float32Array(3*c),d=new Float32Array(3*c),g=[];function w(t){var e=u.getBoundingClientRect();h.x=1-2*(t.x-e.left)/e.width,h.y=1-2*(t.y-e.top)/e.height}function v(t,e){this.svg=t,this.indices=e,this.zIndex=0}e.pxNotRatio||(l=window.innerWidth*(e.width||.25)|0,s=0|(window.innerHeight*e.height||l),"minWidth"in e&&l<e.minWidth&&(l=e.minWidth,s=e.minWidth*e.height/e.width|0)),setAttribute(u,"width",l+"px"),setAttribute(u,"height",s+"px"),document.body.appendChild(u),function(){for(var t=foxJSON.positions,e=0,n=0;n<t.length;++n)for(var o=t[n],r=0;r<3;++r)f[e++]=o[r]}();var p=function(t=[]){console.log("generating polygons with colors: ",t);for(var e=[],n=0;n<foxJSON.chunks.length;++n){var o=foxJSON.chunks[n];console.log("otherwise falling back to ",o.color);var r="rgb("+(Boolean(t[n])?t[n]:o.color)+")";console.log(r);for(var i=o.faces,a=0;a<i.length;++a){var l=i[a],s=createNode("polygon");setAttribute(s,"fill",r),setAttribute(s,"stroke",r),setAttribute(s,"points","0,0, 10,0, 0,10"),u.appendChild(s),e.push(new v(s,l))}}return e},m=p(e.colors),A=function(){var t=new Float32Array(3),e=new Float32Array([0,1,0]),n=new Float32Array(16),r=new Float32Array(16),a=lookAt(new Float32Array(16),new Float32Array([0,0,400]),t,e),l=invert(new Float32Array(16),a),s=new Float32Array(16),h=new Float32Array(3),c=new Float32Array(16),f=new Float32Array([1,0,0]),d=new Float32Array([0,1,0]),g=new Float32Array([0,0,1]);return function(){var w=u.getBoundingClientRect(),v=w.width,p=w.height;if(perspective(n,Math.PI/4,v/p,100,1e3),invert(s,n),h[0]=i[0],h[1]=i[1],h[2]=1.2,transform(h,h,s),transform(h,h,l),lookAt(r,t,h,e),o){var m=Date.now()/1e3;rotate(r,r,.1+.2*Math.sin(m/3),f),rotate(r,r,.03*Math.sin(m/2)-.1,g),rotate(r,r,.5+.2*Math.sin(m/3),d)}return multiply(c,n,a),multiply(c,c,r),c}}();function y(t,e){return e.zIndex-t.zIndex}function x(){r=!1}function F(){r=!0}function N(){if(r){window.requestAnimationFrame(N);var t=1-a;u.getBoundingClientRect();i[0]=t*i[0]+a*h.x,i[1]=t*i[1]+a*h.y+.085,!function(t){for(var e=t[0],n=t[1],o=t[2],r=t[3],i=t[4],a=t[5],l=t[6],s=t[7],u=t[8],h=t[9],g=t[10],w=t[11],v=t[12],p=t[13],m=t[14],A=t[15],y=0;y<c;++y){var x=f[3*y],F=f[3*y+1],N=f[3*y+2],b=x*r+F*s+N*w+A;d[3*y]=(x*e+F*i+N*u+v)/b,d[3*y+1]=(x*n+F*a+N*h+p)/b,d[3*y+2]=(x*o+F*l+N*g+m)/b}}(A()),function(t){var e,n=u.getBoundingClientRect(),o=n.width,r=n.height;for(g.length=0,t=t||m,e=0;e<t.length;++e){var i=t[e],a=i.indices,l=a[0],s=a[1],h=a[2],c=d[3*l],f=d[3*l+1],w=d[3*s],v=d[3*s+1],p=d[3*h];if(!((w-c)*(d[3*h+1]-f)-(v-f)*(p-c)<0)){for(var A=[],x=-1/0,F=1/0,N=i.svg,b=0;b<3;++b){var M=a[b];A.push(.5*o*(1-d[3*M])+","+.5*r*(1-d[3*M+1]));var S=d[3*M+2];x=Math.max(x,S),F=Math.min(F,S)}i.zIndex=x+.25*F;var k=A.join(" ");-1===k.indexOf("NaN")&&setAttribute(N,"points",k),g.push(i)}}for(g.sort(y),u.innerHTML="",e=0;e<g.length;++e)u.appendChild(g[e].svg)}(m),x()}}return window.addEventListener("mousemove",function(t){r||F(),n&&(w({x:t.clientX,y:t.clientY}),N())}),window.addEventListener("deviceorientation",function(t){if(r||F(),followMotion){const e=10;w({x:200+t.gamma*e,y:-300+t.beta*e}),N()}}),N(),{container:u,lookAt:w,setFollowMouse:function(t){n=t},stopAnimation:x,startAnimation:F,reRender:function(t){m=p(t),N()}}};
 
 },{"./fox.json":2,"gl-mat4/invert":6,"gl-mat4/lookAt":7,"gl-mat4/multiply":8,"gl-mat4/perspective":9,"gl-mat4/rotate":10,"gl-vec3/transformMat4":11}],4:[function(require,module,exports){
 "use strict";var deselectCurrent=require("toggle-selection"),defaultMessage="Copy to clipboard: #{key}, Enter";function format(e){var t=(/mac os x/i.test(navigator.userAgent)?"⌘":"Ctrl")+"+C";return e.replace(/#{\s*key\s*}/g,t)}function copy(e,t){var o,r,n,c,s,a,l=!1;t||(t={}),o=t.debug||!1;try{if(n=deselectCurrent(),c=document.createRange(),s=document.getSelection(),(a=document.createElement("span")).textContent=e,a.style.all="unset",a.style.position="fixed",a.style.top=0,a.style.clip="rect(0, 0, 0, 0)",a.style.whiteSpace="pre",a.style.webkitUserSelect="text",a.style.MozUserSelect="text",a.style.msUserSelect="text",a.style.userSelect="text",document.body.appendChild(a),c.selectNode(a),s.addRange(c),!document.execCommand("copy"))throw new Error("copy command was unsuccessful");l=!0}catch(n){o&&console.error("unable to copy using execCommand: ",n),o&&console.warn("trying IE specific stuff");try{window.clipboardData.setData("text",e),l=!0}catch(n){o&&console.error("unable to copy using clipboardData: ",n),o&&console.error("falling back to prompt"),r=format("message"in t?t.message:defaultMessage),window.prompt(r,e)}}finally{s&&("function"==typeof s.removeRange?s.removeRange(c):s.removeAllRanges()),a&&document.body.removeChild(a),n()}return l}module.exports=copy;
