@@ -292,6 +292,18 @@ module.exports = function createLogo (options_) {
     }
   })
 
+  function lookAtAndRender (target) {
+    setLookAt(target)
+
+    lookCurrent[0] = mouse.x
+    lookCurrent[1] = mouse.y + (0.085 / lookRate)
+
+    var matrix = computeMatrix()
+    updatePositions(matrix)
+    updateFaces()
+    stopAnimation()
+  }
+
   function renderScene () {
     if (!shouldRender) return
     window.requestAnimationFrame(renderScene)
@@ -317,5 +329,6 @@ module.exports = function createLogo (options_) {
     setFollowMotion: setFollowMotion,
     stopAnimation: stopAnimation,
     startAnimation: startAnimation,
+    lookAtAndRender: lookAtAndRender,
   }
 }
