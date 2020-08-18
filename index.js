@@ -292,8 +292,8 @@ module.exports = function createLogo (options_) {
     }
   })
 
-  function renderScene (externallyTriggeredRerender) {
-    if (!externallyTriggeredRerender && !shouldRender) return
+  function renderScene () {
+    if (!shouldRender) return
     window.requestAnimationFrame(renderScene)
 
     var li = (1.0 - lookRate)
@@ -317,6 +317,5 @@ module.exports = function createLogo (options_) {
     setFollowMotion: setFollowMotion,
     stopAnimation: stopAnimation,
     startAnimation: startAnimation,
-    renderScene: renderScene,
   }
 }
