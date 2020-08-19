@@ -69,7 +69,8 @@ module.exports = function createLogo (options_) {
     for (let i = 0; i < pp.length; ++i) {
       const p = pp[i]
       for (let j = 0; j < 3; ++j) {
-        positions[ptr++] = p[j]
+        positions[ptr] = p[j]
+        ptr += 1
       }
     }
   })()
@@ -81,7 +82,7 @@ module.exports = function createLogo (options_) {
   }
 
   const polygons = (function () {
-    const polygons = []
+    const _polygons = []
     for (let i = 0; i < foxJSON.chunks.length; ++i) {
       const chunk = foxJSON.chunks[i]
       const color = `rgb(${chunk.color})`
@@ -105,10 +106,10 @@ module.exports = function createLogo (options_) {
           '0,0, 10,0, 0,10',
         )
         container.appendChild(polygon)
-        polygons.push(new Polygon(polygon, f))
+        _polygons.push(new Polygon(polygon, f))
       }
     }
-    return polygons
+    return _polygons
   })()
 
   const computeMatrix = (function () {
@@ -125,7 +126,7 @@ module.exports = function createLogo (options_) {
     const invView = invert(new Float32Array(16), view)
     const invProjection = new Float32Array(16)
     const target = new Float32Array(3)
-    const transformed = new Float32Array(16)
+    const transformedMatrix = new Float32Array(16)
 
     const X = new Float32Array([1, 0, 0])
     const Y = new Float32Array([0, 1, 0])
@@ -161,10 +162,10 @@ module.exports = function createLogo (options_) {
         rotate(model, model, 0.5 + (Math.sin(time / 3) * 0.2), Y)
       }
 
-      multiply(transformed, projection, view)
-      multiply(transformed, transformed, model)
+      multiply(transformedMatrix, projection, view)
+      multiply(transformedMatrix, transformedMatrix, model)
 
-      return transformed
+      return transformedMatrix
     }
   })()
 
@@ -328,7 +329,6 @@ module.exports = function createLogo (options_) {
     window.requestAnimationFrame(renderScene)
 
     const li = (1.0 - lookRate)
-    const bounds = container.getBoundingClientRect()
 
     lookCurrent[0] = li * lookCurrent[0] + lookRate * mouse.x
     lookCurrent[1] = li * lookCurrent[1] + lookRate * mouse.y + 0.085

@@ -10,13 +10,13 @@ function parseMTL (mtl) {
       if (line.charAt(0) !== '\t') {
         return
       }
-      const toks = line.split(/\s+/).slice(1)
-      const label = toks[0]
+      const toks = line.split(/\s+/u).slice(1)
+      const tokenLabel = toks[0]
       const data = toks.slice(1)
       if (data.length === 1) {
-        props[label] = Number(data[0])
+        props[tokenLabel] = Number(data[0])
       } else {
-        props[label] = data.map(function (x) {
+        props[tokenLabel] = data.map(function (x) {
           return Math.sqrt(x).toPrecision(4)
         })
       }
@@ -37,11 +37,12 @@ function parseOBJ (obj) {
   let currentMTL
 
   lines.forEach(function (line) {
-    const toks = line.split(/\s+/)
+    const toks = line.split(/\s+/u)
     if (toks.length === 0) {
       return
     }
 
+    let f
     switch (toks[0]) {
       case 'v':
         positions.push(toks.slice(1, 4).map(function (p) {
@@ -55,13 +56,15 @@ function parseOBJ (obj) {
         }
         break
       case 'f':
-        var f = toks.slice(1, 4).map(function (tuple) {
+        f = toks.slice(1, 4).map(function (tuple) {
           return (tuple.split('/')[0] | 0) - 1
         })
         if (f[0] !== f[1] && f[1] !== f[2] && f[2] !== f[0]) {
           faceGroups[currentMTL].push(f)
         }
         break
+      default:
+        throw new Error('Unrecognized token.')
     }
   })
 
@@ -69,7 +72,7 @@ function parseOBJ (obj) {
   Object.keys(faceGroups).forEach(function (name) {
     const material = mtl[name]
     chunks.push({
-      color: material.Ka.map(function (c, i) {
+      color: material.Ka.map(function (c) {
         return (255 * c) | 0
       }),
       faces: faceGroups[name],
