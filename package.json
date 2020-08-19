@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "build": "browserify example/example.js -g uglifyify -o bundle.js",
-    "convert": "node convert.js > fox.json"
+    "convert": "node convert.js > fox.json",
+    "lint": "eslint . --ext js,json",
+    "lint:fix": "yarn lint --fix"
   },
   "author": "MetaMask",
   "license": "ISC",
@@ -14,8 +16,12 @@
     "gl-vec3": "1.0.3"
   },
   "devDependencies": {
+    "@metamask/eslint-config": "^3.1.0",
     "browserify": "^16.5.2",
     "copy-to-clipboard": "^3.0.5",
+    "eslint": "^7.7.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-json": "^2.1.2",
     "uglifyify": "^5.0.2"
   },
   "repository": {
