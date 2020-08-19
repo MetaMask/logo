@@ -7,6 +7,9 @@
     "build": "browserify example/example.js -g uglifyify -o bundle.js",
     "convert": "node convert.js > fox.json"
   },
+  "files": [
+    "bundle.js"
+  ],
   "author": "MetaMask",
   "license": "ISC",
   "dependencies": {
