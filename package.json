@@ -5,20 +5,17 @@
   "main": "index.js",
   "scripts": {
     "build": "browserify example/example.js -g uglifyify -o bundle.js",
-    "convert": "node convert.js > fox.json",
-    "test": "standard index.js"
+    "convert": "node convert.js > fox.json"
   },
   "author": "MetaMask",
   "license": "ISC",
   "dependencies": {
-    "ecstatic": "^4.1.4",
     "gl-mat4": "1.1.4",
     "gl-vec3": "1.0.3"
   },
   "devDependencies": {
-    "browserify": "^16.2.2",
+    "browserify": "^16.5.2",
     "copy-to-clipboard": "^3.0.5",
-    "standard": "^14.3.1",
     "uglifyify": "^5.0.2"
   },
   "repository": {
