@@ -46,3 +46,8 @@ viewer.setFollowMouse(true)
 // deallocate nicely
 viewer.stopAnimation()
 ```
+
+## Running Example
+
+First, rebuild `browserify example/example.js -o bundle.js`.
+Then, run a local server in this folder and visit it. For example, `http-server`.
