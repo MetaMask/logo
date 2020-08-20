@@ -13,7 +13,10 @@
     "bundle.js",
     "fox.json"
   ],
-  "private": false,
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
   "author": "MetaMask",
   "license": "ISC",
   "dependencies": {
