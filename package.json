@@ -13,6 +13,7 @@
     "bundle.js",
     "fox.json"
   ],
+  "private": false,
   "author": "MetaMask",
   "license": "ISC",
   "dependencies": {
