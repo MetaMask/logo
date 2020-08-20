@@ -64,7 +64,7 @@ function parseOBJ (obj) {
         }
         break
       default:
-        throw new Error('Unrecognized token.')
+        break
     }
   })
 
