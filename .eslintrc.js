@@ -20,7 +20,6 @@ module.exports = {
   ],
   rules: {
     'no-bitwise': 'off',
-    'no-mixed-operators': 'off',
     'prefer-destructuring': [
       'error', { 'array': false, 'object': true },
     ],
