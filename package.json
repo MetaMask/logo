@@ -8,7 +8,7 @@
     "convert": "node convert.js > fox.json"
   },
   "files": [
-    "bundle.js"
+    "fox.json"
   ],
   "author": "MetaMask",
   "license": "ISC",
