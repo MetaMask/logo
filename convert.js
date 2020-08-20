@@ -1,22 +1,22 @@
-var fs = require('fs')
+const fs = require('fs')
 
 function parseMTL (mtl) {
-  var output = {}
+  const output = {}
   mtl.split('newmtl ').slice(1).forEach(function (block) {
-    var lines = block.split('\r\n')
-    var label = lines[0]
-    var props = {}
+    const lines = block.split('\r\n')
+    const label = lines[0]
+    const props = {}
     lines.slice(1).forEach(function (line) {
       if (line.charAt(0) !== '\t') {
         return
       }
-      var toks = line.split(/\s+/).slice(1)
-      var label = toks[0]
-      var data = toks.slice(1)
+      const toks = line.split(/\s+/u).slice(1)
+      const tokenLabel = toks[0]
+      const data = toks.slice(1)
       if (data.length === 1) {
-        props[label] = +data[0]
+        props[tokenLabel] = Number(data[0])
       } else {
-        props[label] = data.map(function (x) {
+        props[tokenLabel] = data.map(function (x) {
           return Math.sqrt(x).toPrecision(4)
         })
       }
@@ -27,25 +27,26 @@ function parseMTL (mtl) {
   return output
 }
 
-var mtl = parseMTL(fs.readFileSync('fox.mtl').toString('utf8'))
+const mtl = parseMTL(fs.readFileSync('fox.mtl').toString('utf8'))
 
 function parseOBJ (obj) {
-  var lines = obj.split('\r\n')
+  const lines = obj.split('\r\n')
 
-  var positions = []
-  var faceGroups = {}
-  var currentMTL
+  const positions = []
+  const faceGroups = {}
+  let currentMTL
 
   lines.forEach(function (line) {
-    var toks = line.split(/\s+/)
+    const toks = line.split(/\s+/u)
     if (toks.length === 0) {
       return
     }
 
+    let f
     switch (toks[0]) {
       case 'v':
         positions.push(toks.slice(1, 4).map(function (p) {
-          return +p
+          return Number(p)
         }))
         break
       case 'usemtl':
@@ -55,33 +56,35 @@ function parseOBJ (obj) {
         }
         break
       case 'f':
-        var f = toks.slice(1, 4).map(function (tuple) {
+        f = toks.slice(1, 4).map(function (tuple) {
           return (tuple.split('/')[0] | 0) - 1
         })
         if (f[0] !== f[1] && f[1] !== f[2] && f[2] !== f[0]) {
           faceGroups[currentMTL].push(f)
         }
         break
+      default:
+        break
     }
   })
 
-  var chunks = []
+  const chunks = []
   Object.keys(faceGroups).forEach(function (name) {
-    var material = mtl[name]
+    const material = mtl[name]
     chunks.push({
-      color: material.Ka.map(function (c, i) {
+      color: material.Ka.map(function (c) {
         return (255 * c) | 0
       }),
-      faces: faceGroups[name]
+      faces: faceGroups[name],
     })
   })
 
   return {
-    positions: positions,
-    chunks: chunks
+    positions,
+    chunks,
   }
 }
 
-var obj = parseOBJ(fs.readFileSync('fox.obj').toString('utf8'))
+const obj = parseOBJ(fs.readFileSync('fox.obj').toString('utf8'))
 
 console.log(JSON.stringify(obj, null, 2))
