@@ -58,8 +58,8 @@ module.exports = function createLogo (options_) {
 
   function setLookAt (target) {
     const bounds = container.getBoundingClientRect()
-    mouse.x = 1.0 - 2.0 * (target.x - bounds.left) / bounds.width
-    mouse.y = 1.0 - 2.0 * (target.y - bounds.top) / bounds.height
+    mouse.x = 1.0 - ((2.0 * (target.x - bounds.left)) / bounds.width)
+    mouse.y = 1.0 - ((2.0 * (target.y - bounds.top)) / bounds.height)
   }
 
   document.body.appendChild(container);
@@ -189,16 +189,16 @@ module.exports = function createLogo (options_) {
 
     for (let i = 0; i < NUM_VERTS; ++i) {
       const x = positions[3 * i]
-      const y = positions[3 * i + 1]
-      const z = positions[3 * i + 2]
+      const y = positions[(3 * i) + 1]
+      const z = positions[(3 * i) + 2]
 
-      const tw = x * m03 + y * m13 + z * m23 + m33
+      const tw = (x * m03) + (y * m13) + (z * m23) + m33
       transformed[3 * i] =
-        (x * m00 + y * m10 + z * m20 + m30) / tw
-      transformed[3 * i + 1] =
-        (x * m01 + y * m11 + z * m21 + m31) / tw
-      transformed[3 * i + 2] =
-        (x * m02 + y * m12 + z * m22 + m32) / tw
+        ((x * m00) + (y * m10) + (z * m20) + m30) / tw
+      transformed[(3 * i) + 1] =
+        ((x * m01) + (y * m11) + (z * m21) + m31) / tw
+      transformed[(3 * i) + 2] =
+        ((x * m02) + (y * m12) + (z * m22) + m32) / tw
     }
   }
 
@@ -220,12 +220,12 @@ module.exports = function createLogo (options_) {
       const i1 = indices[1]
       const i2 = indices[2]
       const ax = transformed[3 * i0]
-      const ay = transformed[3 * i0 + 1]
+      const ay = transformed[(3 * i0) + 1]
       const bx = transformed[3 * i1]
-      const by = transformed[3 * i1 + 1]
+      const by = transformed[(3 * i1) + 1]
       const cx = transformed[3 * i2]
-      const cy = transformed[3 * i2 + 1]
-      const det = (bx - ax) * (cy - ay) - (by - ay) * (cx - ax)
+      const cy = transformed[(3 * i2) + 1]
+      const det = ((bx - ax) * (cy - ay)) - ((by - ay) * (cx - ax))
       if (det < 0) {
         continue
       }
@@ -238,13 +238,13 @@ module.exports = function createLogo (options_) {
         const idx = indices[j]
         points.push(
           `${0.5 * w * (1.0 - transformed[3 * idx])},${
-            0.5 * h * (1.0 - transformed[3 * idx + 1])}`,
+            0.5 * h * (1.0 - transformed[(3 * idx) + 1])}`,
         )
-        const z = transformed[3 * idx + 2]
+        const z = transformed[(3 * idx) + 2]
         zmax = Math.max(zmax, z)
         zmin = Math.min(zmin, z)
       }
-      poly.zIndex = zmax + 0.25 * zmin
+      poly.zIndex = zmax + (0.25 * zmin)
       const joinedPoints = points.join(' ')
 
       if (joinedPoints.indexOf('NaN') === -1) {
@@ -303,8 +303,8 @@ module.exports = function createLogo (options_) {
       const acceleration = 10
 
       setLookAt({
-        x: xOffset + leftToRight * acceleration,
-        y: yOffset + frontToBack * acceleration,
+        x: xOffset + (leftToRight * acceleration),
+        y: yOffset + (frontToBack * acceleration),
       })
       renderScene()
     }
@@ -330,8 +330,8 @@ module.exports = function createLogo (options_) {
 
     const li = (1.0 - lookRate)
 
-    lookCurrent[0] = li * lookCurrent[0] + lookRate * mouse.x
-    lookCurrent[1] = li * lookCurrent[1] + lookRate * mouse.y + 0.085
+    lookCurrent[0] = (li * lookCurrent[0]) + (lookRate * mouse.x)
+    lookCurrent[1] = (li * lookCurrent[1]) + (lookRate * mouse.y) + 0.085
 
     const matrix = computeMatrix()
     updatePositions(matrix)
