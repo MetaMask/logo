@@ -9,6 +9,10 @@
     "lint": "eslint . --ext js,json",
     "lint:fix": "yarn lint --fix"
   },
+  "files": [
+    "bundle.js",
+    "fox.json"
+  ],
   "author": "MetaMask",
   "license": "ISC",
   "dependencies": {
