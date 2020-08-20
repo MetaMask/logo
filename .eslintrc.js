@@ -20,8 +20,5 @@ module.exports = {
   ],
   rules: {
     'no-bitwise': 'off',
-    'prefer-destructuring': [
-      'error', { 'array': false, 'object': true },
-    ],
   },
 }
