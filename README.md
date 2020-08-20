@@ -1,6 +1,6 @@
 # Metamask Logo
 
-A browserifyable 3d metamask logo. [Live demo](http://metamask.github.io/metamask-logo/).
+A browserifyable 3d metamask logo. [Live demo](http://metamask.github.io/MetaMask/logo/).
 
 This repo can both be included as a browserifiable module, and includes a sample app.
 
@@ -8,11 +8,12 @@ The sample app address is `index.html`.
 The sample app javascript is `bundle.js`, which is built from `sample.js` using the `build` task (see the `package.json`).
 
 ## API
+
 ```javascript
-var ModelViewer = require('metamask-logo')
+const ModelViewer = require('@metamask/logo')
 
 // To render with fixed dimensions:
-var viewer = ModelViewer({
+const viewer = ModelViewer({
 
   // Dictates whether width & height are px or multiplied
   pxNotRatio: true,
@@ -31,7 +32,7 @@ var viewer = ModelViewer({
 })
 
 // add viewer to DOM
-var container = document.getElementById('logo-container')
+const container = document.getElementById('logo-container')
 container.appendChild(viewer.container)
 
 // look at something on the page

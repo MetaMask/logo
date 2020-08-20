@@ -1,7 +1,7 @@
 {
-  "name": "metamask-logo",
+  "name": "@metamask/logo",
   "version": "2.5.0",
-  "description": "A browserifyable 3d metamask logo. [Live demo](http://metamask.github.io/metamask-logo/).",
+  "description": "A browserifyable 3d metamask logo. [Live demo](http://metamask.github.io/logo/).",
   "main": "index.js",
   "scripts": {
     "build": "browserify example/example.js -g uglifyify -o bundle.js",
@@ -30,10 +30,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MetaMask/metamask-logo.git"
+    "url": "git+https://github.com/MetaMask/logo.git"
   },
   "bugs": {
-    "url": "https://github.com/MetaMask/metamask-logo/issues"
+    "url": "https://github.com/MetaMask/logo/issues"
   },
-  "homepage": "https://github.com/MetaMask/metamask-logo#readme"
+  "homepage": "https://github.com/MetaMask/logo#readme"
 }
