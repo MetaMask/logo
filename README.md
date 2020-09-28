@@ -1,6 +1,6 @@
 # Metamask Logo
 
-A browserifyable 3d metamask logo. [Live demo](http://metamask.github.io/MetaMask/logo/).
+A browserifyable 3d metamask logo. [Live demo](https://metamask.github.io/MetaMask/logo/).
 
 This repo can both be included as a browserifiable module, and includes a sample app.
 
