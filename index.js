@@ -96,7 +96,7 @@ module.exports = function createLogo (options_) {
         setAttribute(
           polygon,
           'style',
-          'stroke:none; fill: #ffffff',
+          'stroke:#ffffff; fill: #ffffff',
         )
         // setAttribute(
         //   polygon,
