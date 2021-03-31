@@ -1,5 +1,31 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-const copy=require("copy-to-clipboard");document.addEventListener("keypress",function(e){if(99===e.keyCode){const e=document.querySelector("svg").innerHTML;copy('<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"> <svg width="521px" height="521px" version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events">'+e+"</svg>")}});const createViewer=require(".."),viewer=createViewer({width:.4,height:.4,followMouse:!0,followMotion:!0});document.body.appendChild(viewer.container);
+const copy = require('copy-to-clipboard')
+
+document.addEventListener('keypress', function (event) {
+  if (event.keyCode === 99) { // the c key
+    const svg = document.querySelector('svg')
+    const inner = svg.innerHTML
+    const head = '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" ' +
+    '"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"> ' +
+    '<svg width="521px" height="521px" version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events">'
+    const foot = '</svg>'
+
+    const full = head + inner + foot
+
+    copy(full)
+  }
+})
+
+const createViewer = require('..')
+
+const viewer = createViewer({
+  width: 0.4,
+  height: 0.4,
+  followMouse: true,
+  followMotion: true,
+})
+
+document.body.appendChild(viewer.container)
 
 },{"..":3,"copy-to-clipboard":4}],2:[function(require,module,exports){
 module.exports={
@@ -1430,33 +1456,852 @@ module.exports={
 }
 
 },{}],3:[function(require,module,exports){
-const perspective=require("gl-mat4/perspective"),multiply=require("gl-mat4/multiply"),lookAt=require("gl-mat4/lookAt"),invert=require("gl-mat4/invert"),rotate=require("gl-mat4/rotate"),transform=require("gl-vec3/transformMat4"),foxJSON=require("./fox.json"),SVG_NS="http://www.w3.org/2000/svg";function createNode(t){return document.createElementNS(SVG_NS,t)}function setAttribute(t,n,e){t.setAttributeNS(null,n,e)}module.exports=function(t){const n=t||{};let e=Boolean(n.followMouse),o=Boolean(n.followMotion);const i=Boolean(n.slowDrift);let r=!0;const l=[0,0],s=.3;let a=n.width||400,c=n.height||400;const u=createNode("svg"),h={x:0,y:0},f=foxJSON.positions.length,d=new Float32Array(3*f),w=new Float32Array(3*f),g=[];function A(t){const n=u.getBoundingClientRect();h.x=1-2*(t.x-n.left)/n.width,h.y=1-2*(t.y-n.top)/n.height}function m(t,n){this.svg=t,this.indices=n,this.zIndex=0}n.pxNotRatio||(a=window.innerWidth*(n.width||.25)|0,c=0|(window.innerHeight*n.height||a),"minWidth"in n&&a<n.minWidth&&(a=n.minWidth,c=n.minWidth*n.height/n.width|0)),setAttribute(u,"width",`${a}px`),setAttribute(u,"height",`${c}px`),document.body.appendChild(u),function(){const t=foxJSON.positions;let n=0;for(let e=0;e<t.length;++e){const o=t[e];for(let t=0;t<3;++t)d[n]=o[t],n+=1}}();const p=function(){const t=[];for(let n=0;n<foxJSON.chunks.length;++n){const e=foxJSON.chunks[n],o=`rgb(${e.color})`,{faces:i}=e;for(let n=0;n<i.length;++n){const e=i[n],r=createNode("polygon");setAttribute(r,"fill",o),setAttribute(r,"stroke",o),setAttribute(r,"points","0,0, 10,0, 0,10"),u.appendChild(r),t.push(new m(r,e))}}return t}(),y=function(){const t=new Float32Array(3),n=new Float32Array([0,1,0]),e=new Float32Array(16),o=new Float32Array(16),r=lookAt(new Float32Array(16),new Float32Array([0,0,400]),t,n),s=invert(new Float32Array(16),r),a=new Float32Array(16),c=new Float32Array(3),h=new Float32Array(16),f=new Float32Array([1,0,0]),d=new Float32Array([0,1,0]),w=new Float32Array([0,0,1]);return function(){const g=u.getBoundingClientRect(),A=g.width,m=g.height;if(perspective(e,Math.PI/4,A/m,100,1e3),invert(a,e),c[0]=l[0],c[1]=l[1],c[2]=1.2,transform(c,c,a),transform(c,c,s),lookAt(o,t,c,n),i){const t=Date.now()/1e3;rotate(o,o,.1+.2*Math.sin(t/3),f),rotate(o,o,.03*Math.sin(t/2)-.1,w),rotate(o,o,.5+.2*Math.sin(t/3),d)}return multiply(h,e,r),multiply(h,h,o),h}}();function x(t){const n=t[0],e=t[1],o=t[2],i=t[3],r=t[4],l=t[5],s=t[6],a=t[7],c=t[8],u=t[9],h=t[10],g=t[11],A=t[12],m=t[13],p=t[14],y=t[15];for(let t=0;t<f;++t){const f=d[3*t],x=d[3*t+1],F=d[3*t+2],v=f*i+x*a+F*g+y;w[3*t]=(f*n+x*r+F*c+A)/v,w[3*t+1]=(f*e+x*l+F*u+m)/v,w[3*t+2]=(f*o+x*s+F*h+p)/v}}function F(t,n){return n.zIndex-t.zIndex}function v(){let t;const n=u.getBoundingClientRect(),e=n.width,o=n.height;for(g.length=0,t=0;t<p.length;++t){const n=p[t],{indices:i}=n,r=i[0],l=i[1],s=i[2],a=w[3*r],c=w[3*r+1],u=w[3*l],h=w[3*l+1],f=w[3*s];if((u-a)*(w[3*s+1]-c)-(h-c)*(f-a)<0)continue;const d=[];let A=-1/0,m=1/0;const y=n.svg;for(let t=0;t<3;++t){const n=i[t];d.push(`${.5*e*(1-w[3*n])},${.5*o*(1-w[3*n+1])}`);const r=w[3*n+2];A=Math.max(A,r),m=Math.min(m,r)}n.zIndex=A+.25*m;const x=d.join(" ");-1===x.indexOf("NaN")&&setAttribute(y,"points",x),g.push(n)}for(g.sort(F),u.innerHTML="",t=0;t<g.length;++t)u.appendChild(g[t].svg)}function N(){r=!1}function M(){r=!0}function b(){if(!r)return;window.requestAnimationFrame(b);const t=1-s;l[0]=t*l[0]+s*h.x,l[1]=t*l[1]+s*h.y+.085,x(y()),v(),N()}return window.addEventListener("mousemove",function(t){r||M(),e&&(A({x:t.clientX,y:t.clientY}),b())}),window.addEventListener("deviceorientation",function(t){if(r||M(),o){const n=10;A({x:200+t.gamma*n,y:-300+t.beta*n}),b()}}),b(),{container:u,lookAt:A,setFollowMouse:function(t){e=t},setFollowMotion:function(t){o=t},stopAnimation:N,startAnimation:M,lookAtAndRender:function(t){A(t),l[0]=h.x,l[1]=h.y+.085/s,x(y()),v(),N()}}};
+const perspective = require('gl-mat4/perspective')
+const multiply = require('gl-mat4/multiply')
+const lookAt = require('gl-mat4/lookAt')
+const invert = require('gl-mat4/invert')
+const rotate = require('gl-mat4/rotate')
+const transform = require('gl-vec3/transformMat4')
+const foxJson = require('./fox.json')
+
+const SVG_NS = 'http://www.w3.org/2000/svg'
+
+module.exports = createLogo
+
+function createLogo (options_) {
+  const options = options_ || {}
+
+  let followCursor = Boolean(options.followMouse)
+  let followMotion = Boolean(options.followMotion)
+  const slowDrift = Boolean(options.slowDrift)
+  let shouldRender = true
+
+  const cameraDistance = 400
+  const lookCurrent = [0, 0]
+  const lookRate = 0.3
+
+  let width = options.width || 400
+  let height = options.height || 400
+  const container = createNode('svg')
+  const mouse = {
+    x: 0,
+    y: 0,
+  }
+
+  if (!options.pxNotRatio) {
+    width = (window.innerWidth * (options.width || 0.25)) | 0
+    height = ((window.innerHeight * options.height) || width) | 0
+
+    if ('minWidth' in options && width < options.minWidth) {
+      width = options.minWidth
+      height = (options.minWidth * options.height / options.width) | 0
+    }
+  }
+
+  setAttribute(container, 'width', `${width}px`)
+  setAttribute(container, 'height', `${height}px`)
+
+  function setLookAtTarget (target) {
+    const bounds = container.getBoundingClientRect()
+    mouse.x = 1.0 - ((2.0 * (target.x - bounds.left)) / bounds.width)
+    mouse.y = 1.0 - ((2.0 * (target.y - bounds.top)) / bounds.height)
+  }
+
+  document.body.appendChild(container)
+
+  const renderFox = createModelRenderer(container, foxJson, cameraDistance)
+
+  function stopAnimation () {
+    shouldRender = false
+  }
+  function startAnimation () {
+    shouldRender = true
+  }
+  function setFollowMouse (state) {
+    followCursor = state
+  }
+  function setFollowMotion (state) {
+    followMotion = state
+  }
+
+  window.addEventListener('mousemove', function (ev) {
+    if (!shouldRender) {
+      startAnimation()
+    }
+    if (followCursor) {
+      setLookAtTarget({
+        x: ev.clientX,
+        y: ev.clientY,
+      })
+      updateLookCurrent()
+      renderScene()
+    }
+  })
+
+  window.addEventListener('deviceorientation', function (event) {
+    if (!shouldRender) {
+      startAnimation()
+    }
+    if (followMotion) {
+      // gamma: left to right
+      const leftToRight = event.gamma
+      // beta: front back motion
+      const frontToBack = event.beta
+      // x offset: needed to correct the intial position
+      const xOffset = 200
+      // y offset: needed to correct the intial position
+      const yOffset = -300
+      // acceleration
+      const acceleration = 10
+
+      setLookAtTarget({
+        x: xOffset + (leftToRight * acceleration),
+        y: yOffset + (frontToBack * acceleration),
+      })
+      updateLookCurrent()
+      renderScene()
+    }
+  })
+
+  function lookAtAndRender (target) {
+    // update look target
+    setLookAtTarget(target)
+    // this should prolly just call updateLookCurrent or set lookCurrent values to eaxactly lookTarget
+    // but im not really sure why its different, so im leaving it alone
+    lookCurrent[0] = mouse.x
+    lookCurrent[1] = mouse.y + (0.085 / lookRate)
+    renderScene()
+  }
+
+  function renderScene () {
+    const rect = container.getBoundingClientRect()
+    renderFox(rect, lookCurrent, slowDrift)
+  }
+
+  function renderLoop () {
+    if (!shouldRender) {
+      return
+    }
+    // we set up a rerender, and then immediately cancel it via stopAnimation
+    // this seems like a mistake. likely because we change it to only animate
+    // on mousemove / device orienation as a perf gain, but didnt clean up
+    window.requestAnimationFrame(renderLoop)
+    updateLookCurrent()
+    renderScene()
+    stopAnimation()
+  }
+
+  function updateLookCurrent () {
+    const li = (1.0 - lookRate)
+    lookCurrent[0] = (li * lookCurrent[0]) + (lookRate * mouse.x)
+    lookCurrent[1] = (li * lookCurrent[1]) + (lookRate * mouse.y) + 0.085
+  }
+
+  renderLoop()
+
+  return {
+    container,
+    lookAt: setLookAtTarget,
+    setFollowMouse,
+    setFollowMotion,
+    stopAnimation,
+    startAnimation,
+    lookAtAndRender,
+  }
+}
+
+function createModelRenderer (container, modelJson, cameraDistance) {
+  const modelObj = loadModelFromJson(modelJson)
+  const { updatePositions, transformed } = modelObj
+  const polygons = createPolygonsFromModelJson(modelJson)
+
+  for (const polygon of polygons) {
+    container.appendChild(polygon.svg)
+  }
+
+  const computeMatrix = createMatrixComputer(cameraDistance)
+  const updateFaces = createFaceUpdater(container, polygons, transformed)
+
+  return (rect, lookPos, slowDrift) => {
+    const matrix = computeMatrix(rect, lookPos, slowDrift)
+    updatePositions(matrix)
+    updateFaces(rect, container, polygons, transformed)
+  }
+}
+
+function loadModelFromJson (modelJson) {
+  const vertCount = modelJson.positions.length
+  const positions = new Float32Array(3 * vertCount)
+  const transformed = new Float32Array(3 * vertCount)
+  positionsFromModel(positions, modelJson)
+  const updatePositions = createPositionUpdater(positions, transformed, vertCount)
+  return { updatePositions, positions, transformed }
+}
+
+function positionsFromModel (positions, modelJson) {
+  const pp = modelJson.positions
+  let ptr = 0
+  for (let i = 0; i < pp.length; ++i) {
+    const p = pp[i]
+    for (let j = 0; j < 3; ++j) {
+      positions[ptr] = p[j]
+      ptr += 1
+    }
+  }
+}
+
+function createPolygonsFromModelJson (modelJson) {
+  const polygons = []
+  for (let i = 0; i < modelJson.chunks.length; ++i) {
+    const chunk = modelJson.chunks[i]
+    const color = `rgb(${chunk.color})`
+    const { faces } = chunk
+    for (let j = 0; j < faces.length; ++j) {
+      const f = faces[j]
+      const svgPolygon = createNode('polygon')
+      setAttribute(
+        svgPolygon,
+        'fill',
+        color,
+      )
+      setAttribute(
+        svgPolygon,
+        'stroke',
+        color,
+      )
+      setAttribute(
+        svgPolygon,
+        'points',
+        '0,0, 10,0, 0,10',
+      )
+      polygons.push(new Polygon(svgPolygon, f))
+    }
+  }
+  return polygons
+}
+
+function createMatrixComputer (distance) {
+  const objectCenter = new Float32Array(3)
+  const up = new Float32Array([0, 1, 0])
+  const projection = new Float32Array(16)
+  const model = new Float32Array(16)
+  const view = lookAt(
+    new Float32Array(16),
+    new Float32Array([0, 0, distance]),
+    objectCenter,
+    up,
+  )
+  const invView = invert(new Float32Array(16), view)
+  const invProjection = new Float32Array(16)
+  const target = new Float32Array(3)
+  const transformedMatrix = new Float32Array(16)
+
+  const X = new Float32Array([1, 0, 0])
+  const Y = new Float32Array([0, 1, 0])
+  const Z = new Float32Array([0, 0, 1])
+
+  return function computeMatrix (rect, lookPos, slowDrift) {
+    const viewportWidth = rect.width
+    const viewportHeight = rect.height
+    perspective(
+      projection,
+      Math.PI / 4.0,
+      viewportWidth / viewportHeight,
+      100.0,
+      1000.0,
+    )
+    invert(invProjection, projection)
+    target[0] = lookPos[0]
+    target[1] = lookPos[1]
+    target[2] = 1.2
+    transform(target, target, invProjection)
+    transform(target, target, invView)
+    lookAt(
+      model,
+      objectCenter,
+      target,
+      up,
+    )
+    if (slowDrift) {
+      const time = (Date.now() / 1000.0)
+      rotate(model, model, 0.1 + (Math.sin(time / 3) * 0.2), X)
+      rotate(model, model, -0.1 + (Math.sin(time / 2) * 0.03), Z)
+      rotate(model, model, 0.5 + (Math.sin(time / 3) * 0.2), Y)
+    }
+
+    multiply(transformedMatrix, projection, view)
+    multiply(transformedMatrix, transformedMatrix, model)
+
+    return transformedMatrix
+  }
+}
+
+function createPositionUpdater (positions, transformed, vertCount) {
+  return function updatePositions (M) {
+    const m00 = M[0]
+    const m01 = M[1]
+    const m02 = M[2]
+    const m03 = M[3]
+    const m10 = M[4]
+    const m11 = M[5]
+    const m12 = M[6]
+    const m13 = M[7]
+    const m20 = M[8]
+    const m21 = M[9]
+    const m22 = M[10]
+    const m23 = M[11]
+    const m30 = M[12]
+    const m31 = M[13]
+    const m32 = M[14]
+    const m33 = M[15]
+
+    for (let i = 0; i < vertCount; ++i) {
+      const x = positions[3 * i]
+      const y = positions[(3 * i) + 1]
+      const z = positions[(3 * i) + 2]
+
+      const tw = (x * m03) + (y * m13) + (z * m23) + m33
+      transformed[3 * i] =
+        ((x * m00) + (y * m10) + (z * m20) + m30) / tw
+      transformed[(3 * i) + 1] =
+        ((x * m01) + (y * m11) + (z * m21) + m31) / tw
+      transformed[(3 * i) + 2] =
+        ((x * m02) + (y * m12) + (z * m22) + m32) / tw
+    }
+  }
+}
+
+function compareZ (a, b) {
+  return b.zIndex - a.zIndex
+}
+
+function createFaceUpdater (container, polygons, transformed) {
+  const toDraw = []
+  return function updateFaces (rect) {
+    let i
+    const w = rect.width
+    const h = rect.height
+    toDraw.length = 0
+    for (i = 0; i < polygons.length; ++i) {
+      const poly = polygons[i]
+      const { indices } = poly
+
+      const i0 = indices[0]
+      const i1 = indices[1]
+      const i2 = indices[2]
+      const ax = transformed[3 * i0]
+      const ay = transformed[(3 * i0) + 1]
+      const bx = transformed[3 * i1]
+      const by = transformed[(3 * i1) + 1]
+      const cx = transformed[3 * i2]
+      const cy = transformed[(3 * i2) + 1]
+      const det = ((bx - ax) * (cy - ay)) - ((by - ay) * (cx - ax))
+      if (det < 0) {
+        continue
+      }
+
+      const points = []
+      let zmax = -Infinity
+      let zmin = Infinity
+      const element = poly.svg
+      for (let j = 0; j < 3; ++j) {
+        const idx = indices[j]
+        points.push(
+          `${0.5 * w * (1.0 - transformed[3 * idx])},${
+            0.5 * h * (1.0 - transformed[(3 * idx) + 1])}`,
+        )
+        const z = transformed[(3 * idx) + 2]
+        zmax = Math.max(zmax, z)
+        zmin = Math.min(zmin, z)
+      }
+      poly.zIndex = zmax + (0.25 * zmin)
+      const joinedPoints = points.join(' ')
+
+      if (joinedPoints.indexOf('NaN') === -1) {
+        setAttribute(element, 'points', joinedPoints)
+      }
+
+      toDraw.push(poly)
+    }
+    toDraw.sort(compareZ)
+    container.innerHTML = ''
+    for (i = 0; i < toDraw.length; ++i) {
+      container.appendChild(toDraw[i].svg)
+    }
+  }
+}
+
+function createNode (type) {
+  return document.createElementNS(SVG_NS, type)
+}
+
+function setAttribute (node, attribute, value) {
+  node.setAttributeNS(null, attribute, value)
+}
+
+function Polygon (svg, indices) {
+  this.svg = svg
+  this.indices = indices
+  this.zIndex = 0
+}
 
 },{"./fox.json":2,"gl-mat4/invert":6,"gl-mat4/lookAt":7,"gl-mat4/multiply":8,"gl-mat4/perspective":9,"gl-mat4/rotate":10,"gl-vec3/transformMat4":11}],4:[function(require,module,exports){
-"use strict";var deselectCurrent=require("toggle-selection"),defaultMessage="Copy to clipboard: #{key}, Enter";function format(e){var t=(/mac os x/i.test(navigator.userAgent)?"⌘":"Ctrl")+"+C";return e.replace(/#{\s*key\s*}/g,t)}function copy(e,t){var o,r,n,c,s,a,l=!1;t||(t={}),o=t.debug||!1;try{if(n=deselectCurrent(),c=document.createRange(),s=document.getSelection(),(a=document.createElement("span")).textContent=e,a.style.all="unset",a.style.position="fixed",a.style.top=0,a.style.clip="rect(0, 0, 0, 0)",a.style.whiteSpace="pre",a.style.webkitUserSelect="text",a.style.MozUserSelect="text",a.style.msUserSelect="text",a.style.userSelect="text",document.body.appendChild(a),c.selectNode(a),s.addRange(c),!document.execCommand("copy"))throw new Error("copy command was unsuccessful");l=!0}catch(n){o&&console.error("unable to copy using execCommand: ",n),o&&console.warn("trying IE specific stuff");try{window.clipboardData.setData("text",e),l=!0}catch(n){o&&console.error("unable to copy using clipboardData: ",n),o&&console.error("falling back to prompt"),r=format("message"in t?t.message:defaultMessage),window.prompt(r,e)}}finally{s&&("function"==typeof s.removeRange?s.removeRange(c):s.removeAllRanges()),a&&document.body.removeChild(a),n()}return l}module.exports=copy;
+'use strict';
+
+var deselectCurrent = require('toggle-selection');
+
+var defaultMessage = 'Copy to clipboard: #{key}, Enter';
+
+function format(message) {
+  var copyKey = (/mac os x/i.test(navigator.userAgent) ? '⌘' : 'Ctrl') + '+C';
+  return message.replace(/#{\s*key\s*}/g, copyKey);
+}
+
+function copy(text, options) {
+  var debug, message, reselectPrevious, range, selection, mark, success = false;
+  if (!options) { options = {}; }
+  debug = options.debug || false;
+  try {
+    reselectPrevious = deselectCurrent();
+
+    range = document.createRange();
+    selection = document.getSelection();
+
+    mark = document.createElement('span');
+    mark.textContent = text;
+    // reset user styles for span element
+    mark.style.all = 'unset';
+    // prevents scrolling to the end of the page
+    mark.style.position = 'fixed';
+    mark.style.top = 0;
+    mark.style.clip = 'rect(0, 0, 0, 0)';
+    // used to preserve spaces and line breaks
+    mark.style.whiteSpace = 'pre';
+    // do not inherit user-select (it may be `none`)
+    mark.style.webkitUserSelect = 'text';
+    mark.style.MozUserSelect = 'text';
+    mark.style.msUserSelect = 'text';
+    mark.style.userSelect = 'text';
+
+    document.body.appendChild(mark);
+
+    range.selectNode(mark);
+    selection.addRange(range);
+
+    var successful = document.execCommand('copy');
+    if (!successful) {
+      throw new Error('copy command was unsuccessful');
+    }
+    success = true;
+  } catch (err) {
+    debug && console.error('unable to copy using execCommand: ', err);
+    debug && console.warn('trying IE specific stuff');
+    try {
+      window.clipboardData.setData('text', text);
+      success = true;
+    } catch (err) {
+      debug && console.error('unable to copy using clipboardData: ', err);
+      debug && console.error('falling back to prompt');
+      message = format('message' in options ? options.message : defaultMessage);
+      window.prompt(message, text);
+    }
+  } finally {
+    if (selection) {
+      if (typeof selection.removeRange == 'function') {
+        selection.removeRange(range);
+      } else {
+        selection.removeAllRanges();
+      }
+    }
+
+    if (mark) {
+      document.body.removeChild(mark);
+    }
+    reselectPrevious();
+  }
+
+  return success;
+}
+
+module.exports = copy;
 
 },{"toggle-selection":12}],5:[function(require,module,exports){
-function identity(t){return t[0]=1,t[1]=0,t[2]=0,t[3]=0,t[4]=0,t[5]=1,t[6]=0,t[7]=0,t[8]=0,t[9]=0,t[10]=1,t[11]=0,t[12]=0,t[13]=0,t[14]=0,t[15]=1,t}module.exports=identity;
+module.exports = identity;
 
+/**
+ * Set a mat4 to the identity matrix
+ *
+ * @param {mat4} out the receiving matrix
+ * @returns {mat4} out
+ */
+function identity(out) {
+    out[0] = 1;
+    out[1] = 0;
+    out[2] = 0;
+    out[3] = 0;
+    out[4] = 0;
+    out[5] = 1;
+    out[6] = 0;
+    out[7] = 0;
+    out[8] = 0;
+    out[9] = 0;
+    out[10] = 1;
+    out[11] = 0;
+    out[12] = 0;
+    out[13] = 0;
+    out[14] = 0;
+    out[15] = 1;
+    return out;
+};
 },{}],6:[function(require,module,exports){
-function invert(n,r){var e=r[0],t=r[1],u=r[2],i=r[3],l=r[4],o=r[5],v=r[6],a=r[7],c=r[8],d=r[9],f=r[10],m=r[11],p=r[12],s=r[13],x=r[14],b=r[15],g=e*o-t*l,h=e*v-u*l,j=e*a-i*l,k=t*v-u*o,q=t*a-i*o,w=u*a-i*v,y=c*s-d*p,z=c*x-f*p,A=c*b-m*p,B=d*x-f*s,C=d*b-m*s,D=f*b-m*x,E=g*D-h*C+j*B+k*A-q*z+w*y;return E?(E=1/E,n[0]=(o*D-v*C+a*B)*E,n[1]=(u*C-t*D-i*B)*E,n[2]=(s*w-x*q+b*k)*E,n[3]=(f*q-d*w-m*k)*E,n[4]=(v*A-l*D-a*z)*E,n[5]=(e*D-u*A+i*z)*E,n[6]=(x*j-p*w-b*h)*E,n[7]=(c*w-f*j+m*h)*E,n[8]=(l*C-o*A+a*y)*E,n[9]=(t*A-e*C-i*y)*E,n[10]=(p*q-s*j+b*g)*E,n[11]=(d*j-c*q-m*g)*E,n[12]=(o*z-l*B-v*y)*E,n[13]=(e*B-t*z+u*y)*E,n[14]=(s*h-p*k-x*g)*E,n[15]=(c*k-d*h+f*g)*E,n):null}module.exports=invert;
+module.exports = invert;
 
+/**
+ * Inverts a mat4
+ *
+ * @param {mat4} out the receiving matrix
+ * @param {mat4} a the source matrix
+ * @returns {mat4} out
+ */
+function invert(out, a) {
+    var a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3],
+        a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7],
+        a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11],
+        a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15],
+
+        b00 = a00 * a11 - a01 * a10,
+        b01 = a00 * a12 - a02 * a10,
+        b02 = a00 * a13 - a03 * a10,
+        b03 = a01 * a12 - a02 * a11,
+        b04 = a01 * a13 - a03 * a11,
+        b05 = a02 * a13 - a03 * a12,
+        b06 = a20 * a31 - a21 * a30,
+        b07 = a20 * a32 - a22 * a30,
+        b08 = a20 * a33 - a23 * a30,
+        b09 = a21 * a32 - a22 * a31,
+        b10 = a21 * a33 - a23 * a31,
+        b11 = a22 * a33 - a23 * a32,
+
+        // Calculate the determinant
+        det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
+
+    if (!det) { 
+        return null; 
+    }
+    det = 1.0 / det;
+
+    out[0] = (a11 * b11 - a12 * b10 + a13 * b09) * det;
+    out[1] = (a02 * b10 - a01 * b11 - a03 * b09) * det;
+    out[2] = (a31 * b05 - a32 * b04 + a33 * b03) * det;
+    out[3] = (a22 * b04 - a21 * b05 - a23 * b03) * det;
+    out[4] = (a12 * b08 - a10 * b11 - a13 * b07) * det;
+    out[5] = (a00 * b11 - a02 * b08 + a03 * b07) * det;
+    out[6] = (a32 * b02 - a30 * b05 - a33 * b01) * det;
+    out[7] = (a20 * b05 - a22 * b02 + a23 * b01) * det;
+    out[8] = (a10 * b10 - a11 * b08 + a13 * b06) * det;
+    out[9] = (a01 * b08 - a00 * b10 - a03 * b06) * det;
+    out[10] = (a30 * b04 - a31 * b02 + a33 * b00) * det;
+    out[11] = (a21 * b02 - a20 * b04 - a23 * b00) * det;
+    out[12] = (a11 * b07 - a10 * b09 - a12 * b06) * det;
+    out[13] = (a00 * b09 - a01 * b07 + a02 * b06) * det;
+    out[14] = (a31 * b01 - a30 * b03 - a32 * b00) * det;
+    out[15] = (a20 * b03 - a21 * b01 + a22 * b00) * det;
+
+    return out;
+};
 },{}],7:[function(require,module,exports){
-var identity=require("./identity");function lookAt(t,a,e,r){var i,o,s,h,n,M,d,q,u,b,l=a[0],y=a[1],k=a[2],v=r[0],A=r[1],c=r[2],f=e[0],m=e[1],p=e[2];return Math.abs(l-f)<1e-6&&Math.abs(y-m)<1e-6&&Math.abs(k-p)<1e-6?identity(t):(d=l-f,q=y-m,u=k-p,i=A*(u*=b=1/Math.sqrt(d*d+q*q+u*u))-c*(q*=b),o=c*(d*=b)-v*u,s=v*q-A*d,(b=Math.sqrt(i*i+o*o+s*s))?(i*=b=1/b,o*=b,s*=b):(i=0,o=0,s=0),h=q*s-u*o,n=u*i-d*s,M=d*o-q*i,(b=Math.sqrt(h*h+n*n+M*M))?(h*=b=1/b,n*=b,M*=b):(h=0,n=0,M=0),t[0]=i,t[1]=h,t[2]=d,t[3]=0,t[4]=o,t[5]=n,t[6]=q,t[7]=0,t[8]=s,t[9]=M,t[10]=u,t[11]=0,t[12]=-(i*l+o*y+s*k),t[13]=-(h*l+n*y+M*k),t[14]=-(d*l+q*y+u*k),t[15]=1,t)}module.exports=lookAt;
+var identity = require('./identity');
 
+module.exports = lookAt;
+
+/**
+ * Generates a look-at matrix with the given eye position, focal point, and up axis
+ *
+ * @param {mat4} out mat4 frustum matrix will be written into
+ * @param {vec3} eye Position of the viewer
+ * @param {vec3} center Point the viewer is looking at
+ * @param {vec3} up vec3 pointing up
+ * @returns {mat4} out
+ */
+function lookAt(out, eye, center, up) {
+    var x0, x1, x2, y0, y1, y2, z0, z1, z2, len,
+        eyex = eye[0],
+        eyey = eye[1],
+        eyez = eye[2],
+        upx = up[0],
+        upy = up[1],
+        upz = up[2],
+        centerx = center[0],
+        centery = center[1],
+        centerz = center[2];
+
+    if (Math.abs(eyex - centerx) < 0.000001 &&
+        Math.abs(eyey - centery) < 0.000001 &&
+        Math.abs(eyez - centerz) < 0.000001) {
+        return identity(out);
+    }
+
+    z0 = eyex - centerx;
+    z1 = eyey - centery;
+    z2 = eyez - centerz;
+
+    len = 1 / Math.sqrt(z0 * z0 + z1 * z1 + z2 * z2);
+    z0 *= len;
+    z1 *= len;
+    z2 *= len;
+
+    x0 = upy * z2 - upz * z1;
+    x1 = upz * z0 - upx * z2;
+    x2 = upx * z1 - upy * z0;
+    len = Math.sqrt(x0 * x0 + x1 * x1 + x2 * x2);
+    if (!len) {
+        x0 = 0;
+        x1 = 0;
+        x2 = 0;
+    } else {
+        len = 1 / len;
+        x0 *= len;
+        x1 *= len;
+        x2 *= len;
+    }
+
+    y0 = z1 * x2 - z2 * x1;
+    y1 = z2 * x0 - z0 * x2;
+    y2 = z0 * x1 - z1 * x0;
+
+    len = Math.sqrt(y0 * y0 + y1 * y1 + y2 * y2);
+    if (!len) {
+        y0 = 0;
+        y1 = 0;
+        y2 = 0;
+    } else {
+        len = 1 / len;
+        y0 *= len;
+        y1 *= len;
+        y2 *= len;
+    }
+
+    out[0] = x0;
+    out[1] = y0;
+    out[2] = z0;
+    out[3] = 0;
+    out[4] = x1;
+    out[5] = y1;
+    out[6] = z1;
+    out[7] = 0;
+    out[8] = x2;
+    out[9] = y2;
+    out[10] = z2;
+    out[11] = 0;
+    out[12] = -(x0 * eyex + x1 * eyey + x2 * eyez);
+    out[13] = -(y0 * eyex + y1 * eyey + y2 * eyez);
+    out[14] = -(z0 * eyex + z1 * eyey + z2 * eyez);
+    out[15] = 1;
+
+    return out;
+};
 },{"./identity":5}],8:[function(require,module,exports){
-function multiply(l,t,u){var r=t[0],e=t[1],i=t[2],m=t[3],n=t[4],o=t[5],p=t[6],y=t[7],a=t[8],c=t[9],d=t[10],f=t[11],s=t[12],v=t[13],x=t[14],b=t[15],g=u[0],h=u[1],j=u[2],k=u[3];return l[0]=g*r+h*n+j*a+k*s,l[1]=g*e+h*o+j*c+k*v,l[2]=g*i+h*p+j*d+k*x,l[3]=g*m+h*y+j*f+k*b,g=u[4],h=u[5],j=u[6],k=u[7],l[4]=g*r+h*n+j*a+k*s,l[5]=g*e+h*o+j*c+k*v,l[6]=g*i+h*p+j*d+k*x,l[7]=g*m+h*y+j*f+k*b,g=u[8],h=u[9],j=u[10],k=u[11],l[8]=g*r+h*n+j*a+k*s,l[9]=g*e+h*o+j*c+k*v,l[10]=g*i+h*p+j*d+k*x,l[11]=g*m+h*y+j*f+k*b,g=u[12],h=u[13],j=u[14],k=u[15],l[12]=g*r+h*n+j*a+k*s,l[13]=g*e+h*o+j*c+k*v,l[14]=g*i+h*p+j*d+k*x,l[15]=g*m+h*y+j*f+k*b,l}module.exports=multiply;
+module.exports = multiply;
 
+/**
+ * Multiplies two mat4's
+ *
+ * @param {mat4} out the receiving matrix
+ * @param {mat4} a the first operand
+ * @param {mat4} b the second operand
+ * @returns {mat4} out
+ */
+function multiply(out, a, b) {
+    var a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3],
+        a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7],
+        a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11],
+        a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15];
+
+    // Cache only the current line of the second matrix
+    var b0  = b[0], b1 = b[1], b2 = b[2], b3 = b[3];  
+    out[0] = b0*a00 + b1*a10 + b2*a20 + b3*a30;
+    out[1] = b0*a01 + b1*a11 + b2*a21 + b3*a31;
+    out[2] = b0*a02 + b1*a12 + b2*a22 + b3*a32;
+    out[3] = b0*a03 + b1*a13 + b2*a23 + b3*a33;
+
+    b0 = b[4]; b1 = b[5]; b2 = b[6]; b3 = b[7];
+    out[4] = b0*a00 + b1*a10 + b2*a20 + b3*a30;
+    out[5] = b0*a01 + b1*a11 + b2*a21 + b3*a31;
+    out[6] = b0*a02 + b1*a12 + b2*a22 + b3*a32;
+    out[7] = b0*a03 + b1*a13 + b2*a23 + b3*a33;
+
+    b0 = b[8]; b1 = b[9]; b2 = b[10]; b3 = b[11];
+    out[8] = b0*a00 + b1*a10 + b2*a20 + b3*a30;
+    out[9] = b0*a01 + b1*a11 + b2*a21 + b3*a31;
+    out[10] = b0*a02 + b1*a12 + b2*a22 + b3*a32;
+    out[11] = b0*a03 + b1*a13 + b2*a23 + b3*a33;
+
+    b0 = b[12]; b1 = b[13]; b2 = b[14]; b3 = b[15];
+    out[12] = b0*a00 + b1*a10 + b2*a20 + b3*a30;
+    out[13] = b0*a01 + b1*a11 + b2*a21 + b3*a31;
+    out[14] = b0*a02 + b1*a12 + b2*a22 + b3*a32;
+    out[15] = b0*a03 + b1*a13 + b2*a23 + b3*a33;
+    return out;
+};
 },{}],9:[function(require,module,exports){
-function perspective(e,t,r,p,n){var a=1/Math.tan(t/2),c=1/(p-n);return e[0]=a/r,e[1]=0,e[2]=0,e[3]=0,e[4]=0,e[5]=a,e[6]=0,e[7]=0,e[8]=0,e[9]=0,e[10]=(n+p)*c,e[11]=-1,e[12]=0,e[13]=0,e[14]=2*n*p*c,e[15]=0,e}module.exports=perspective;
+module.exports = perspective;
 
+/**
+ * Generates a perspective projection matrix with the given bounds
+ *
+ * @param {mat4} out mat4 frustum matrix will be written into
+ * @param {number} fovy Vertical field of view in radians
+ * @param {number} aspect Aspect ratio. typically viewport width/height
+ * @param {number} near Near bound of the frustum
+ * @param {number} far Far bound of the frustum
+ * @returns {mat4} out
+ */
+function perspective(out, fovy, aspect, near, far) {
+    var f = 1.0 / Math.tan(fovy / 2),
+        nf = 1 / (near - far);
+    out[0] = f / aspect;
+    out[1] = 0;
+    out[2] = 0;
+    out[3] = 0;
+    out[4] = 0;
+    out[5] = f;
+    out[6] = 0;
+    out[7] = 0;
+    out[8] = 0;
+    out[9] = 0;
+    out[10] = (far + near) * nf;
+    out[11] = -1;
+    out[12] = 0;
+    out[13] = 0;
+    out[14] = (2 * far * near) * nf;
+    out[15] = 0;
+    return out;
+};
 },{}],10:[function(require,module,exports){
-function rotate(t,a,r,e){var o,n,s,h,u,M,l,c,i,b,d,f,m,p,q,v,x,g,j,k,w,y,z,A,B=e[0],C=e[1],D=e[2],E=Math.sqrt(B*B+C*C+D*D);return Math.abs(E)<1e-6?null:(B*=E=1/E,C*=E,D*=E,o=Math.sin(r),s=1-(n=Math.cos(r)),h=a[0],u=a[1],M=a[2],l=a[3],c=a[4],i=a[5],b=a[6],d=a[7],f=a[8],m=a[9],p=a[10],q=a[11],v=B*B*s+n,x=C*B*s+D*o,g=D*B*s-C*o,j=B*C*s-D*o,k=C*C*s+n,w=D*C*s+B*o,y=B*D*s+C*o,z=C*D*s-B*o,A=D*D*s+n,t[0]=h*v+c*x+f*g,t[1]=u*v+i*x+m*g,t[2]=M*v+b*x+p*g,t[3]=l*v+d*x+q*g,t[4]=h*j+c*k+f*w,t[5]=u*j+i*k+m*w,t[6]=M*j+b*k+p*w,t[7]=l*j+d*k+q*w,t[8]=h*y+c*z+f*A,t[9]=u*y+i*z+m*A,t[10]=M*y+b*z+p*A,t[11]=l*y+d*z+q*A,a!==t&&(t[12]=a[12],t[13]=a[13],t[14]=a[14],t[15]=a[15]),t)}module.exports=rotate;
+module.exports = rotate;
 
+/**
+ * Rotates a mat4 by the given angle
+ *
+ * @param {mat4} out the receiving matrix
+ * @param {mat4} a the matrix to rotate
+ * @param {Number} rad the angle to rotate the matrix by
+ * @param {vec3} axis the axis to rotate around
+ * @returns {mat4} out
+ */
+function rotate(out, a, rad, axis) {
+    var x = axis[0], y = axis[1], z = axis[2],
+        len = Math.sqrt(x * x + y * y + z * z),
+        s, c, t,
+        a00, a01, a02, a03,
+        a10, a11, a12, a13,
+        a20, a21, a22, a23,
+        b00, b01, b02,
+        b10, b11, b12,
+        b20, b21, b22;
+
+    if (Math.abs(len) < 0.000001) { return null; }
+    
+    len = 1 / len;
+    x *= len;
+    y *= len;
+    z *= len;
+
+    s = Math.sin(rad);
+    c = Math.cos(rad);
+    t = 1 - c;
+
+    a00 = a[0]; a01 = a[1]; a02 = a[2]; a03 = a[3];
+    a10 = a[4]; a11 = a[5]; a12 = a[6]; a13 = a[7];
+    a20 = a[8]; a21 = a[9]; a22 = a[10]; a23 = a[11];
+
+    // Construct the elements of the rotation matrix
+    b00 = x * x * t + c; b01 = y * x * t + z * s; b02 = z * x * t - y * s;
+    b10 = x * y * t - z * s; b11 = y * y * t + c; b12 = z * y * t + x * s;
+    b20 = x * z * t + y * s; b21 = y * z * t - x * s; b22 = z * z * t + c;
+
+    // Perform rotation-specific matrix multiplication
+    out[0] = a00 * b00 + a10 * b01 + a20 * b02;
+    out[1] = a01 * b00 + a11 * b01 + a21 * b02;
+    out[2] = a02 * b00 + a12 * b01 + a22 * b02;
+    out[3] = a03 * b00 + a13 * b01 + a23 * b02;
+    out[4] = a00 * b10 + a10 * b11 + a20 * b12;
+    out[5] = a01 * b10 + a11 * b11 + a21 * b12;
+    out[6] = a02 * b10 + a12 * b11 + a22 * b12;
+    out[7] = a03 * b10 + a13 * b11 + a23 * b12;
+    out[8] = a00 * b20 + a10 * b21 + a20 * b22;
+    out[9] = a01 * b20 + a11 * b21 + a21 * b22;
+    out[10] = a02 * b20 + a12 * b21 + a22 * b22;
+    out[11] = a03 * b20 + a13 * b21 + a23 * b22;
+
+    if (a !== out) { // If the source and destination differ, copy the unchanged last row
+        out[12] = a[12];
+        out[13] = a[13];
+        out[14] = a[14];
+        out[15] = a[15];
+    }
+    return out;
+};
 },{}],11:[function(require,module,exports){
-function transformMat4(r,t,a){var n=t[0],o=t[1],e=t[2],f=a[3]*n+a[7]*o+a[11]*e+a[15];return f=f||1,r[0]=(a[0]*n+a[4]*o+a[8]*e+a[12])/f,r[1]=(a[1]*n+a[5]*o+a[9]*e+a[13])/f,r[2]=(a[2]*n+a[6]*o+a[10]*e+a[14])/f,r}module.exports=transformMat4;
+module.exports = transformMat4;
 
+/**
+ * Transforms the vec3 with a mat4.
+ * 4th vector component is implicitly '1'
+ *
+ * @param {vec3} out the receiving vector
+ * @param {vec3} a the vector to transform
+ * @param {mat4} m matrix to transform with
+ * @returns {vec3} out
+ */
+function transformMat4(out, a, m) {
+    var x = a[0], y = a[1], z = a[2],
+        w = m[3] * x + m[7] * y + m[11] * z + m[15]
+    w = w || 1.0
+    out[0] = (m[0] * x + m[4] * y + m[8] * z + m[12]) / w
+    out[1] = (m[1] * x + m[5] * y + m[9] * z + m[13]) / w
+    out[2] = (m[2] * x + m[6] * y + m[10] * z + m[14]) / w
+    return out
+}
 },{}],12:[function(require,module,exports){
-module.exports=function(){var e=document.getSelection();if(!e.rangeCount)return function(){};for(var n=document.activeElement,t=[],a=0;a<e.rangeCount;a++)t.push(e.getRangeAt(a));switch(n.tagName.toUpperCase()){case"INPUT":case"TEXTAREA":n.blur();break;default:n=null}return e.removeAllRanges(),function(){"Caret"===e.type&&e.removeAllRanges(),e.rangeCount||t.forEach(function(n){e.addRange(n)}),n&&n.focus()}};
+
+module.exports = function () {
+  var selection = document.getSelection();
+  if (!selection.rangeCount) {
+    return function () {};
+  }
+  var active = document.activeElement;
+
+  var ranges = [];
+  for (var i = 0; i < selection.rangeCount; i++) {
+    ranges.push(selection.getRangeAt(i));
+  }
+
+  switch (active.tagName.toUpperCase()) { // .toUpperCase handles XHTML
+    case 'INPUT':
+    case 'TEXTAREA':
+      active.blur();
+      break;
+
+    default:
+      active = null;
+      break;
+  }
+
+  selection.removeAllRanges();
+  return function () {
+    selection.type === 'Caret' &&
+    selection.removeAllRanges();
+
+    if (!selection.rangeCount) {
+      ranges.forEach(function(range) {
+        selection.addRange(range);
+      });
+    }
+
+    active &&
+    active.focus();
+  };
+};
 
 },{}]},{},[1]);

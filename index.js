@@ -4,19 +4,13 @@ const lookAt = require('gl-mat4/lookAt')
 const invert = require('gl-mat4/invert')
 const rotate = require('gl-mat4/rotate')
 const transform = require('gl-vec3/transformMat4')
-const foxJSON = require('./fox.json')
+const foxJson = require('./fox.json')
 
 const SVG_NS = 'http://www.w3.org/2000/svg'
 
-function createNode (type) {
-  return document.createElementNS(SVG_NS, type)
-}
+module.exports = createLogo
 
-function setAttribute (node, attribute, value) {
-  node.setAttributeNS(null, attribute, value)
-}
-
-module.exports = function createLogo (options_) {
+function createLogo (options_) {
   const options = options_ || {}
 
   let followCursor = Boolean(options.followMouse)
@@ -24,7 +18,7 @@ module.exports = function createLogo (options_) {
   const slowDrift = Boolean(options.slowDrift)
   let shouldRender = true
 
-  const DISTANCE = 400
+  const cameraDistance = 400
   const lookCurrent = [0, 0]
   const lookRate = 0.3
 
@@ -35,13 +29,6 @@ module.exports = function createLogo (options_) {
     x: 0,
     y: 0,
   }
-
-  const NUM_VERTS = foxJSON.positions.length
-
-  const positions = new Float32Array(3 * NUM_VERTS)
-  const transformed = new Float32Array(3 * NUM_VERTS)
-
-  const toDraw = []
 
   if (!options.pxNotRatio) {
     width = (window.innerWidth * (options.width || 0.25)) | 0
@@ -56,120 +43,243 @@ module.exports = function createLogo (options_) {
   setAttribute(container, 'width', `${width}px`)
   setAttribute(container, 'height', `${height}px`)
 
-  function setLookAt (target) {
+  function setLookAtTarget (target) {
     const bounds = container.getBoundingClientRect()
     mouse.x = 1.0 - ((2.0 * (target.x - bounds.left)) / bounds.width)
     mouse.y = 1.0 - ((2.0 * (target.y - bounds.top)) / bounds.height)
   }
 
-  document.body.appendChild(container);
-  (function () {
-    const pp = foxJSON.positions
-    let ptr = 0
-    for (let i = 0; i < pp.length; ++i) {
-      const p = pp[i]
-      for (let j = 0; j < 3; ++j) {
-        positions[ptr] = p[j]
-        ptr += 1
-      }
-    }
-  })()
+  document.body.appendChild(container)
 
-  function Polygon (svg, indices) {
-    this.svg = svg
-    this.indices = indices
-    this.zIndex = 0
+  const renderFox = createModelRenderer(container, foxJson, cameraDistance)
+
+  function stopAnimation () {
+    shouldRender = false
+  }
+  function startAnimation () {
+    shouldRender = true
+  }
+  function setFollowMouse (state) {
+    followCursor = state
+  }
+  function setFollowMotion (state) {
+    followMotion = state
   }
 
-  const polygons = (function () {
-    const _polygons = []
-    for (let i = 0; i < foxJSON.chunks.length; ++i) {
-      const chunk = foxJSON.chunks[i]
-      const color = `rgb(${chunk.color})`
-      const { faces } = chunk
-      for (let j = 0; j < faces.length; ++j) {
-        const f = faces[j]
-        const polygon = createNode('polygon')
-        setAttribute(
-          polygon,
-          'fill',
-          color,
-        )
-        setAttribute(
-          polygon,
-          'stroke',
-          color,
-        )
-        setAttribute(
-          polygon,
-          'points',
-          '0,0, 10,0, 0,10',
-        )
-        container.appendChild(polygon)
-        _polygons.push(new Polygon(polygon, f))
-      }
+  window.addEventListener('mousemove', function (ev) {
+    if (!shouldRender) {
+      startAnimation()
     }
-    return _polygons
-  })()
+    if (followCursor) {
+      setLookAtTarget({
+        x: ev.clientX,
+        y: ev.clientY,
+      })
+      updateLookCurrent()
+      renderScene()
+    }
+  })
 
-  const computeMatrix = (function () {
-    const objectCenter = new Float32Array(3)
-    const up = new Float32Array([0, 1, 0])
-    const projection = new Float32Array(16)
-    const model = new Float32Array(16)
-    const view = lookAt(
-      new Float32Array(16),
-      new Float32Array([0, 0, DISTANCE]),
+  window.addEventListener('deviceorientation', function (event) {
+    if (!shouldRender) {
+      startAnimation()
+    }
+    if (followMotion) {
+      // gamma: left to right
+      const leftToRight = event.gamma
+      // beta: front back motion
+      const frontToBack = event.beta
+      // x offset: needed to correct the intial position
+      const xOffset = 200
+      // y offset: needed to correct the intial position
+      const yOffset = -300
+      // acceleration
+      const acceleration = 10
+
+      setLookAtTarget({
+        x: xOffset + (leftToRight * acceleration),
+        y: yOffset + (frontToBack * acceleration),
+      })
+      updateLookCurrent()
+      renderScene()
+    }
+  })
+
+  function lookAtAndRender (target) {
+    // update look target
+    setLookAtTarget(target)
+    // this should prolly just call updateLookCurrent or set lookCurrent values to eaxactly lookTarget
+    // but im not really sure why its different, so im leaving it alone
+    lookCurrent[0] = mouse.x
+    lookCurrent[1] = mouse.y + (0.085 / lookRate)
+    renderScene()
+  }
+
+  function renderScene () {
+    const rect = container.getBoundingClientRect()
+    renderFox(rect, lookCurrent, slowDrift)
+  }
+
+  function renderLoop () {
+    if (!shouldRender) {
+      return
+    }
+    // we set up a rerender, and then immediately cancel it via stopAnimation
+    // this seems like a mistake. likely because we change it to only animate
+    // on mousemove / device orienation as a perf gain, but didnt clean up
+    window.requestAnimationFrame(renderLoop)
+    updateLookCurrent()
+    renderScene()
+    stopAnimation()
+  }
+
+  function updateLookCurrent () {
+    const li = (1.0 - lookRate)
+    lookCurrent[0] = (li * lookCurrent[0]) + (lookRate * mouse.x)
+    lookCurrent[1] = (li * lookCurrent[1]) + (lookRate * mouse.y) + 0.085
+  }
+
+  renderLoop()
+
+  return {
+    container,
+    lookAt: setLookAtTarget,
+    setFollowMouse,
+    setFollowMotion,
+    stopAnimation,
+    startAnimation,
+    lookAtAndRender,
+  }
+}
+
+function createModelRenderer (container, modelJson, cameraDistance) {
+  const modelObj = loadModelFromJson(modelJson)
+  const { updatePositions, transformed } = modelObj
+  const polygons = createPolygonsFromModelJson(modelJson)
+
+  for (const polygon of polygons) {
+    container.appendChild(polygon.svg)
+  }
+
+  const computeMatrix = createMatrixComputer(cameraDistance)
+  const updateFaces = createFaceUpdater(container, polygons, transformed)
+
+  return (rect, lookPos, slowDrift) => {
+    const matrix = computeMatrix(rect, lookPos, slowDrift)
+    updatePositions(matrix)
+    updateFaces(rect, container, polygons, transformed)
+  }
+}
+
+function loadModelFromJson (modelJson) {
+  const vertCount = modelJson.positions.length
+  const positions = new Float32Array(3 * vertCount)
+  const transformed = new Float32Array(3 * vertCount)
+  positionsFromModel(positions, modelJson)
+  const updatePositions = createPositionUpdater(positions, transformed, vertCount)
+  return { updatePositions, positions, transformed }
+}
+
+function positionsFromModel (positions, modelJson) {
+  const pp = modelJson.positions
+  let ptr = 0
+  for (let i = 0; i < pp.length; ++i) {
+    const p = pp[i]
+    for (let j = 0; j < 3; ++j) {
+      positions[ptr] = p[j]
+      ptr += 1
+    }
+  }
+}
+
+function createPolygonsFromModelJson (modelJson) {
+  const polygons = []
+  for (let i = 0; i < modelJson.chunks.length; ++i) {
+    const chunk = modelJson.chunks[i]
+    const color = `rgb(${chunk.color})`
+    const { faces } = chunk
+    for (let j = 0; j < faces.length; ++j) {
+      const f = faces[j]
+      const svgPolygon = createNode('polygon')
+      setAttribute(
+        svgPolygon,
+        'fill',
+        color,
+      )
+      setAttribute(
+        svgPolygon,
+        'stroke',
+        color,
+      )
+      setAttribute(
+        svgPolygon,
+        'points',
+        '0,0, 10,0, 0,10',
+      )
+      polygons.push(new Polygon(svgPolygon, f))
+    }
+  }
+  return polygons
+}
+
+function createMatrixComputer (distance) {
+  const objectCenter = new Float32Array(3)
+  const up = new Float32Array([0, 1, 0])
+  const projection = new Float32Array(16)
+  const model = new Float32Array(16)
+  const view = lookAt(
+    new Float32Array(16),
+    new Float32Array([0, 0, distance]),
+    objectCenter,
+    up,
+  )
+  const invView = invert(new Float32Array(16), view)
+  const invProjection = new Float32Array(16)
+  const target = new Float32Array(3)
+  const transformedMatrix = new Float32Array(16)
+
+  const X = new Float32Array([1, 0, 0])
+  const Y = new Float32Array([0, 1, 0])
+  const Z = new Float32Array([0, 0, 1])
+
+  return function computeMatrix (rect, lookPos, slowDrift) {
+    const viewportWidth = rect.width
+    const viewportHeight = rect.height
+    perspective(
+      projection,
+      Math.PI / 4.0,
+      viewportWidth / viewportHeight,
+      100.0,
+      1000.0,
+    )
+    invert(invProjection, projection)
+    target[0] = lookPos[0]
+    target[1] = lookPos[1]
+    target[2] = 1.2
+    transform(target, target, invProjection)
+    transform(target, target, invView)
+    lookAt(
+      model,
       objectCenter,
+      target,
       up,
     )
-    const invView = invert(new Float32Array(16), view)
-    const invProjection = new Float32Array(16)
-    const target = new Float32Array(3)
-    const transformedMatrix = new Float32Array(16)
-
-    const X = new Float32Array([1, 0, 0])
-    const Y = new Float32Array([0, 1, 0])
-    const Z = new Float32Array([0, 0, 1])
-
-    return function () {
-      const rect = container.getBoundingClientRect()
-      const viewportWidth = rect.width
-      const viewportHeight = rect.height
-      perspective(
-        projection,
-        Math.PI / 4.0,
-        viewportWidth / viewportHeight,
-        100.0,
-        1000.0,
-      )
-      invert(invProjection, projection)
-      target[0] = lookCurrent[0]
-      target[1] = lookCurrent[1]
-      target[2] = 1.2
-      transform(target, target, invProjection)
-      transform(target, target, invView)
-      lookAt(
-        model,
-        objectCenter,
-        target,
-        up,
-      )
-      if (slowDrift) {
-        const time = (Date.now() / 1000.0)
-        rotate(model, model, 0.1 + (Math.sin(time / 3) * 0.2), X)
-        rotate(model, model, -0.1 + (Math.sin(time / 2) * 0.03), Z)
-        rotate(model, model, 0.5 + (Math.sin(time / 3) * 0.2), Y)
-      }
-
-      multiply(transformedMatrix, projection, view)
-      multiply(transformedMatrix, transformedMatrix, model)
-
-      return transformedMatrix
+    if (slowDrift) {
+      const time = (Date.now() / 1000.0)
+      rotate(model, model, 0.1 + (Math.sin(time / 3) * 0.2), X)
+      rotate(model, model, -0.1 + (Math.sin(time / 2) * 0.03), Z)
+      rotate(model, model, 0.5 + (Math.sin(time / 3) * 0.2), Y)
     }
-  })()
 
-  function updatePositions (M) {
+    multiply(transformedMatrix, projection, view)
+    multiply(transformedMatrix, transformedMatrix, model)
+
+    return transformedMatrix
+  }
+}
+
+function createPositionUpdater (positions, transformed, vertCount) {
+  return function updatePositions (M) {
     const m00 = M[0]
     const m01 = M[1]
     const m02 = M[2]
@@ -187,7 +297,7 @@ module.exports = function createLogo (options_) {
     const m32 = M[14]
     const m33 = M[15]
 
-    for (let i = 0; i < NUM_VERTS; ++i) {
+    for (let i = 0; i < vertCount; ++i) {
       const x = positions[3 * i]
       const y = positions[(3 * i) + 1]
       const z = positions[(3 * i) + 2]
@@ -201,14 +311,16 @@ module.exports = function createLogo (options_) {
         ((x * m02) + (y * m12) + (z * m22) + m32) / tw
     }
   }
+}
 
-  function compareZ (a, b) {
-    return b.zIndex - a.zIndex
-  }
+function compareZ (a, b) {
+  return b.zIndex - a.zIndex
+}
 
-  function updateFaces () {
+function createFaceUpdater (container, polygons, transformed) {
+  const toDraw = []
+  return function updateFaces (rect) {
     let i
-    const rect = container.getBoundingClientRect()
     const w = rect.width
     const h = rect.height
     toDraw.length = 0
@@ -259,95 +371,18 @@ module.exports = function createLogo (options_) {
       container.appendChild(toDraw[i].svg)
     }
   }
+}
 
-  function stopAnimation () {
-    shouldRender = false
-  }
-  function startAnimation () {
-    shouldRender = true
-  }
-  function setFollowMouse (state) {
-    followCursor = state
-  }
-  function setFollowMotion (state) {
-    followMotion = state
-  }
+function createNode (type) {
+  return document.createElementNS(SVG_NS, type)
+}
 
-  window.addEventListener('mousemove', function (ev) {
-    if (!shouldRender) {
-      startAnimation()
-    }
-    if (followCursor) {
-      setLookAt({
-        x: ev.clientX,
-        y: ev.clientY,
-      })
-      renderScene()
-    }
-  })
+function setAttribute (node, attribute, value) {
+  node.setAttributeNS(null, attribute, value)
+}
 
-  window.addEventListener('deviceorientation', function (event) {
-    if (!shouldRender) {
-      startAnimation()
-    }
-    if (followMotion) {
-      // gamma: left to right
-      const leftToRight = event.gamma
-      // beta: front back motion
-      const frontToBack = event.beta
-      // x offset: needed to correct the intial position
-      const xOffset = 200
-      // y offset: needed to correct the intial position
-      const yOffset = -300
-      // acceleration
-      const acceleration = 10
-
-      setLookAt({
-        x: xOffset + (leftToRight * acceleration),
-        y: yOffset + (frontToBack * acceleration),
-      })
-      renderScene()
-    }
-  })
-
-  function lookAtAndRender (target) {
-    setLookAt(target)
-
-    lookCurrent[0] = mouse.x
-    lookCurrent[1] = mouse.y + (0.085 / lookRate)
-
-    const matrix = computeMatrix()
-    updatePositions(matrix)
-    updateFaces()
-    stopAnimation()
-  }
-
-  function renderScene () {
-    if (!shouldRender) {
-      return
-    }
-    window.requestAnimationFrame(renderScene)
-
-    const li = (1.0 - lookRate)
-
-    lookCurrent[0] = (li * lookCurrent[0]) + (lookRate * mouse.x)
-    lookCurrent[1] = (li * lookCurrent[1]) + (lookRate * mouse.y) + 0.085
-
-    const matrix = computeMatrix()
-    updatePositions(matrix)
-    updateFaces()
-    stopAnimation()
-  }
-
-  renderScene()
-
-  return {
-    container,
-    lookAt: setLookAt,
-    setFollowMouse,
-    setFollowMotion,
-    stopAnimation,
-    startAnimation,
-    lookAtAndRender,
-  }
+function Polygon (svg, indices) {
+  this.svg = svg
+  this.indices = indices
+  this.zIndex = 0
 }
