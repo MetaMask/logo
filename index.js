@@ -36,6 +36,8 @@ module.exports = function createLogo (options_) {
     y: 0,
   }
 
+  defineGradients(container)
+
   const NUM_VERTS = foxJSON.positions.length
 
   const positions = new Float32Array(3 * NUM_VERTS)
@@ -85,7 +87,8 @@ module.exports = function createLogo (options_) {
     const _polygons = []
     for (let i = 0; i < foxJSON.chunks.length; ++i) {
       const chunk = foxJSON.chunks[i]
-      const color = `rgb(${chunk.color})`
+      // const color = `rgbcolor(${chunk.color})`
+      const color = `url(#gradient1)`
       const { faces } = chunk
       for (let j = 0; j < faces.length; ++j) {
         const f = faces[j]
@@ -95,11 +98,11 @@ module.exports = function createLogo (options_) {
           'fill',
           color,
         )
-        setAttribute(
-          polygon,
-          'stroke',
-          color,
-        )
+        // setAttribute(
+        //   polygon,
+        //   'stroke',
+        //   color,
+        // )
         setAttribute(
           polygon,
           'points',
@@ -168,6 +171,29 @@ module.exports = function createLogo (options_) {
       return transformedMatrix
     }
   })()
+
+  function defineGradients () {
+    // <defs>
+    //   <linearGradient id="grad">
+    //       <stop offset="0" stop-color="#fbaee3"/>
+    //       <stop offset="1" stop-color="#ffd982"/>
+    //   </linearGradient>
+    // </defs>
+    const defsContainer = createNode('defs')
+    container.appendChild(defsContainer)
+    const linearGradient = createNode('linearGradient')
+    defsContainer.appendChild(linearGradient)
+    linearGradient.id = 'gradient1'
+    // linearGradient.setAttribute('id', 'gradient1')
+    const color1 = createNode('stop')
+    color1.setAttribute('offset', '0')
+    color1.setAttribute('stop-color', '#fbaee3')
+    linearGradient.appendChild(color1)
+    const color2 = createNode('stop')
+    color2.setAttribute('offset', '1')
+    color2.setAttribute('stop-color', '#ffd982')
+    linearGradient.appendChild(color2)
+  }
 
   function updatePositions (M) {
     const m00 = M[0]
@@ -255,6 +281,7 @@ module.exports = function createLogo (options_) {
     }
     toDraw.sort(compareZ)
     container.innerHTML = ''
+    defineGradients()
     for (i = 0; i < toDraw.length; ++i) {
       container.appendChild(toDraw[i].svg)
     }
