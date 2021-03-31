@@ -36,7 +36,7 @@ module.exports = function createLogo (options_) {
     y: 0,
   }
 
-  defineGradients(container)
+  defineGradients()
 
   const NUM_VERTS = foxJSON.positions.length
 
@@ -87,16 +87,16 @@ module.exports = function createLogo (options_) {
     const _polygons = []
     for (let i = 0; i < foxJSON.chunks.length; ++i) {
       const chunk = foxJSON.chunks[i]
-      // const color = `rgbcolor(${chunk.color})`
-      const color = `url(#gradient1)`
       const { faces } = chunk
       for (let j = 0; j < faces.length; ++j) {
         const f = faces[j]
         const polygon = createNode('polygon')
+        // <polygon style="stroke:none; fill: #ffffff" points="212.49258854612708,113.06104078888893 166.50741145387292,113.06104078888893 148.1171049848199,67.39842438697815"></polygon>
+
         setAttribute(
           polygon,
-          'fill',
-          color,
+          'style',
+          'stroke:none; fill: #ffffff',
         )
         // setAttribute(
         //   polygon,
@@ -178,6 +178,10 @@ module.exports = function createLogo (options_) {
     //       <stop offset="0" stop-color="#fbaee3"/>
     //       <stop offset="1" stop-color="#ffd982"/>
     //   </linearGradient>
+    //   <mask id="mask1">
+    //     <polygon style="stroke:none; fill: #ffffff" points="212.49258854612708,113.06104078888893 166.50741145387292,113.06104078888893 148.1171049848199,67.39842438697815"></polygon>
+    //     ... 
+    //   </mask>
     // </defs>
     const defsContainer = createNode('defs')
     container.appendChild(defsContainer)
@@ -193,6 +197,11 @@ module.exports = function createLogo (options_) {
     color2.setAttribute('offset', '1')
     color2.setAttribute('stop-color', '#ffd982')
     linearGradient.appendChild(color2)
+    const mask1 = createNode('mask')
+    mask1.id = 'mask1'
+    defsContainer.appendChild(mask1)
+
+    return { mask1 }
   }
 
   function updatePositions (M) {
@@ -232,7 +241,7 @@ module.exports = function createLogo (options_) {
     return b.zIndex - a.zIndex
   }
 
-  function updateFaces () {
+  function updateFaces (faceContainer) {
     let i
     const rect = container.getBoundingClientRect()
     const w = rect.width
@@ -280,10 +289,9 @@ module.exports = function createLogo (options_) {
       toDraw.push(poly)
     }
     toDraw.sort(compareZ)
-    container.innerHTML = ''
-    defineGradients()
+
     for (i = 0; i < toDraw.length; ++i) {
-      container.appendChild(toDraw[i].svg)
+      faceContainer.appendChild(toDraw[i].svg)
     }
   }
 
@@ -345,8 +353,22 @@ module.exports = function createLogo (options_) {
 
     const matrix = computeMatrix()
     updatePositions(matrix)
-    updateFaces()
+
+    container.innerHTML = ''
+    const { mask1 } = defineGradients()
+    updateFaces(mask1)
+    drawMaskedFox()
     stopAnimation()
+  }
+
+  function drawMaskedFox () {
+    // <rect width="400" height="400"
+    // style="fill: url(#gradient1); mask: url(#mask1)"/>
+    const maskedRect = createNode('rect')
+    maskedRect.setAttribute('width', 400)
+    maskedRect.setAttribute('height', 400)
+    maskedRect.setAttribute('style', 'fill: url(#gradient1); mask: url(#mask1)')
+    container.appendChild(maskedRect)
   }
 
   function renderScene () {
@@ -362,7 +384,11 @@ module.exports = function createLogo (options_) {
 
     const matrix = computeMatrix()
     updatePositions(matrix)
-    updateFaces()
+
+    container.innerHTML = ''
+    const { mask1 } = defineGradients()
+    updateFaces(mask1)
+    drawMaskedFox()
     stopAnimation()
   }
 
