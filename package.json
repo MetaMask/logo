@@ -4,8 +4,8 @@
   "description": "A browserifyable 3d metamask logo. [Live demo](http://metamask.github.io/logo/).",
   "main": "index.js",
   "scripts": {
-    "build": "browserify example/example.js -o bundle.js",
-    "build:gradient": "browserify example/gradient.js -o bundle.js",
+    "build": "yarn bundle normal && yarn bundle gradient",
+    "bundle": "./example/build.sh",
     "convert": "node convert.js > fox.json",
     "lint": "eslint . --ext js,json",
     "lint:fix": "yarn lint --fix"
