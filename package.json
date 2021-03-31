@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "browserify example/example.js -o bundle.js",
+    "build:gradient": "browserify example/gradient.js -o bundle.js",
     "convert": "node convert.js > fox.json",
     "lint": "eslint . --ext js,json",
     "lint:fix": "yarn lint --fix"
