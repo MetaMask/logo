@@ -1,24 +1,141 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-const copy = require('copy-to-clipboard')
-const createViewer = require('..')
-const { svgElementToSvgImageContent } = require('../util')
+const {
+  calculateSizingOptions,
+  createLogoViewer,
+  loadModelFromJson,
+  createModelRenderer,
+  createNode,
+  setAttribute,
+} = require('../util')
+const foxJson = require('../fox.json')
 
-document.addEventListener('keypress', function (event) {
-  if (event.keyCode === 99) { // the c key
-    const svg = document.querySelector('svg')
-    const content = svgElementToSvgImageContent(svg)
-    copy(content)
-  }
-})
-
-createViewer({
+createDistortedLogo({
   width: 0.4,
   height: 0.4,
   followMouse: true,
   followMotion: true,
+  lazyRender: false,
 })
 
-},{"..":3,"../util":13,"copy-to-clipboard":4}],2:[function(require,module,exports){
+function createDistortedLogo (options) {
+  const cameraDistance = options.cameraDistance || 400
+  const { height, width } = calculateSizingOptions(options)
+
+  const container = createNode('svg')
+  setAttribute(container, 'width', `${width}px`)
+  setAttribute(container, 'height', `${height}px`)
+  document.body.appendChild(container)
+
+  const modelObj = loadModelFromJson(foxJson)
+  const { positions } = modelObj
+  //  store a copy of positions
+  const origPositions = positions.slice()
+
+  const distortionMethods = {
+    'Glitch': distortGlitch,
+    'Fold': distortFold,
+    'Grow': distortGrow,
+  }
+  let applyDistortion = Object.values(distortionMethods)[0]
+  
+  Object.entries(distortionMethods).forEach(([description, distortionFn]) => {
+    const button = document.createElement('button')
+    button.innerText = description
+    button.addEventListener('click', () => {
+      applyDistortion = distortionFn
+    })
+    document.body.appendChild(button)
+  })
+
+  const renderFox = createModelRenderer(container, cameraDistance, modelObj)
+  const renderScene = (lookCurrent, slowDrift) => {
+    const rect = container.getBoundingClientRect()
+    applyDistortion(positions, origPositions)
+    renderFox(rect, lookCurrent, slowDrift)
+  }
+
+  return createLogoViewer(container, renderScene, { cameraDistance, ...options })
+}
+
+// glitch up and down
+function distortGlitch (positions, origPositions) {
+  const pointCount = positions.length / 3
+  for (let polygonIndex = 0; polygonIndex < pointCount; polygonIndex++) {
+    const x = (polygonIndex * 3) + 0
+    const y = (polygonIndex * 3) + 1
+    const z = (polygonIndex * 3) + 2
+    // strong along x
+    positions[x] = origPositions[x] + (20 * getSinIntensity() * Math.random())
+    positions[y] = origPositions[y] + (20 * getSinIntensity() * Math.random())
+    positions[z] = origPositions[z] + (20 * getSinIntensity() * Math.random())
+  }
+}
+
+// bug: grow head slowly?
+function distortGrow (positions, origPositions) {
+  const progress = getSinIntensity()
+  const pointCount = positions.length / 3
+  const polygonProgressWidth = 1 / pointCount
+  for (let polygonIndex = 0; polygonIndex < pointCount; polygonIndex++) {
+    // calculate the current progress for each polygon
+    const polygonProgressStart = polygonIndex * polygonProgressWidth
+    const polygonProgressEnd = polygonProgressStart + polygonProgressWidth
+    const polygonProgressUncapped = (progress - polygonProgressStart) / (polygonProgressEnd - polygonProgressStart)
+    const polygonProgress = Math.min(Math.max(polygonProgressUncapped, 0), 1)
+    // the previous polygon (self referential for the first one)
+    const prevPolygonIndex = Math.max(polygonIndex, polygonIndex - 1)
+    const prevX = origPositions[prevPolygonIndex * (3 + 0)]
+    const prevY = origPositions[prevPolygonIndex * (3 + 1)]
+    const prevZ = origPositions[prevPolygonIndex * (3 + 2)]
+    const x = polygonIndex * (3 + 0)
+    const y = polygonIndex * (3 + 1)
+    const z = polygonIndex * (3 + 2)
+    // strong along x
+    positions[x] = prevX + (polygonProgress * origPositions[x])
+    positions[y] = prevY + (polygonProgress * origPositions[y])
+    positions[z] = prevZ + (polygonProgress * origPositions[z])
+  }
+}
+
+// bug: grow head slowly?
+function distortFold (positions, origPositions) {
+  const progress = getSinIntensity(5000)
+  const pointCount = positions.length / 3
+  const polygonProgressWidth = 1 / pointCount
+  // reset positions
+  Object.assign(positions, origPositions)
+  for (let polygonIndex = 0; polygonIndex < pointCount; polygonIndex++) {
+    // calculate the current progress for each polygon
+    const polygonProgressStart = polygonIndex * polygonProgressWidth
+    const polygonProgressEnd = polygonProgressStart + polygonProgressWidth
+    const polygonProgressUncapped = (progress - polygonProgressStart) / (polygonProgressEnd - polygonProgressStart)
+    const polygonProgress = Math.min(Math.max(polygonProgressUncapped, 0), 1)
+    // the previous polygon (self referential for the first one)
+    const prevPolygonIndex = Math.max(0, polygonIndex - 1)
+    const prevX = positions[prevPolygonIndex * (3 + 0)]
+    const prevY = positions[prevPolygonIndex * (3 + 1)]
+    const prevZ = positions[prevPolygonIndex * (3 + 2)]
+    const x = polygonIndex * (3 + 0)
+    const y = polygonIndex * (3 + 1)
+    const z = polygonIndex * (3 + 2)
+    // console.log(polygonIndex, polygonProgress)
+    positions[x] = (prevX + (polygonProgress * (origPositions[x] - prevX)))
+    positions[y] = (prevY + (polygonProgress * (origPositions[y] - prevY)))
+    positions[z] = (prevZ + (polygonProgress * (origPositions[z] - prevZ)))
+  }
+}
+
+// random between (-1, 1)
+function getRandom () {
+  return (2 * Math.random()) - 1
+}
+
+// sin between 0-1
+function getSinIntensity (speed = 1000) {
+  return (Math.sin(Date.now() / speed) + 1) / 2
+}
+
+},{"../fox.json":2,"../util":10}],2:[function(require,module,exports){
 module.exports={
   "positions": [
     [
@@ -1447,118 +1564,6 @@ module.exports={
 }
 
 },{}],3:[function(require,module,exports){
-const foxJson = require('./fox.json')
-const {
-  calculateSizingOptions,
-  createLogoViewer,
-  loadModelFromJson,
-  createModelRenderer,
-  createNode,
-  setAttribute,
-} = require('./util.js')
-
-module.exports = createLogo
-
-function createLogo (options = {}) {
-  const cameraDistance = options.cameraDistance || 400
-  const { height, width } = calculateSizingOptions(options)
-
-  const container = createNode('svg')
-  setAttribute(container, 'width', `${width}px`)
-  setAttribute(container, 'height', `${height}px`)
-  document.body.appendChild(container)
-
-  const modelObj = loadModelFromJson(foxJson)
-  const renderFox = createModelRenderer(container, cameraDistance, modelObj)
-  const renderScene = (lookCurrent, slowDrift) => {
-    const rect = container.getBoundingClientRect()
-    renderFox(rect, lookCurrent, slowDrift)
-  }
-
-  return createLogoViewer(container, renderScene, { cameraDistance, ...options })
-}
-
-},{"./fox.json":2,"./util.js":13}],4:[function(require,module,exports){
-'use strict';
-
-var deselectCurrent = require('toggle-selection');
-
-var defaultMessage = 'Copy to clipboard: #{key}, Enter';
-
-function format(message) {
-  var copyKey = (/mac os x/i.test(navigator.userAgent) ? '⌘' : 'Ctrl') + '+C';
-  return message.replace(/#{\s*key\s*}/g, copyKey);
-}
-
-function copy(text, options) {
-  var debug, message, reselectPrevious, range, selection, mark, success = false;
-  if (!options) { options = {}; }
-  debug = options.debug || false;
-  try {
-    reselectPrevious = deselectCurrent();
-
-    range = document.createRange();
-    selection = document.getSelection();
-
-    mark = document.createElement('span');
-    mark.textContent = text;
-    // reset user styles for span element
-    mark.style.all = 'unset';
-    // prevents scrolling to the end of the page
-    mark.style.position = 'fixed';
-    mark.style.top = 0;
-    mark.style.clip = 'rect(0, 0, 0, 0)';
-    // used to preserve spaces and line breaks
-    mark.style.whiteSpace = 'pre';
-    // do not inherit user-select (it may be `none`)
-    mark.style.webkitUserSelect = 'text';
-    mark.style.MozUserSelect = 'text';
-    mark.style.msUserSelect = 'text';
-    mark.style.userSelect = 'text';
-
-    document.body.appendChild(mark);
-
-    range.selectNode(mark);
-    selection.addRange(range);
-
-    var successful = document.execCommand('copy');
-    if (!successful) {
-      throw new Error('copy command was unsuccessful');
-    }
-    success = true;
-  } catch (err) {
-    debug && console.error('unable to copy using execCommand: ', err);
-    debug && console.warn('trying IE specific stuff');
-    try {
-      window.clipboardData.setData('text', text);
-      success = true;
-    } catch (err) {
-      debug && console.error('unable to copy using clipboardData: ', err);
-      debug && console.error('falling back to prompt');
-      message = format('message' in options ? options.message : defaultMessage);
-      window.prompt(message, text);
-    }
-  } finally {
-    if (selection) {
-      if (typeof selection.removeRange == 'function') {
-        selection.removeRange(range);
-      } else {
-        selection.removeAllRanges();
-      }
-    }
-
-    if (mark) {
-      document.body.removeChild(mark);
-    }
-    reselectPrevious();
-  }
-
-  return success;
-}
-
-module.exports = copy;
-
-},{"toggle-selection":12}],5:[function(require,module,exports){
 module.exports = identity;
 
 /**
@@ -1586,7 +1591,7 @@ function identity(out) {
     out[15] = 1;
     return out;
 };
-},{}],6:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 module.exports = invert;
 
 /**
@@ -1642,7 +1647,7 @@ function invert(out, a) {
 
     return out;
 };
-},{}],7:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 var identity = require('./identity');
 
 module.exports = lookAt;
@@ -1733,7 +1738,7 @@ function lookAt(out, eye, center, up) {
 
     return out;
 };
-},{"./identity":5}],8:[function(require,module,exports){
+},{"./identity":3}],6:[function(require,module,exports){
 module.exports = multiply;
 
 /**
@@ -1776,7 +1781,7 @@ function multiply(out, a, b) {
     out[15] = b0*a03 + b1*a13 + b2*a23 + b3*a33;
     return out;
 };
-},{}],9:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 module.exports = perspective;
 
 /**
@@ -1810,7 +1815,7 @@ function perspective(out, fovy, aspect, near, far) {
     out[15] = 0;
     return out;
 };
-},{}],10:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 module.exports = rotate;
 
 /**
@@ -1875,7 +1880,7 @@ function rotate(out, a, rad, axis) {
     }
     return out;
 };
-},{}],11:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 module.exports = transformMat4;
 
 /**
@@ -1896,48 +1901,7 @@ function transformMat4(out, a, m) {
     out[2] = (m[2] * x + m[6] * y + m[10] * z + m[14]) / w
     return out
 }
-},{}],12:[function(require,module,exports){
-
-module.exports = function () {
-  var selection = document.getSelection();
-  if (!selection.rangeCount) {
-    return function () {};
-  }
-  var active = document.activeElement;
-
-  var ranges = [];
-  for (var i = 0; i < selection.rangeCount; i++) {
-    ranges.push(selection.getRangeAt(i));
-  }
-
-  switch (active.tagName.toUpperCase()) { // .toUpperCase handles XHTML
-    case 'INPUT':
-    case 'TEXTAREA':
-      active.blur();
-      break;
-
-    default:
-      active = null;
-      break;
-  }
-
-  selection.removeAllRanges();
-  return function () {
-    selection.type === 'Caret' &&
-    selection.removeAllRanges();
-
-    if (!selection.rangeCount) {
-      ranges.forEach(function(range) {
-        selection.addRange(range);
-      });
-    }
-
-    active &&
-    active.focus();
-  };
-};
-
-},{}],13:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 const perspective = require('gl-mat4/perspective')
 const multiply = require('gl-mat4/multiply')
 const lookAt = require('gl-mat4/lookAt')
@@ -2352,4 +2316,4 @@ function Polygon (svg, indices) {
   this.zIndex = 0
 }
 
-},{"gl-mat4/invert":6,"gl-mat4/lookAt":7,"gl-mat4/multiply":8,"gl-mat4/perspective":9,"gl-mat4/rotate":10,"gl-vec3/transformMat4":11}]},{},[1]);
+},{"gl-mat4/invert":4,"gl-mat4/lookAt":5,"gl-mat4/multiply":6,"gl-mat4/perspective":7,"gl-mat4/rotate":8,"gl-vec3/transformMat4":9}]},{},[1]);

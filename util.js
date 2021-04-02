@@ -24,12 +24,14 @@ module.exports = {
   Polygon,
 }
 
-function createLogoViewer (container, renderScene, options = {}) {
-  let followCursor = Boolean(options.followMouse)
-  let followMotion = Boolean(options.followMotion)
-  const slowDrift = Boolean(options.slowDrift)
-  let shouldRender = true
+function createLogoViewer (container, renderScene, {
+  followMouse = false,
+  followMotion = false,
+  slowDrift = false,
+  lazyRender = true,
+} = {}) {
 
+  let shouldRender = true
   const mouse = {
     x: 0,
     y: 0,
@@ -38,7 +40,10 @@ function createLogoViewer (container, renderScene, options = {}) {
   const lookRate = 0.3
 
   // closes over scene state
-  const renderCurrentScene = () => renderScene(lookCurrent, slowDrift)
+  const renderCurrentScene = () => {
+    updateLookCurrent()
+    renderScene(lookCurrent, slowDrift)
+  }
 
   function setLookAtTarget (target) {
     const bounds = container.getBoundingClientRect()
@@ -53,7 +58,7 @@ function createLogoViewer (container, renderScene, options = {}) {
     shouldRender = true
   }
   function setFollowMouse (state) {
-    followCursor = state
+    followMouse = state
   }
   function setFollowMotion (state) {
     followMotion = state
@@ -63,12 +68,11 @@ function createLogoViewer (container, renderScene, options = {}) {
     if (!shouldRender) {
       startAnimation()
     }
-    if (followCursor) {
+    if (followMouse) {
       setLookAtTarget({
         x: ev.clientX,
         y: ev.clientY,
       })
-      updateLookCurrent()
       renderCurrentScene()
     }
   })
@@ -93,7 +97,6 @@ function createLogoViewer (container, renderScene, options = {}) {
         x: xOffset + (leftToRight * acceleration),
         y: yOffset + (frontToBack * acceleration),
       })
-      updateLookCurrent()
       renderCurrentScene()
     }
   })
@@ -112,13 +115,8 @@ function createLogoViewer (container, renderScene, options = {}) {
     if (!shouldRender) {
       return
     }
-    // we set up a rerender, and then immediately cancel it via stopAnimation
-    // this seems like a mistake. likely because we change it to only animate
-    // on mousemove / device orienation as a perf gain, but didnt clean up
     window.requestAnimationFrame(renderLoop)
-    updateLookCurrent()
     renderCurrentScene()
-    stopAnimation()
   }
 
   function updateLookCurrent () {
@@ -127,7 +125,11 @@ function createLogoViewer (container, renderScene, options = {}) {
     lookCurrent[1] = (li * lookCurrent[1]) + (lookRate * mouse.y) + 0.085
   }
 
-  renderLoop()
+  if (lazyRender) {
+    renderCurrentScene()
+  } else {
+    renderLoop()
+  }
 
   return {
     container,
