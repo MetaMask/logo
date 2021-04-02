@@ -2,8 +2,8 @@ const foxJson = require('./fox.json')
 const {
   calculateSizingOptions,
   createLogoViewer,
+  loadModelFromJson,
   createModelRenderer,
-  createStandardModelPolygon,
   createNode,
   setAttribute,
 } = require('./util.js')
@@ -19,7 +19,8 @@ function createLogo (options = {}) {
   setAttribute(container, 'height', `${height}px`)
   document.body.appendChild(container)
 
-  const renderFox = createModelRenderer(container, foxJson, cameraDistance, createStandardModelPolygon)
+  const modelObj = loadModelFromJson(foxJson)
+  const renderFox = createModelRenderer(container, cameraDistance, modelObj)
   const renderScene = (lookCurrent, slowDrift) => {
     const rect = container.getBoundingClientRect()
     renderFox(rect, lookCurrent, slowDrift)

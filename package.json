@@ -4,7 +4,7 @@
   "description": "A browserifyable 3d metamask logo. [Live demo](http://metamask.github.io/logo/).",
   "main": "index.js",
   "scripts": {
-    "build": "yarn bundle normal && yarn bundle gradient",
+    "build": "yarn bundle normal && yarn bundle gradient && yarn bundle recolor",
     "bundle": "./example/build.sh",
     "convert": "node convert.js > fox.json",
     "lint": "eslint . --ext js,json",
@@ -31,6 +31,7 @@
     "eslint": "^7.7.0",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-json": "^2.1.2",
+    "mersenne-twister": "^1.1.0",
     "uglifyify": "^5.0.2"
   },
   "repository": {

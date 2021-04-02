@@ -1,24 +1,139 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-const copy = require('copy-to-clipboard')
-const createViewer = require('..')
-const { svgElementToSvgImageContent } = require('../util')
+const MersenneTwister = require('mersenne-twister')
+const {
+  calculateSizingOptions,
+  createLogoViewer,
+  loadModelFromJson,
+  createModelRenderer,
+  createNode,
+  setAttribute,
+  svgElementToSvgImageContent,
+} = require('../util')
+const foxJson = require('../fox.json')
 
-document.addEventListener('keypress', function (event) {
-  if (event.keyCode === 99) { // the c key
-    const svg = document.querySelector('svg')
-    const content = svgElementToSvgImageContent(svg)
-    copy(content)
+let colorSeed = pickColorSeed()
+const colors = [
+  '#01888C', // teal
+  '#FC7500', // bright orange
+  '#034F5D', // dark teal
+  '#F73F01', // orangered
+  '#FC1960', // magenta
+  '#C7144C', // raspberry
+  '#F3C100', // goldenrod
+  '#1598F2', // lightning blue
+  '#2465E1', // sail blue
+  '#F19E02', // gold
+]
+
+let cycling = false
+let cycleInterval
+function toggleCycle (modelObj) {
+  if (cycling && cycleInterval) {
+    console.dir(cycleInterval)
+    clearInterval(cycleInterval)
+    cycling = false
+  } else if (!cycling) {
+    cycleInterval = setInterval(() => recolor(modelObj), 500)
+    cycling = true
+  }
+}
+
+document.addEventListener('keypress', (event) => {
+  if (event.keyCode === 99) { // the C key
+    saveImage()
   }
 })
 
-createViewer({
+function saveImage () {
+  const svg = document.querySelector('svg')
+  const content = svgElementToSvgImageContent(svg)
+  download(content, `custom-fox-${colorSeed}.svg`, 'image/svg+xml')
+}
+
+const viewer = createRecolorLogo({
   width: 0.4,
   height: 0.4,
   followMouse: true,
   followMotion: true,
 })
 
-},{"..":3,"../util":13,"copy-to-clipboard":4}],2:[function(require,module,exports){
+const foxDiv = document.querySelector('body div.fox')
+foxDiv.appendChild(viewer.container)
+
+function createRecolorLogo (options) {
+  const cameraDistance = options.cameraDistance || 400
+  const { height, width } = calculateSizingOptions(options)
+
+  const container = createNode('svg')
+  setAttribute(container, 'width', `${width}px`)
+  setAttribute(container, 'height', `${height}px`)
+  document.body.appendChild(container)
+
+  const modelObj = loadModelFromJson(foxJson)
+  const renderFox = createModelRenderer(container, cameraDistance, modelObj)
+  const renderScene = (lookCurrent, slowDrift) => {
+    const rect = container.getBoundingClientRect()
+    renderFox(rect, lookCurrent, slowDrift)
+  }
+
+  const saveButton = document.querySelector('button.save')
+  saveButton.addEventListener('click', saveImage)
+  const recolorButton = document.querySelector('button.recolor')
+  recolorButton.addEventListener('click', () => recolor(modelObj))
+  const cycleButton = document.querySelector('button.cycle')
+  cycleButton.addEventListener('click', () => toggleCycle(modelObj))
+
+  return createLogoViewer(container, renderScene, { cameraDistance, ...options })
+}
+
+function recolor (modelObj) {
+  colorSeed = pickColorSeed()
+  const twister = new MersenneTwister(colorSeed)
+  const { polygonsByChunk } = modelObj
+  for (const polygons of polygonsByChunk) {
+    const randomIndex = Math.floor(twister.random() * colors.length)
+    const color = colors[randomIndex]
+    for (const polygon of polygons) {
+      setAttribute(
+        polygon.svg,
+        'fill',
+        color,
+      )
+      setAttribute(
+        polygon.svg,
+        'stroke',
+        color,
+      )
+    }
+  }
+  viewer.renderCurrentScene()
+}
+
+function pickColorSeed () {
+  return Math.floor(Math.random() * 10000000)
+}
+
+// Function to download data to a file
+function download (data, filename, type) {
+  const file = new Blob([data], { type })
+  // IE10+
+  if (window.navigator.msSaveOrOpenBlob) {
+    window.navigator.msSaveOrOpenBlob(file, filename)
+  } else { // Others
+    const a = document.createElement('a')
+    const url = URL.createObjectURL(file)
+    a.href = url
+    a.download = filename
+    document.body.appendChild(a)
+    a.click()
+    setTimeout(function () {
+      document.body.removeChild(a)
+      window.URL.revokeObjectURL(url)
+    }, 0)
+  }
+}
+
+},{"../fox.json":2,"../util":11,"mersenne-twister":10}],2:[function(require,module,exports){
 module.exports={
   "positions": [
     [
@@ -1447,118 +1562,6 @@ module.exports={
 }
 
 },{}],3:[function(require,module,exports){
-const foxJson = require('./fox.json')
-const {
-  calculateSizingOptions,
-  createLogoViewer,
-  loadModelFromJson,
-  createModelRenderer,
-  createNode,
-  setAttribute,
-} = require('./util.js')
-
-module.exports = createLogo
-
-function createLogo (options = {}) {
-  const cameraDistance = options.cameraDistance || 400
-  const { height, width } = calculateSizingOptions(options)
-
-  const container = createNode('svg')
-  setAttribute(container, 'width', `${width}px`)
-  setAttribute(container, 'height', `${height}px`)
-  document.body.appendChild(container)
-
-  const modelObj = loadModelFromJson(foxJson)
-  const renderFox = createModelRenderer(container, cameraDistance, modelObj)
-  const renderScene = (lookCurrent, slowDrift) => {
-    const rect = container.getBoundingClientRect()
-    renderFox(rect, lookCurrent, slowDrift)
-  }
-
-  return createLogoViewer(container, renderScene, { cameraDistance, ...options })
-}
-
-},{"./fox.json":2,"./util.js":13}],4:[function(require,module,exports){
-'use strict';
-
-var deselectCurrent = require('toggle-selection');
-
-var defaultMessage = 'Copy to clipboard: #{key}, Enter';
-
-function format(message) {
-  var copyKey = (/mac os x/i.test(navigator.userAgent) ? '⌘' : 'Ctrl') + '+C';
-  return message.replace(/#{\s*key\s*}/g, copyKey);
-}
-
-function copy(text, options) {
-  var debug, message, reselectPrevious, range, selection, mark, success = false;
-  if (!options) { options = {}; }
-  debug = options.debug || false;
-  try {
-    reselectPrevious = deselectCurrent();
-
-    range = document.createRange();
-    selection = document.getSelection();
-
-    mark = document.createElement('span');
-    mark.textContent = text;
-    // reset user styles for span element
-    mark.style.all = 'unset';
-    // prevents scrolling to the end of the page
-    mark.style.position = 'fixed';
-    mark.style.top = 0;
-    mark.style.clip = 'rect(0, 0, 0, 0)';
-    // used to preserve spaces and line breaks
-    mark.style.whiteSpace = 'pre';
-    // do not inherit user-select (it may be `none`)
-    mark.style.webkitUserSelect = 'text';
-    mark.style.MozUserSelect = 'text';
-    mark.style.msUserSelect = 'text';
-    mark.style.userSelect = 'text';
-
-    document.body.appendChild(mark);
-
-    range.selectNode(mark);
-    selection.addRange(range);
-
-    var successful = document.execCommand('copy');
-    if (!successful) {
-      throw new Error('copy command was unsuccessful');
-    }
-    success = true;
-  } catch (err) {
-    debug && console.error('unable to copy using execCommand: ', err);
-    debug && console.warn('trying IE specific stuff');
-    try {
-      window.clipboardData.setData('text', text);
-      success = true;
-    } catch (err) {
-      debug && console.error('unable to copy using clipboardData: ', err);
-      debug && console.error('falling back to prompt');
-      message = format('message' in options ? options.message : defaultMessage);
-      window.prompt(message, text);
-    }
-  } finally {
-    if (selection) {
-      if (typeof selection.removeRange == 'function') {
-        selection.removeRange(range);
-      } else {
-        selection.removeAllRanges();
-      }
-    }
-
-    if (mark) {
-      document.body.removeChild(mark);
-    }
-    reselectPrevious();
-  }
-
-  return success;
-}
-
-module.exports = copy;
-
-},{"toggle-selection":12}],5:[function(require,module,exports){
 module.exports = identity;
 
 /**
@@ -1586,7 +1589,7 @@ function identity(out) {
     out[15] = 1;
     return out;
 };
-},{}],6:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 module.exports = invert;
 
 /**
@@ -1642,7 +1645,7 @@ function invert(out, a) {
 
     return out;
 };
-},{}],7:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 var identity = require('./identity');
 
 module.exports = lookAt;
@@ -1733,7 +1736,7 @@ function lookAt(out, eye, center, up) {
 
     return out;
 };
-},{"./identity":5}],8:[function(require,module,exports){
+},{"./identity":3}],6:[function(require,module,exports){
 module.exports = multiply;
 
 /**
@@ -1776,7 +1779,7 @@ function multiply(out, a, b) {
     out[15] = b0*a03 + b1*a13 + b2*a23 + b3*a33;
     return out;
 };
-},{}],9:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 module.exports = perspective;
 
 /**
@@ -1810,7 +1813,7 @@ function perspective(out, fovy, aspect, near, far) {
     out[15] = 0;
     return out;
 };
-},{}],10:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 module.exports = rotate;
 
 /**
@@ -1875,7 +1878,7 @@ function rotate(out, a, rad, axis) {
     }
     return out;
 };
-},{}],11:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 module.exports = transformMat4;
 
 /**
@@ -1896,48 +1899,219 @@ function transformMat4(out, a, m) {
     out[2] = (m[2] * x + m[6] * y + m[10] * z + m[14]) / w
     return out
 }
-},{}],12:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
+/*
+  https://github.com/banksean wrapped Makoto Matsumoto and Takuji Nishimura's code in a namespace
+  so it's better encapsulated. Now you can have multiple random number generators
+  and they won't stomp all over eachother's state.
 
-module.exports = function () {
-  var selection = document.getSelection();
-  if (!selection.rangeCount) {
-    return function () {};
-  }
-  var active = document.activeElement;
+  If you want to use this as a substitute for Math.random(), use the random()
+  method like so:
 
-  var ranges = [];
-  for (var i = 0; i < selection.rangeCount; i++) {
-    ranges.push(selection.getRangeAt(i));
-  }
+  var m = new MersenneTwister();
+  var randomNumber = m.random();
 
-  switch (active.tagName.toUpperCase()) { // .toUpperCase handles XHTML
-    case 'INPUT':
-    case 'TEXTAREA':
-      active.blur();
-      break;
+  You can also call the other genrand_{foo}() methods on the instance.
 
-    default:
-      active = null;
-      break;
-  }
+  If you want to use a specific seed in order to get a repeatable random
+  sequence, pass an integer into the constructor:
 
-  selection.removeAllRanges();
-  return function () {
-    selection.type === 'Caret' &&
-    selection.removeAllRanges();
+  var m = new MersenneTwister(123);
 
-    if (!selection.rangeCount) {
-      ranges.forEach(function(range) {
-        selection.addRange(range);
-      });
-    }
+  and that will always produce the same random sequence.
 
-    active &&
-    active.focus();
-  };
-};
+  Sean McCullough (banksean@gmail.com)
+*/
 
-},{}],13:[function(require,module,exports){
+/*
+   A C-program for MT19937, with initialization improved 2002/1/26.
+   Coded by Takuji Nishimura and Makoto Matsumoto.
+
+   Before using, initialize the state by using init_seed(seed)
+   or init_by_array(init_key, key_length).
+
+   Copyright (C) 1997 - 2002, Makoto Matsumoto and Takuji Nishimura,
+   All rights reserved.
+
+   Redistribution and use in source and binary forms, with or without
+   modification, are permitted provided that the following conditions
+   are met:
+
+     1. Redistributions of source code must retain the above copyright
+        notice, this list of conditions and the following disclaimer.
+
+     2. Redistributions in binary form must reproduce the above copyright
+        notice, this list of conditions and the following disclaimer in the
+        documentation and/or other materials provided with the distribution.
+
+     3. The names of its contributors may not be used to endorse or promote
+        products derived from this software without specific prior written
+        permission.
+
+   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+   CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+   EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+   PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+   PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+   LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+   Any feedback is very welcome.
+   http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html
+   email: m-mat @ math.sci.hiroshima-u.ac.jp (remove space)
+*/
+
+var MersenneTwister = function(seed) {
+	if (seed == undefined) {
+		seed = new Date().getTime();
+	}
+
+	/* Period parameters */
+	this.N = 624;
+	this.M = 397;
+	this.MATRIX_A = 0x9908b0df;   /* constant vector a */
+	this.UPPER_MASK = 0x80000000; /* most significant w-r bits */
+	this.LOWER_MASK = 0x7fffffff; /* least significant r bits */
+
+	this.mt = new Array(this.N); /* the array for the state vector */
+	this.mti=this.N+1; /* mti==N+1 means mt[N] is not initialized */
+
+	if (seed.constructor == Array) {
+		this.init_by_array(seed, seed.length);
+	}
+	else {
+		this.init_seed(seed);
+	}
+}
+
+/* initializes mt[N] with a seed */
+/* origin name init_genrand */
+MersenneTwister.prototype.init_seed = function(s) {
+	this.mt[0] = s >>> 0;
+	for (this.mti=1; this.mti<this.N; this.mti++) {
+		var s = this.mt[this.mti-1] ^ (this.mt[this.mti-1] >>> 30);
+		this.mt[this.mti] = (((((s & 0xffff0000) >>> 16) * 1812433253) << 16) + (s & 0x0000ffff) * 1812433253)
+		+ this.mti;
+		/* See Knuth TAOCP Vol2. 3rd Ed. P.106 for multiplier. */
+		/* In the previous versions, MSBs of the seed affect   */
+		/* only MSBs of the array mt[].                        */
+		/* 2002/01/09 modified by Makoto Matsumoto             */
+		this.mt[this.mti] >>>= 0;
+		/* for >32 bit machines */
+	}
+}
+
+/* initialize by an array with array-length */
+/* init_key is the array for initializing keys */
+/* key_length is its length */
+/* slight change for C++, 2004/2/26 */
+MersenneTwister.prototype.init_by_array = function(init_key, key_length) {
+	var i, j, k;
+	this.init_seed(19650218);
+	i=1; j=0;
+	k = (this.N>key_length ? this.N : key_length);
+	for (; k; k--) {
+		var s = this.mt[i-1] ^ (this.mt[i-1] >>> 30)
+		this.mt[i] = (this.mt[i] ^ (((((s & 0xffff0000) >>> 16) * 1664525) << 16) + ((s & 0x0000ffff) * 1664525)))
+		+ init_key[j] + j; /* non linear */
+		this.mt[i] >>>= 0; /* for WORDSIZE > 32 machines */
+		i++; j++;
+		if (i>=this.N) { this.mt[0] = this.mt[this.N-1]; i=1; }
+		if (j>=key_length) j=0;
+	}
+	for (k=this.N-1; k; k--) {
+		var s = this.mt[i-1] ^ (this.mt[i-1] >>> 30);
+		this.mt[i] = (this.mt[i] ^ (((((s & 0xffff0000) >>> 16) * 1566083941) << 16) + (s & 0x0000ffff) * 1566083941))
+		- i; /* non linear */
+		this.mt[i] >>>= 0; /* for WORDSIZE > 32 machines */
+		i++;
+		if (i>=this.N) { this.mt[0] = this.mt[this.N-1]; i=1; }
+	}
+
+	this.mt[0] = 0x80000000; /* MSB is 1; assuring non-zero initial array */
+}
+
+/* generates a random number on [0,0xffffffff]-interval */
+/* origin name genrand_int32 */
+MersenneTwister.prototype.random_int = function() {
+	var y;
+	var mag01 = new Array(0x0, this.MATRIX_A);
+	/* mag01[x] = x * MATRIX_A  for x=0,1 */
+
+	if (this.mti >= this.N) { /* generate N words at one time */
+		var kk;
+
+		if (this.mti == this.N+1)  /* if init_seed() has not been called, */
+			this.init_seed(5489);  /* a default initial seed is used */
+
+		for (kk=0;kk<this.N-this.M;kk++) {
+			y = (this.mt[kk]&this.UPPER_MASK)|(this.mt[kk+1]&this.LOWER_MASK);
+			this.mt[kk] = this.mt[kk+this.M] ^ (y >>> 1) ^ mag01[y & 0x1];
+		}
+		for (;kk<this.N-1;kk++) {
+			y = (this.mt[kk]&this.UPPER_MASK)|(this.mt[kk+1]&this.LOWER_MASK);
+			this.mt[kk] = this.mt[kk+(this.M-this.N)] ^ (y >>> 1) ^ mag01[y & 0x1];
+		}
+		y = (this.mt[this.N-1]&this.UPPER_MASK)|(this.mt[0]&this.LOWER_MASK);
+		this.mt[this.N-1] = this.mt[this.M-1] ^ (y >>> 1) ^ mag01[y & 0x1];
+
+		this.mti = 0;
+	}
+
+	y = this.mt[this.mti++];
+
+	/* Tempering */
+	y ^= (y >>> 11);
+	y ^= (y << 7) & 0x9d2c5680;
+	y ^= (y << 15) & 0xefc60000;
+	y ^= (y >>> 18);
+
+	return y >>> 0;
+}
+
+/* generates a random number on [0,0x7fffffff]-interval */
+/* origin name genrand_int31 */
+MersenneTwister.prototype.random_int31 = function() {
+	return (this.random_int()>>>1);
+}
+
+/* generates a random number on [0,1]-real-interval */
+/* origin name genrand_real1 */
+MersenneTwister.prototype.random_incl = function() {
+	return this.random_int()*(1.0/4294967295.0);
+	/* divided by 2^32-1 */
+}
+
+/* generates a random number on [0,1)-real-interval */
+MersenneTwister.prototype.random = function() {
+	return this.random_int()*(1.0/4294967296.0);
+	/* divided by 2^32 */
+}
+
+/* generates a random number on (0,1)-real-interval */
+/* origin name genrand_real3 */
+MersenneTwister.prototype.random_excl = function() {
+	return (this.random_int() + 0.5)*(1.0/4294967296.0);
+	/* divided by 2^32 */
+}
+
+/* generates a random number on [0,1) with 53-bit resolution*/
+/* origin name genrand_res53 */
+MersenneTwister.prototype.random_long = function() {
+	var a=this.random_int()>>>5, b=this.random_int()>>>6;
+	return(a*67108864.0+b)*(1.0/9007199254740992.0);
+}
+
+/* These real versions are due to Isaku Wada, 2002/01/09 added */
+
+module.exports = MersenneTwister;
+
+},{}],11:[function(require,module,exports){
 const perspective = require('gl-mat4/perspective')
 const multiply = require('gl-mat4/multiply')
 const lookAt = require('gl-mat4/lookAt')
@@ -2350,4 +2524,4 @@ function Polygon (svg, indices) {
   this.zIndex = 0
 }
 
-},{"gl-mat4/invert":6,"gl-mat4/lookAt":7,"gl-mat4/multiply":8,"gl-mat4/perspective":9,"gl-mat4/rotate":10,"gl-vec3/transformMat4":11}]},{},[1]);
+},{"gl-mat4/invert":4,"gl-mat4/lookAt":5,"gl-mat4/multiply":6,"gl-mat4/perspective":7,"gl-mat4/rotate":8,"gl-vec3/transformMat4":9}]},{},[1]);

@@ -37,6 +37,9 @@ function createLogoViewer (container, renderScene, options = {}) {
   const lookCurrent = [0, 0]
   const lookRate = 0.3
 
+  // closes over scene state
+  const renderCurrentScene = () => renderScene(lookCurrent, slowDrift)
+
   function setLookAtTarget (target) {
     const bounds = container.getBoundingClientRect()
     mouse.x = 1.0 - ((2.0 * (target.x - bounds.left)) / bounds.width)
@@ -66,7 +69,7 @@ function createLogoViewer (container, renderScene, options = {}) {
         y: ev.clientY,
       })
       updateLookCurrent()
-      renderScene(lookCurrent, slowDrift)
+      renderCurrentScene()
     }
   })
 
@@ -91,7 +94,7 @@ function createLogoViewer (container, renderScene, options = {}) {
         y: yOffset + (frontToBack * acceleration),
       })
       updateLookCurrent()
-      renderScene(lookCurrent, slowDrift)
+      renderCurrentScene()
     }
   })
 
@@ -102,7 +105,7 @@ function createLogoViewer (container, renderScene, options = {}) {
     // but im not really sure why its different, so im leaving it alone
     lookCurrent[0] = mouse.x
     lookCurrent[1] = mouse.y + (0.085 / lookRate)
-    renderScene(lookCurrent, slowDrift)
+    renderCurrentScene()
   }
 
   function renderLoop () {
@@ -114,7 +117,7 @@ function createLogoViewer (container, renderScene, options = {}) {
     // on mousemove / device orienation as a perf gain, but didnt clean up
     window.requestAnimationFrame(renderLoop)
     updateLookCurrent()
-    renderScene(lookCurrent, slowDrift)
+    renderCurrentScene()
     stopAnimation()
   }
 
@@ -134,13 +137,23 @@ function createLogoViewer (container, renderScene, options = {}) {
     stopAnimation,
     startAnimation,
     lookAtAndRender,
+    renderCurrentScene,
   }
 }
 
-function createModelRenderer (container, modelJson, cameraDistance, createSvgPolygon) {
-  const modelObj = loadModelFromJson(modelJson)
-  const { updatePositions, transformed } = modelObj
-  const polygons = createPolygonsFromModelJson(modelJson, createSvgPolygon)
+function loadModelFromJson (modelJson, createSvgPolygon = createStandardModelPolygon) {
+  const vertCount = modelJson.positions.length
+  const positions = new Float32Array(3 * vertCount)
+  const transformed = new Float32Array(3 * vertCount)
+  const { polygons, polygonsByChunk } = createPolygonsFromModelJson(modelJson, createSvgPolygon)
+  positionsFromModel(positions, modelJson)
+  const updatePositions = createPositionUpdater(positions, transformed, vertCount)
+  const modelObj = { updatePositions, positions, transformed, polygons, polygonsByChunk }
+  return modelObj
+}
+
+function createModelRenderer (container, cameraDistance, modelObj) {
+  const { updatePositions, transformed, polygons } = modelObj
 
   for (const polygon of polygons) {
     container.appendChild(polygon.svg)
@@ -154,15 +167,6 @@ function createModelRenderer (container, modelJson, cameraDistance, createSvgPol
     updatePositions(matrix)
     updateFaces(rect, container, polygons, transformed)
   }
-}
-
-function loadModelFromJson (modelJson) {
-  const vertCount = modelJson.positions.length
-  const positions = new Float32Array(3 * vertCount)
-  const transformed = new Float32Array(3 * vertCount)
-  positionsFromModel(positions, modelJson)
-  const updatePositions = createPositionUpdater(positions, transformed, vertCount)
-  return { updatePositions, positions, transformed }
 }
 
 function positionsFromModel (positions, modelJson) {
@@ -179,16 +183,16 @@ function positionsFromModel (positions, modelJson) {
 
 function createPolygonsFromModelJson (modelJson, createSvgPolygon) {
   const polygons = []
-  for (let i = 0; i < modelJson.chunks.length; ++i) {
-    const chunk = modelJson.chunks[i]
+  const polygonsByChunk = modelJson.chunks.map((chunk) => {
     const { faces } = chunk
-    for (let j = 0; j < faces.length; ++j) {
-      const f = faces[j]
+    return faces.map((face) => {
       const svgPolygon = createSvgPolygon(chunk)
-      polygons.push(new Polygon(svgPolygon, f))
-    }
-  }
-  return polygons
+      const polygon = new Polygon(svgPolygon, face)
+      polygons.push(polygon)
+      return polygon
+    })
+  })
+  return { polygons, polygonsByChunk }
 }
 
 function createStandardModelPolygon (chunk) {

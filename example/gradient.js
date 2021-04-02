@@ -2,6 +2,7 @@ const copy = require('copy-to-clipboard')
 const {
   calculateSizingOptions,
   createLogoViewer,
+  loadModelFromJson,
   createModelRenderer,
   createNode,
   setAttribute,
@@ -35,7 +36,8 @@ function createGradientLogo (options) {
   const { mask1 } = createSvgDefs(container)
   createMaskedGradientRect(container, height, width)
 
-  const renderFox = createModelRenderer(mask1, foxJson, cameraDistance, createMaskPolygon)
+  const modelObj = loadModelFromJson(foxJson, createMaskPolygon)
+  const renderFox = createModelRenderer(mask1, cameraDistance, modelObj)
   const renderScene = (lookCurrent, slowDrift) => {
     const rect = container.getBoundingClientRect()
     renderFox(rect, lookCurrent, slowDrift)
