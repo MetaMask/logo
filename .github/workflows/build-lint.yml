@@ -1,0 +1,32 @@
+name: Build and Lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-lint:
+    name: Build and Lint
+    env:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: yarn --frozen-lockfile
+      - run: yarn build
+      - run: yarn lint
+  all-jobs-pass:
+    name: All jobs pass
+    runs-on: ubuntu-20.04
+    needs:
+      - build-lint
+    steps:
+      - run: echo "Great success!"
