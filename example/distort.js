@@ -36,7 +36,7 @@ function createDistortedLogo (options) {
     'Grow': distortGrow,
   }
   let applyDistortion = Object.values(distortionMethods)[0]
-  
+
   Object.entries(distortionMethods).forEach(([description, distortionFn]) => {
     const button = document.createElement('button')
     button.innerText = description
@@ -122,11 +122,6 @@ function distortFold (positions, origPositions) {
     positions[y] = (prevY + (polygonProgress * (origPositions[y] - prevY)))
     positions[z] = (prevZ + (polygonProgress * (origPositions[z] - prevZ)))
   }
-}
-
-// random between (-1, 1)
-function getRandom () {
-  return (2 * Math.random()) - 1
 }
 
 // sin between 0-1
