@@ -3,6 +3,9 @@
   "version": "2.5.0",
   "description": "A browserifyable 3d metamask logo. [Live demo](http://metamask.github.io/logo/).",
   "main": "index.js",
+  "engines": {
+    "node": ">=12.0.0"
+  },
   "scripts": {
     "build": "yarn bundle normal && yarn bundle gradient && yarn bundle recolor && yarn bundle distort",
     "bundle": "./example/build.sh",
