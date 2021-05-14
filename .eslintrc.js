@@ -16,6 +16,7 @@ module.exports = {
   ignorePatterns: [
     '!.eslintrc.js',
     'node_modules/',
+    'convert.js',
     'bundle.js',
   ],
   rules: {
