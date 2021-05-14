@@ -1,6 +1,6 @@
 {
   "name": "@metamask/logo",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "description": "A browserifyable 3d metamask logo. [Live demo](http://metamask.github.io/logo/).",
   "main": "index.js",
   "engines": {
@@ -9,7 +9,7 @@
   "scripts": {
     "build": "yarn bundle normal && yarn bundle gradient && yarn bundle recolor && yarn bundle distort",
     "bundle": "./example/build.sh",
-    "convert": "node convert.js > fox.json",
+    "convert": "tsc convert.ts && node convert.js > fox.json",
     "lint": "eslint . --ext js,json",
     "lint:fix": "yarn lint --fix"
   },
@@ -28,6 +28,7 @@
     "gl-vec3": "1.0.3"
   },
   "devDependencies": {
+    "@types/node": "^13.11.0",
     "@metamask/eslint-config": "^3.2.0",
     "browserify": "^16.5.2",
     "copy-to-clipboard": "^3.0.5",
@@ -35,7 +36,9 @@
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-json": "^2.1.2",
     "mersenne-twister": "^1.1.0",
-    "uglifyify": "^5.0.2"
+    "uglifyify": "^5.0.2",
+    "obj-file-parser": "^0.5.0",
+    "obj-file-parser-ts": "^0.6.4"
   },
   "repository": {
     "type": "git",
