@@ -70,7 +70,7 @@ var _loop_1 = function (mtlKey) {
         console.dir(m);
     }
     else {
-        var color_1 = m.Ka.map(function (c, i) {
+        var color_1 = m.Kd.map(function (c, i) {
             return (255 * c) | 0;
         });
         m.Kd.forEach(function (c, i) {

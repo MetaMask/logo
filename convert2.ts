@@ -87,7 +87,7 @@ for (const mtlKey in mtl) {
       console.dir(m)
     } else {
 
-    const color = m.Ka.map(function (c, i) {
+    const color = m.Kd.map(function (c, i) {
       return (255 * c) | 0
     })
     m.Kd.forEach((c, i) => {
