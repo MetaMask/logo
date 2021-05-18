@@ -7,7 +7,7 @@
     "node": ">=12.0.0"
   },
   "scripts": {
-    "build": "yarn bundle normal && yarn bundle gradient && yarn bundle recolor && yarn bundle distort",
+    "build": "yarn bundle normal && yarn bundle gradient && yarn bundle recolor && yarn bundle distort && yarn bundle beta",
     "bundle": "./example/build.sh",
     "convert": "node convert.js > fox.json",
     "lint": "eslint . --ext js,json",

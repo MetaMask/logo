@@ -1470,6 +1470,7 @@ createViewer({
   height: 0.4,
   followMouse: true,
   followMotion: true,
+  beta: true,
 })
 
 },{"..":4,"../util":14,"copy-to-clipboard":5}],3:[function(require,module,exports){
