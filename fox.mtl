@@ -1,80 +1,104 @@
-newmtl fox2:material_0
-illum 4
-Kd 0.22 0.05 0.00
-Ka 0.20 0.20 0.20
-Tf 1.00 1.00 1.00
-Ni 1.00
-Ks 1.00 1.00 1.00
-Ns 0.00
-newmtl fox2:material_2
-illum 4
-Kd 0.02 0.04 0.07
-Ka 0.20 0.20 0.20
-Tf 1.00 1.00 1.00
-Ni 1.00
-Ks 1.00 1.00 1.00
-Ns 0.00
-newmtl fox2:material_4
-illum 4
-Kd 0.80 0.21 0.02
-Ka 0.20 0.20 0.20
-Tf 1.00 1.00 1.00
-Ni 1.00
-Ks 1.00 1.00 1.00
-Ns 0.00
-newmtl fox2:material_6
-illum 4
-Kd 0.57 0.46 0.38
-Ka 0.20 0.20 0.20
-Tf 1.00 1.00 1.00
-Ni 1.00
-Ks 1.00 1.00 1.00
-Ns 0.00
-newmtl fox2:material_8
-illum 4
-Kd 0.71 0.58 0.49
-Ka 0.20 0.20 0.20
-Tf 1.00 1.00 1.00
-Ni 1.00
-Ks 1.00 1.00 1.00
-Ns 0.00
-newmtl fox2:material_10
-illum 4
-Kd 0.80 0.22 0.01
-Ka 0.20 0.20 0.20
-Tf 1.00 1.00 1.00
-Ni 1.00
-Ks 1.00 1.00 1.00
-Ns 0.00
-newmtl fox2:material_12
-illum 4
-Kd 0.65 0.15 0.00
-Ka 0.20 0.20 0.20
-Tf 1.00 1.00 1.00
-Ni 1.00
-Ks 1.00 1.00 1.00
-Ns 0.00
-newmtl fox2:material_14
+newmtl Default_2SG
 illum 4
 Kd 0.00 0.00 0.00
-Ka 0.20 0.20 0.20
+Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
 Ni 1.00
-Ks 1.00 1.00 1.00
-Ns 0.00
-newmtl fox2:material_16
+Ks 0.20 0.20 0.20
+Ns 30.00
+newmtl Default_2SG1
 illum 4
-Kd 0.94 0.27 0.01
-Ka 0.20 0.20 0.20
+Kd 0.86 0.81 0.75
+Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
 Ni 1.00
-Ks 1.00 1.00 1.00
-Ns 0.00
-newmtl fox2:material_18
+Ks 0.20 0.20 0.20
+Ns 30.00
+newmtl Default_2SG2
 illum 4
-Kd 0.78 0.22 0.01
-Ka 0.20 0.20 0.20
+Kd 0.22 0.80 0.45
+Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
 Ni 1.00
-Ks 1.00 1.00 1.00
-Ns 0.00
+Ks 0.20 0.20 0.20
+Ns 30.00
+newmtl Default_2SG3
+illum 4
+Kd 0.10 0.38 0.21
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+Ks 0.20 0.20 0.20
+Ns 30.00
+newmtl Default_2SG4
+illum 4
+Kd 0.07 0.25 0.14
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+Ks 0.20 0.20 0.20
+Ns 30.00
+newmtl Default_2SG5
+illum 4
+Kd 0.22 0.80 0.66
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+Ks 0.20 0.20 0.20
+Ns 30.00
+newmtl Default_2SG6
+illum 4
+Kd 0.41 0.82 0.85
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+Ks 0.20 0.20 0.20
+Ns 30.00
+newmtl Default_2SG7
+illum 4
+Kd 0.64 0.87 0.86
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+Ks 0.20 0.20 0.20
+Ns 30.00
+newmtl Default_2SG8
+illum 4
+Kd 0.66 0.95 0.94
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+Ks 0.20 0.20 0.20
+Ns 30.00
+newmtl Default_2SG9
+illum 4
+Kd 0.25 0.53 0.80
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+Ks 0.20 0.20 0.20
+Ns 30.00
+newmtl Default_2SG10
+illum 4
+Kd 0.22 0.62 0.80
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+Ks 0.20 0.20 0.20
+Ns 30.00
+newmtl Default_2SG11
+illum 4
+Kd 0.14 0.43 0.69
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+Ks 0.20 0.20 0.20
+Ns 30.00
+newmtl Default_2SG12
+illum 4
+Kd 0.22 0.76 0.80
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+Ks 0.20 0.20 0.20
+Ns 30.00
