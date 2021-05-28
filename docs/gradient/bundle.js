@@ -24,6 +24,7 @@ createGradientLogo({
   height: 0.4,
   followMouse: true,
   followMotion: true,
+  meshJson: foxJson,
 })
 
 function createGradientLogo (options) {

@@ -1,4 +1,3 @@
-const foxJson = require('./fox.json')
 const {
   calculateSizingOptions,
   createLogoViewer,
@@ -11,16 +10,19 @@ const {
 module.exports = createLogo
 
 function createLogo (options = {}) {
+  if (!options.meshJson) {
+    throw new Error('The meshJson parameter is required')
+  }
+
   const cameraDistance = options.cameraDistance || 400
   const { height, width } = calculateSizingOptions(options)
-  const modelJson = options.meshJson || foxJson
 
   const container = createNode('svg')
   setAttribute(container, 'width', `${width}px`)
   setAttribute(container, 'height', `${height}px`)
   document.body.appendChild(container)
 
-  const modelObj = loadModelFromJson(modelJson)
+  const modelObj = loadModelFromJson(options.meshJson)
   const renderFox = createModelRenderer(container, cameraDistance, modelObj)
   const renderScene = (lookCurrent, slowDrift) => {
     const rect = container.getBoundingClientRect()

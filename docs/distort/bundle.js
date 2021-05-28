@@ -15,6 +15,7 @@ createDistortedLogo({
   followMouse: true,
   followMotion: true,
   lazyRender: false,
+  meshJson: foxJson,
 })
 
 function createDistortedLogo (options) {
