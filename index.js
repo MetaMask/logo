@@ -1,5 +1,4 @@
 const foxJson = require('./fox.json')
-const betaFoxJson = require('./beta-fox.json')
 const {
   calculateSizingOptions,
   createLogoViewer,
@@ -14,7 +13,7 @@ module.exports = createLogo
 function createLogo (options = {}) {
   const cameraDistance = options.cameraDistance || 400
   const { height, width } = calculateSizingOptions(options)
-  const modelJson = options.beta ? betaFoxJson : foxJson
+  const modelJson = options.meshJson || foxJson
 
   const container = createNode('svg')
   setAttribute(container, 'width', `${width}px`)

@@ -1456,6 +1456,7 @@ module.exports={
 const copy = require('copy-to-clipboard')
 const createViewer = require('..')
 const { svgElementToSvgImageContent } = require('../util')
+const betaMesh = require('../beta-fox.json')
 
 document.addEventListener('keypress', function (event) {
   if (event.keyCode === 99) { // the c key
@@ -1470,10 +1471,10 @@ createViewer({
   height: 0.4,
   followMouse: true,
   followMotion: true,
-  beta: true,
+  meshJson: betaMesh,
 })
 
-},{"..":4,"../util":14,"copy-to-clipboard":5}],3:[function(require,module,exports){
+},{"..":4,"../beta-fox.json":1,"../util":14,"copy-to-clipboard":5}],3:[function(require,module,exports){
 module.exports={
   "positions": [
     [
@@ -2903,7 +2904,6 @@ module.exports={
 
 },{}],4:[function(require,module,exports){
 const foxJson = require('./fox.json')
-const betaFoxJson = require('./beta-fox.json')
 const {
   calculateSizingOptions,
   createLogoViewer,
@@ -2918,7 +2918,7 @@ module.exports = createLogo
 function createLogo (options = {}) {
   const cameraDistance = options.cameraDistance || 400
   const { height, width } = calculateSizingOptions(options)
-  const modelJson = options.beta ? betaFoxJson : foxJson;
+  const modelJson = options.meshJson || foxJson
 
   const container = createNode('svg')
   setAttribute(container, 'width', `${width}px`)
@@ -2935,7 +2935,7 @@ function createLogo (options = {}) {
   return createLogoViewer(container, renderScene, { cameraDistance, ...options })
 }
 
-},{"./beta-fox.json":1,"./fox.json":3,"./util.js":14}],5:[function(require,module,exports){
+},{"./fox.json":3,"./util.js":14}],5:[function(require,module,exports){
 'use strict';
 
 var deselectCurrent = require('toggle-selection');
