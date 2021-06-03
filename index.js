@@ -6,7 +6,7 @@ const {
   createModelRenderer,
   createNode,
   setAttribute,
-} = require('./util.js')
+} = require('./util')
 
 module.exports = createLogo
 
