@@ -54,7 +54,6 @@ const viewer = createRecolorLogo({
   height: 0.4,
   followMouse: true,
   followMotion: true,
-  meshJson: foxJson,
 })
 
 const foxDiv = document.querySelector('body div.fox')

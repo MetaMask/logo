@@ -1,7 +1,6 @@
 const copy = require('copy-to-clipboard')
 const createViewer = require('..')
 const { svgElementToSvgImageContent } = require('../util')
-const foxJson = require('../fox.json')
 
 document.addEventListener('keypress', function (event) {
   if (event.keyCode === 99) { // the c key
@@ -16,5 +15,4 @@ createViewer({
   height: 0.4,
   followMouse: true,
   followMotion: true,
-  meshJson: foxJson,
 })
