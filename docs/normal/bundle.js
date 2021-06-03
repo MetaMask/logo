@@ -1468,7 +1468,7 @@ function createLogo (options = {}) {
   setAttribute(container, 'height', `${height}px`)
   document.body.appendChild(container)
 
-  const modelObj = loadModelFromJson(foxJson)
+  const modelObj = loadModelFromJson(options.meshJson || foxJson)
   const renderFox = createModelRenderer(container, cameraDistance, modelObj)
   const renderScene = (lookCurrent, slowDrift) => {
     const rect = container.getBoundingClientRect()
@@ -1998,9 +1998,11 @@ function createLogoViewer (container, renderScene, {
     shouldRender = true
   }
   function setFollowMouse (state) {
+    // eslint-disable-next-line no-param-reassign
     followMouse = state
   }
   function setFollowMotion (state) {
+    // eslint-disable-next-line no-param-reassign
     followMotion = state
   }
 

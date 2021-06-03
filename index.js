@@ -19,7 +19,7 @@ function createLogo (options = {}) {
   setAttribute(container, 'height', `${height}px`)
   document.body.appendChild(container)
 
-  const modelObj = loadModelFromJson(foxJson)
+  const modelObj = loadModelFromJson(options.meshJson || foxJson)
   const renderFox = createModelRenderer(container, cameraDistance, modelObj)
   const renderScene = (lookCurrent, slowDrift) => {
     const rect = container.getBoundingClientRect()

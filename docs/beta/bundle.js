@@ -1,136 +1,1480 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-const {
-  calculateSizingOptions,
-  createLogoViewer,
-  loadModelFromJson,
-  createModelRenderer,
-  createNode,
-  setAttribute,
-} = require('../util')
-const foxJson = require('../fox.json')
+module.exports={
+  "positions": [
+    [
+      111.024597,
+      52.604599,
+      46.225899
+    ],
+    [
+      114.025002,
+      87.673302,
+      58.9818
+    ],
+    [
+      66.192001,
+      80.898003,
+      55.394299
+    ],
+    [
+      72.113297,
+      35.491798,
+      30.871401
+    ],
+    [
+      97.804497,
+      116.560997,
+      73.978798
+    ],
+    [
+      16.7623,
+      58.010899,
+      58.078201
+    ],
+    [
+      52.608898,
+      30.3641,
+      42.556099
+    ],
+    [
+      106.881401,
+      31.945499,
+      46.9133
+    ],
+    [
+      113.484596,
+      38.6049,
+      49.121498
+    ],
+    [
+      108.6633,
+      43.2332,
+      46.315399
+    ],
+    [
+      101.216599,
+      15.9822,
+      46.308201
+    ],
+    [
+      16.6605,
+      -16.2883,
+      93.618698
+    ],
+    [
+      40.775002,
+      -10.2288,
+      85.276398
+    ],
+    [
+      23.926901,
+      -2.5103,
+      86.736504
+    ],
+    [
+      11.1691,
+      -7.0037,
+      99.377602
+    ],
+    [
+      9.5692,
+      -34.393902,
+      141.671997
+    ],
+    [
+      12.596,
+      7.1655,
+      88.740997
+    ],
+    [
+      61.180901,
+      8.8142,
+      76.996803
+    ],
+    [
+      39.719501,
+      -28.927099,
+      88.963799
+    ],
+    [
+      13.7962,
+      -68.575699,
+      132.057007
+    ],
+    [
+      15.2674,
+      -62.32,
+      129.688004
+    ],
+    [
+      14.8446,
+      -52.6096,
+      140.113007
+    ],
+    [
+      12.8917,
+      -49.771599,
+      144.740997
+    ],
+    [
+      35.604198,
+      -71.758003,
+      81.063904
+    ],
+    [
+      47.462502,
+      -68.606102,
+      63.369701
+    ],
+    [
+      38.2486,
+      -64.730202,
+      38.909901
+    ],
+    [
+      -12.8917,
+      -49.771599,
+      144.740997
+    ],
+    [
+      -13.7962,
+      -68.575699,
+      132.057007
+    ],
+    [
+      17.802099,
+      -71.758003,
+      81.063904
+    ],
+    [
+      19.1243,
+      -69.0168,
+      49.420101
+    ],
+    [
+      38.2486,
+      -66.275597,
+      17.776199
+    ],
+    [
+      12.8928,
+      -36.703499,
+      141.671997
+    ],
+    [
+      109.283997,
+      -93.589897,
+      27.824301
+    ],
+    [
+      122.117996,
+      -36.8894,
+      35.025002
+    ],
+    [
+      67.7668,
+      -30.197001,
+      78.417801
+    ],
+    [
+      33.180698,
+      101.851997,
+      25.3186
+    ],
+    [
+      9.4063,
+      -35.589802,
+      150.722
+    ],
+    [
+      -9.5692,
+      -34.393902,
+      141.671997
+    ],
+    [
+      -9.4063,
+      -35.589802,
+      150.722
+    ],
+    [
+      11.4565,
+      -37.899399,
+      150.722
+    ],
+    [
+      -12.596,
+      7.1655,
+      88.740997
+    ],
+    [
+      -11.1691,
+      -7.0037,
+      99.377602
+    ],
+    [
+      70.236504,
+      62.836201,
+      -3.9475
+    ],
+    [
+      47.263401,
+      54.293999,
+      -27.414801
+    ],
+    [
+      28.7302,
+      91.731102,
+      -24.972601
+    ],
+    [
+      69.167603,
+      6.5862,
+      -12.7757
+    ],
+    [
+      28.7302,
+      49.1003,
+      -48.3596
+    ],
+    [
+      31.903,
+      5.692,
+      -47.821999
+    ],
+    [
+      35.075802,
+      -34.432899,
+      -16.280899
+    ],
+    [
+      115.284103,
+      48.681499,
+      48.684101
+    ],
+    [
+      110.842796,
+      28.4821,
+      49.176201
+    ],
+    [
+      -19.1243,
+      -69.0168,
+      49.420101
+    ],
+    [
+      -38.2486,
+      -66.275597,
+      17.776199
+    ],
+    [
+      -111.024597,
+      52.604599,
+      46.225899
+    ],
+    [
+      -72.113297,
+      35.491798,
+      30.871401
+    ],
+    [
+      -66.192001,
+      80.898003,
+      55.394299
+    ],
+    [
+      -114.025002,
+      87.673302,
+      58.9818
+    ],
+    [
+      -97.804497,
+      116.560997,
+      73.978798
+    ],
+    [
+      -52.608898,
+      30.3641,
+      42.556099
+    ],
+    [
+      -16.7623,
+      58.010899,
+      58.078201
+    ],
+    [
+      -106.881401,
+      31.945499,
+      46.9133
+    ],
+    [
+      -108.6633,
+      43.2332,
+      46.315399
+    ],
+    [
+      -113.484596,
+      38.6049,
+      49.121498
+    ],
+    [
+      -101.216599,
+      15.9822,
+      46.308201
+    ],
+    [
+      -16.6605,
+      -16.2883,
+      93.618698
+    ],
+    [
+      -23.926901,
+      -2.5103,
+      86.736504
+    ],
+    [
+      -40.775002,
+      -10.2288,
+      85.276398
+    ],
+    [
+      -61.180901,
+      8.8142,
+      76.996803
+    ],
+    [
+      -39.719501,
+      -28.927099,
+      88.963799
+    ],
+    [
+      -14.8446,
+      -52.6096,
+      140.113007
+    ],
+    [
+      -15.2674,
+      -62.32,
+      129.688004
+    ],
+    [
+      -47.462502,
+      -68.606102,
+      63.369701
+    ],
+    [
+      -35.604198,
+      -71.758003,
+      81.063904
+    ],
+    [
+      -38.2486,
+      -64.730202,
+      38.909901
+    ],
+    [
+      -17.802099,
+      -71.758003,
+      81.063904
+    ],
+    [
+      -12.8928,
+      -36.703499,
+      141.671997
+    ],
+    [
+      -67.7668,
+      -30.197001,
+      78.417801
+    ],
+    [
+      -122.117996,
+      -36.8894,
+      35.025002
+    ],
+    [
+      -109.283997,
+      -93.589897,
+      27.824301
+    ],
+    [
+      -33.180698,
+      101.851997,
+      25.3186
+    ],
+    [
+      -11.4565,
+      -37.899399,
+      150.722
+    ],
+    [
+      -70.236504,
+      62.836201,
+      -3.9475
+    ],
+    [
+      -28.7302,
+      91.731102,
+      -24.972601
+    ],
+    [
+      -47.263401,
+      54.293999,
+      -27.414801
+    ],
+    [
+      -69.167603,
+      6.5862,
+      -12.7757
+    ],
+    [
+      -28.7302,
+      49.1003,
+      -48.3596
+    ],
+    [
+      -31.903,
+      5.692,
+      -47.821999
+    ],
+    [
+      -35.075802,
+      -34.432899,
+      -16.280899
+    ],
+    [
+      -115.284103,
+      48.681499,
+      48.684101
+    ],
+    [
+      -110.842796,
+      28.4821,
+      49.176201
+    ]
+  ],
+  "chunks": [
+    {
+      "color": [
+        0,
+        0,
+        0
+      ],
+      "faces": [
+        [
+          11,
+          12,
+          13
+        ],
+        [
+          36,
+          15,
+          37
+        ],
+        [
+          37,
+          38,
+          36
+        ],
+        [
+          31,
+          39,
+          22
+        ],
+        [
+          22,
+          21,
+          31
+        ],
+        [
+          31,
+          15,
+          36
+        ],
+        [
+          36,
+          39,
+          31
+        ],
+        [
+          64,
+          65,
+          66
+        ],
+        [
+          75,
+          69,
+          26
+        ],
+        [
+          26,
+          80,
+          75
+        ],
+        [
+          75,
+          80,
+          38
+        ],
+        [
+          38,
+          37,
+          75
+        ],
+        [
+          38,
+          80,
+          39
+        ],
+        [
+          39,
+          36,
+          38
+        ],
+        [
+          39,
+          80,
+          26
+        ],
+        [
+          26,
+          22,
+          39
+        ]
+      ]
+    },
+    {
+      "color": [
+        236,
+        229,
+        220
+      ],
+      "faces": [
+        [
+          19,
+          20,
+          21
+        ],
+        [
+          21,
+          22,
+          19
+        ],
+        [
+          20,
+          19,
+          23
+        ],
+        [
+          23,
+          24,
+          20
+        ],
+        [
+          23,
+          25,
+          24
+        ],
+        [
+          19,
+          22,
+          26
+        ],
+        [
+          26,
+          27,
+          19
+        ],
+        [
+          23,
+          28,
+          29
+        ],
+        [
+          23,
+          29,
+          30
+        ],
+        [
+          25,
+          23,
+          30
+        ],
+        [
+          21,
+          20,
+          24
+        ],
+        [
+          24,
+          31,
+          21
+        ],
+        [
+          24,
+          25,
+          30
+        ],
+        [
+          29,
+          51,
+          52
+        ],
+        [
+          52,
+          30,
+          29
+        ],
+        [
+          27,
+          26,
+          69
+        ],
+        [
+          69,
+          70,
+          27
+        ],
+        [
+          70,
+          71,
+          72
+        ],
+        [
+          72,
+          27,
+          70
+        ],
+        [
+          72,
+          71,
+          73
+        ],
+        [
+          51,
+          74,
+          72
+        ],
+        [
+          52,
+          51,
+          72
+        ],
+        [
+          73,
+          52,
+          72
+        ],
+        [
+          69,
+          71,
+          70
+        ],
+        [
+          71,
+          69,
+          75
+        ],
+        [
+          52,
+          73,
+          71
+        ],
+        [
+          19,
+          27,
+          74
+        ],
+        [
+          74,
+          28,
+          19
+        ],
+        [
+          51,
+          29,
+          28
+        ],
+        [
+          28,
+          74,
+          51
+        ],
+        [
+          74,
+          27,
+          72
+        ],
+        [
+          28,
+          23,
+          19
+        ]
+      ]
+    },
+    {
+      "color": [
+        119,
+        228,
+        171
+      ],
+      "faces": [
+        [
+          5,
+          4,
+          35
+        ],
+        [
+          57,
+          59,
+          79
+        ]
+      ]
+    },
+    {
+      "color": [
+        80,
+        157,
+        116
+      ],
+      "faces": [
+        [
+          4,
+          5,
+          2
+        ],
+        [
+          2,
+          5,
+          6
+        ],
+        [
+          57,
+          56,
+          55
+        ],
+        [
+          58,
+          59,
+          55
+        ],
+        [
+          2,
+          1,
+          4
+        ],
+        [
+          55,
+          59,
+          57
+        ]
+      ]
+    },
+    {
+      "color": [
+        67,
+        127,
+        95
+      ],
+      "faces": [
+        [
+          0,
+          1,
+          2
+        ],
+        [
+          2,
+          3,
+          0
+        ],
+        [
+          6,
+          3,
+          2
+        ],
+        [
+          7,
+          8,
+          9
+        ],
+        [
+          10,
+          3,
+          6
+        ],
+        [
+          10,
+          50,
+          7
+        ],
+        [
+          7,
+          3,
+          10
+        ],
+        [
+          7,
+          9,
+          3
+        ],
+        [
+          49,
+          0,
+          9
+        ],
+        [
+          3,
+          9,
+          0
+        ],
+        [
+          53,
+          54,
+          55
+        ],
+        [
+          55,
+          56,
+          53
+        ],
+        [
+          55,
+          54,
+          58
+        ],
+        [
+          60,
+          61,
+          62
+        ],
+        [
+          63,
+          58,
+          54
+        ],
+        [
+          63,
+          60,
+          89
+        ],
+        [
+          60,
+          63,
+          54
+        ],
+        [
+          60,
+          54,
+          61
+        ],
+        [
+          88,
+          61,
+          53
+        ],
+        [
+          54,
+          53,
+          61
+        ]
+      ]
+    },
+    {
+      "color": [
+        119,
+        228,
+        207
+      ],
+      "faces": [
+        [
+          59,
+          5,
+          35
+        ],
+        [
+          35,
+          79,
+          59
+        ]
+      ]
+    },
+    {
+      "color": [
+        163,
+        230,
+        235
+      ],
+      "faces": [
+        [
+          14,
+          15,
+          11
+        ],
+        [
+          11,
+          16,
+          14
+        ],
+        [
+          16,
+          13,
+          12
+        ],
+        [
+          17,
+          33,
+          10
+        ],
+        [
+          17,
+          18,
+          34
+        ],
+        [
+          34,
+          33,
+          17
+        ],
+        [
+          11,
+          15,
+          31
+        ],
+        [
+          18,
+          12,
+          11
+        ],
+        [
+          41,
+          64,
+          37
+        ],
+        [
+          64,
+          41,
+          40
+        ],
+        [
+          66,
+          65,
+          40
+        ],
+        [
+          67,
+          63,
+          77
+        ],
+        [
+          67,
+          77,
+          76
+        ],
+        [
+          76,
+          68,
+          67
+        ],
+        [
+          75,
+          37,
+          64
+        ],
+        [
+          68,
+          64,
+          66
+        ]
+      ]
+    },
+    {
+      "color": [
+        204,
+        237,
+        236
+      ],
+      "faces": [
+        [
+          10,
+          6,
+          17
+        ],
+        [
+          31,
+          18,
+          11
+        ],
+        [
+          14,
+          16,
+          40
+        ],
+        [
+          40,
+          41,
+          14
+        ],
+        [
+          63,
+          67,
+          58
+        ],
+        [
+          64,
+          68,
+          75
+        ],
+        [
+          14,
+          41,
+          37
+        ],
+        [
+          37,
+          15,
+          14
+        ],
+        [
+          5,
+          59,
+          40
+        ],
+        [
+          40,
+          16,
+          5
+        ]
+      ]
+    },
+    {
+      "color": [
+        207,
+        248,
+        247
+      ],
+      "faces": [
+        [
+          6,
+          5,
+          16
+        ],
+        [
+          16,
+          17,
+          6
+        ],
+        [
+          12,
+          17,
+          16
+        ],
+        [
+          58,
+          67,
+          40
+        ],
+        [
+          40,
+          59,
+          58
+        ],
+        [
+          40,
+          67,
+          66
+        ]
+      ]
+    },
+    {
+      "color": [
+        127,
+        185,
+        228
+      ],
+      "faces": [
+        [
+          33,
+          34,
+          24
+        ],
+        [
+          71,
+          76,
+          77
+        ]
+      ]
+    },
+    {
+      "color": [
+        119,
+        200,
+        228
+      ],
+      "faces": [
+        [
+          31,
+          24,
+          18
+        ],
+        [
+          24,
+          34,
+          18
+        ],
+        [
+          35,
+          4,
+          42
+        ],
+        [
+          4,
+          1,
+          42
+        ],
+        [
+          42,
+          43,
+          44
+        ],
+        [
+          44,
+          35,
+          42
+        ],
+        [
+          45,
+          43,
+          42
+        ],
+        [
+          42,
+          10,
+          45
+        ],
+        [
+          30,
+          32,
+          24
+        ],
+        [
+          30,
+          33,
+          32
+        ],
+        [
+          33,
+          30,
+          10
+        ],
+        [
+          44,
+          43,
+          46
+        ],
+        [
+          43,
+          45,
+          47
+        ],
+        [
+          47,
+          46,
+          43
+        ],
+        [
+          48,
+          47,
+          45
+        ],
+        [
+          45,
+          30,
+          48
+        ],
+        [
+          30,
+          45,
+          10
+        ],
+        [
+          49,
+          42,
+          0
+        ],
+        [
+          8,
+          7,
+          42
+        ],
+        [
+          50,
+          42,
+          7
+        ],
+        [
+          50,
+          10,
+          42
+        ],
+        [
+          1,
+          0,
+          42
+        ],
+        [
+          42,
+          9,
+          8
+        ],
+        [
+          42,
+          49,
+          9
+        ],
+        [
+          75,
+          68,
+          71
+        ],
+        [
+          71,
+          68,
+          76
+        ],
+        [
+          79,
+          81,
+          57
+        ],
+        [
+          57,
+          81,
+          56
+        ],
+        [
+          82,
+          79,
+          35
+        ],
+        [
+          35,
+          44,
+          82
+        ],
+        [
+          81,
+          79,
+          82
+        ],
+        [
+          82,
+          83,
+          81
+        ],
+        [
+          84,
+          63,
+          81
+        ],
+        [
+          81,
+          83,
+          84
+        ],
+        [
+          44,
+          46,
+          85
+        ],
+        [
+          85,
+          82,
+          44
+        ],
+        [
+          71,
+          78,
+          52
+        ],
+        [
+          52,
+          78,
+          77
+        ],
+        [
+          77,
+          63,
+          52
+        ],
+        [
+          82,
+          85,
+          83
+        ],
+        [
+          83,
+          85,
+          86
+        ],
+        [
+          86,
+          84,
+          83
+        ],
+        [
+          87,
+          52,
+          84
+        ],
+        [
+          84,
+          86,
+          87
+        ],
+        [
+          52,
+          63,
+          84
+        ],
+        [
+          88,
+          53,
+          81
+        ],
+        [
+          62,
+          81,
+          60
+        ],
+        [
+          89,
+          60,
+          81
+        ],
+        [
+          89,
+          81,
+          63
+        ],
+        [
+          56,
+          81,
+          53
+        ],
+        [
+          81,
+          62,
+          61
+        ],
+        [
+          81,
+          61,
+          88
+        ],
+        [
+          48,
+          87,
+          86
+        ],
+        [
+          86,
+          47,
+          48
+        ],
+        [
+          47,
+          86,
+          85
+        ],
+        [
+          85,
+          46,
+          47
+        ],
+        [
+          48,
+          30,
+          52
+        ],
+        [
+          52,
+          87,
+          48
+        ]
+      ]
+    },
+    {
+      "color": [
+        95,
+        167,
+        211
+      ],
+      "faces": [
+        [
+          24,
+          32,
+          33
+        ],
+        [
+          77,
+          78,
+          71
+        ]
+      ]
+    },
+    {
+      "color": [
+        119,
+        222,
+        228
+      ],
+      "faces": [
+        [
+          17,
+          12,
+          18
+        ],
+        [
+          13,
+          16,
+          11
+        ],
+        [
+          67,
+          68,
+          66
+        ],
+        [
+          65,
+          64,
+          40
+        ]
+      ]
+    }
+  ]
+}
+},{}],2:[function(require,module,exports){
+const copy = require('copy-to-clipboard')
+const createViewer = require('..')
+const { svgElementToSvgImageContent } = require('../util')
+const meshJson = require('../beta-fox.json')
 
-createDistortedLogo({
+document.addEventListener('keypress', function (event) {
+  if (event.keyCode === 99) { // the c key
+    const svg = document.querySelector('svg')
+    const content = svgElementToSvgImageContent(svg)
+    copy(content)
+  }
+})
+
+createViewer({
   width: 0.4,
   height: 0.4,
   followMouse: true,
   followMotion: true,
-  lazyRender: false,
+  meshJson,
 })
 
-function createDistortedLogo (options) {
-  const cameraDistance = options.cameraDistance || 400
-  const { height, width } = calculateSizingOptions(options)
-
-  const container = createNode('svg')
-  setAttribute(container, 'width', `${width}px`)
-  setAttribute(container, 'height', `${height}px`)
-  document.body.appendChild(container)
-
-  const modelObj = loadModelFromJson(foxJson)
-  const { positions } = modelObj
-  //  store a copy of positions
-  const origPositions = positions.slice()
-
-  const distortionMethods = {
-    'Glitch': distortGlitch,
-    'Fold': distortFold,
-    'Grow': distortGrow,
-  }
-  let applyDistortion = Object.values(distortionMethods)[0]
-
-  Object.entries(distortionMethods).forEach(([description, distortionFn]) => {
-    const button = document.createElement('button')
-    button.innerText = description
-    button.addEventListener('click', () => {
-      applyDistortion = distortionFn
-    })
-    document.body.appendChild(button)
-  })
-
-  const renderFox = createModelRenderer(container, cameraDistance, modelObj)
-  const renderScene = (lookCurrent, slowDrift) => {
-    const rect = container.getBoundingClientRect()
-    applyDistortion(positions, origPositions)
-    renderFox(rect, lookCurrent, slowDrift)
-  }
-
-  return createLogoViewer(container, renderScene, { cameraDistance, ...options })
-}
-
-// glitch up and down
-function distortGlitch (positions, origPositions) {
-  const pointCount = positions.length / 3
-  for (let polygonIndex = 0; polygonIndex < pointCount; polygonIndex++) {
-    const x = (polygonIndex * 3) + 0
-    const y = (polygonIndex * 3) + 1
-    const z = (polygonIndex * 3) + 2
-    // strong along x
-    positions[x] = origPositions[x] + (20 * getSinIntensity() * Math.random())
-    positions[y] = origPositions[y] + (20 * getSinIntensity() * Math.random())
-    positions[z] = origPositions[z] + (20 * getSinIntensity() * Math.random())
-  }
-}
-
-// bug: grow head slowly?
-function distortGrow (positions, origPositions) {
-  const progress = getSinIntensity()
-  const pointCount = positions.length / 3
-  const polygonProgressWidth = 1 / pointCount
-  for (let polygonIndex = 0; polygonIndex < pointCount; polygonIndex++) {
-    // calculate the current progress for each polygon
-    const polygonProgressStart = polygonIndex * polygonProgressWidth
-    const polygonProgressEnd = polygonProgressStart + polygonProgressWidth
-    const polygonProgressUncapped = (progress - polygonProgressStart) / (polygonProgressEnd - polygonProgressStart)
-    const polygonProgress = Math.min(Math.max(polygonProgressUncapped, 0), 1)
-    // the previous polygon (self referential for the first one)
-    const prevPolygonIndex = Math.max(polygonIndex, polygonIndex - 1)
-    const prevX = origPositions[prevPolygonIndex * (3 + 0)]
-    const prevY = origPositions[prevPolygonIndex * (3 + 1)]
-    const prevZ = origPositions[prevPolygonIndex * (3 + 2)]
-    const x = polygonIndex * (3 + 0)
-    const y = polygonIndex * (3 + 1)
-    const z = polygonIndex * (3 + 2)
-    // strong along x
-    positions[x] = prevX + (polygonProgress * origPositions[x])
-    positions[y] = prevY + (polygonProgress * origPositions[y])
-    positions[z] = prevZ + (polygonProgress * origPositions[z])
-  }
-}
-
-// bug: grow head slowly?
-function distortFold (positions, origPositions) {
-  const progress = getSinIntensity(5000)
-  const pointCount = positions.length / 3
-  const polygonProgressWidth = 1 / pointCount
-  // reset positions
-  Object.assign(positions, origPositions)
-  for (let polygonIndex = 0; polygonIndex < pointCount; polygonIndex++) {
-    // calculate the current progress for each polygon
-    const polygonProgressStart = polygonIndex * polygonProgressWidth
-    const polygonProgressEnd = polygonProgressStart + polygonProgressWidth
-    const polygonProgressUncapped = (progress - polygonProgressStart) / (polygonProgressEnd - polygonProgressStart)
-    const polygonProgress = Math.min(Math.max(polygonProgressUncapped, 0), 1)
-    // the previous polygon (self referential for the first one)
-    const prevPolygonIndex = Math.max(0, polygonIndex - 1)
-    const prevX = positions[prevPolygonIndex * (3 + 0)]
-    const prevY = positions[prevPolygonIndex * (3 + 1)]
-    const prevZ = positions[prevPolygonIndex * (3 + 2)]
-    const x = polygonIndex * (3 + 0)
-    const y = polygonIndex * (3 + 1)
-    const z = polygonIndex * (3 + 2)
-    // console.log(polygonIndex, polygonProgress)
-    positions[x] = (prevX + (polygonProgress * (origPositions[x] - prevX)))
-    positions[y] = (prevY + (polygonProgress * (origPositions[y] - prevY)))
-    positions[z] = (prevZ + (polygonProgress * (origPositions[z] - prevZ)))
-  }
-}
-
-// sin between 0-1
-function getSinIntensity (speed = 1000) {
-  return (Math.sin(Date.now() / speed) + 1) / 2
-}
-
-},{"../fox.json":2,"../util":10}],2:[function(require,module,exports){
+},{"..":4,"../beta-fox.json":1,"../util":14,"copy-to-clipboard":5}],3:[function(require,module,exports){
 module.exports={
   "positions": [
     [
@@ -1558,7 +2902,119 @@ module.exports={
   ]
 }
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
+const foxJson = require('./fox.json')
+const {
+  calculateSizingOptions,
+  createLogoViewer,
+  loadModelFromJson,
+  createModelRenderer,
+  createNode,
+  setAttribute,
+} = require('./util.js')
+
+module.exports = createLogo
+
+function createLogo (options = {}) {
+  const cameraDistance = options.cameraDistance || 400
+  const { height, width } = calculateSizingOptions(options)
+
+  const container = createNode('svg')
+  setAttribute(container, 'width', `${width}px`)
+  setAttribute(container, 'height', `${height}px`)
+  document.body.appendChild(container)
+
+  const modelObj = loadModelFromJson(options.meshJson || foxJson)
+  const renderFox = createModelRenderer(container, cameraDistance, modelObj)
+  const renderScene = (lookCurrent, slowDrift) => {
+    const rect = container.getBoundingClientRect()
+    renderFox(rect, lookCurrent, slowDrift)
+  }
+
+  return createLogoViewer(container, renderScene, { cameraDistance, ...options })
+}
+
+},{"./fox.json":3,"./util.js":14}],5:[function(require,module,exports){
+'use strict';
+
+var deselectCurrent = require('toggle-selection');
+
+var defaultMessage = 'Copy to clipboard: #{key}, Enter';
+
+function format(message) {
+  var copyKey = (/mac os x/i.test(navigator.userAgent) ? '⌘' : 'Ctrl') + '+C';
+  return message.replace(/#{\s*key\s*}/g, copyKey);
+}
+
+function copy(text, options) {
+  var debug, message, reselectPrevious, range, selection, mark, success = false;
+  if (!options) { options = {}; }
+  debug = options.debug || false;
+  try {
+    reselectPrevious = deselectCurrent();
+
+    range = document.createRange();
+    selection = document.getSelection();
+
+    mark = document.createElement('span');
+    mark.textContent = text;
+    // reset user styles for span element
+    mark.style.all = 'unset';
+    // prevents scrolling to the end of the page
+    mark.style.position = 'fixed';
+    mark.style.top = 0;
+    mark.style.clip = 'rect(0, 0, 0, 0)';
+    // used to preserve spaces and line breaks
+    mark.style.whiteSpace = 'pre';
+    // do not inherit user-select (it may be `none`)
+    mark.style.webkitUserSelect = 'text';
+    mark.style.MozUserSelect = 'text';
+    mark.style.msUserSelect = 'text';
+    mark.style.userSelect = 'text';
+
+    document.body.appendChild(mark);
+
+    range.selectNode(mark);
+    selection.addRange(range);
+
+    var successful = document.execCommand('copy');
+    if (!successful) {
+      throw new Error('copy command was unsuccessful');
+    }
+    success = true;
+  } catch (err) {
+    debug && console.error('unable to copy using execCommand: ', err);
+    debug && console.warn('trying IE specific stuff');
+    try {
+      window.clipboardData.setData('text', text);
+      success = true;
+    } catch (err) {
+      debug && console.error('unable to copy using clipboardData: ', err);
+      debug && console.error('falling back to prompt');
+      message = format('message' in options ? options.message : defaultMessage);
+      window.prompt(message, text);
+    }
+  } finally {
+    if (selection) {
+      if (typeof selection.removeRange == 'function') {
+        selection.removeRange(range);
+      } else {
+        selection.removeAllRanges();
+      }
+    }
+
+    if (mark) {
+      document.body.removeChild(mark);
+    }
+    reselectPrevious();
+  }
+
+  return success;
+}
+
+module.exports = copy;
+
+},{"toggle-selection":13}],6:[function(require,module,exports){
 module.exports = identity;
 
 /**
@@ -1586,7 +3042,7 @@ function identity(out) {
     out[15] = 1;
     return out;
 };
-},{}],4:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 module.exports = invert;
 
 /**
@@ -1642,7 +3098,7 @@ function invert(out, a) {
 
     return out;
 };
-},{}],5:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 var identity = require('./identity');
 
 module.exports = lookAt;
@@ -1733,7 +3189,7 @@ function lookAt(out, eye, center, up) {
 
     return out;
 };
-},{"./identity":3}],6:[function(require,module,exports){
+},{"./identity":6}],9:[function(require,module,exports){
 module.exports = multiply;
 
 /**
@@ -1776,7 +3232,7 @@ function multiply(out, a, b) {
     out[15] = b0*a03 + b1*a13 + b2*a23 + b3*a33;
     return out;
 };
-},{}],7:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 module.exports = perspective;
 
 /**
@@ -1810,7 +3266,7 @@ function perspective(out, fovy, aspect, near, far) {
     out[15] = 0;
     return out;
 };
-},{}],8:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 module.exports = rotate;
 
 /**
@@ -1875,7 +3331,7 @@ function rotate(out, a, rad, axis) {
     }
     return out;
 };
-},{}],9:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 module.exports = transformMat4;
 
 /**
@@ -1896,7 +3352,48 @@ function transformMat4(out, a, m) {
     out[2] = (m[2] * x + m[6] * y + m[10] * z + m[14]) / w
     return out
 }
-},{}],10:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
+
+module.exports = function () {
+  var selection = document.getSelection();
+  if (!selection.rangeCount) {
+    return function () {};
+  }
+  var active = document.activeElement;
+
+  var ranges = [];
+  for (var i = 0; i < selection.rangeCount; i++) {
+    ranges.push(selection.getRangeAt(i));
+  }
+
+  switch (active.tagName.toUpperCase()) { // .toUpperCase handles XHTML
+    case 'INPUT':
+    case 'TEXTAREA':
+      active.blur();
+      break;
+
+    default:
+      active = null;
+      break;
+  }
+
+  selection.removeAllRanges();
+  return function () {
+    selection.type === 'Caret' &&
+    selection.removeAllRanges();
+
+    if (!selection.rangeCount) {
+      ranges.forEach(function(range) {
+        selection.addRange(range);
+      });
+    }
+
+    active &&
+    active.focus();
+  };
+};
+
+},{}],14:[function(require,module,exports){
 const perspective = require('gl-mat4/perspective')
 const multiply = require('gl-mat4/multiply')
 const lookAt = require('gl-mat4/lookAt')
@@ -2313,4 +3810,4 @@ function Polygon (svg, indices) {
   this.zIndex = 0
 }
 
-},{"gl-mat4/invert":4,"gl-mat4/lookAt":5,"gl-mat4/multiply":6,"gl-mat4/perspective":7,"gl-mat4/rotate":8,"gl-vec3/transformMat4":9}]},{},[1]);
+},{"gl-mat4/invert":7,"gl-mat4/lookAt":8,"gl-mat4/multiply":9,"gl-mat4/perspective":10,"gl-mat4/rotate":11,"gl-vec3/transformMat4":12}]},{},[2]);
