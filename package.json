@@ -14,8 +14,8 @@
     "lint:fix": "yarn lint --fix"
   },
   "files": [
-    "bundle.js",
-    "fox.json"
+    "fox.json",
+    "util.js"
   ],
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
