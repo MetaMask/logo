@@ -5,14 +5,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-### [3.0.1] - 2021-06-08
+
+## [3.0.1] - 2021-06-08
 ### Fixed
 - Provides missing util.js when used as dependency ([#54](https://github.com/MetaMask/logo/pull/54))
 
 ### Security
 - Bump glob-parent from 5.1.1 to 5.1.2 to fix security vulnerability ([#53](https://github.com/MetaMask/logo/pull/53))
 
-## [3.0.0] - 2021-06-08  [DEPRECATED]
+## [3.0.0] - 2021-06-08 [DEPRECATED]
 ### Changed
 - **BREAKING**: Update minimum Node version to 12 ([#46](https://github.com/MetaMask/logo/pull/46))
 - Provide beta fox assets, demo, and meshJson option ([#50](https://github.com/MetaMask/logo/pull/50))
@@ -27,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed unnecessary files from published package
   - Node and browser consumers should be unaffected
 
-[Unreleased]: https://github.com/MetaMask/logo/compare/v3.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/logo/compare/v3.0.1...HEAD
+[3.0.1]: https://github.com/MetaMask/logo/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/MetaMask/logo/compare/v2.5.0...v3.0.0
 [2.5.0]: https://github.com/MetaMask/logo/releases/tag/v2.5.0
