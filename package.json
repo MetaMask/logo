@@ -7,6 +7,7 @@
     "node": ">=12.0.0"
   },
   "scripts": {
+    "setup": "yarn install && yarn allow-scripts",
     "build": "yarn bundle normal && yarn bundle gradient && yarn bundle recolor && yarn bundle distort && yarn bundle beta",
     "bundle": "./example/build.sh",
     "convert": "node convert.js > fox.json",
@@ -28,6 +29,7 @@
     "gl-vec3": "1.0.3"
   },
   "devDependencies": {
+    "@lavamoat/allow-scripts": "^1.0.6",
     "@metamask/auto-changelog": "^2.3.0",
     "@metamask/eslint-config": "^3.2.0",
     "browserify": "^16.5.2",
@@ -45,5 +47,10 @@
   "bugs": {
     "url": "https://github.com/MetaMask/logo/issues"
   },
-  "homepage": "https://github.com/MetaMask/logo#readme"
+  "homepage": "https://github.com/MetaMask/logo#readme",
+  "lavamoat": {
+    "allowScripts": {
+      "@lavamoat/preinstall-always-fail": false
+    }
+  }
 }
