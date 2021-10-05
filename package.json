@@ -1,21 +1,22 @@
 {
   "name": "@metamask/logo",
-  "version": "2.6.0",
+  "version": "3.0.1",
   "description": "A browserifyable 3d metamask logo. [Live demo](http://metamask.github.io/logo/).",
   "main": "index.js",
   "engines": {
     "node": ">=12.0.0"
   },
   "scripts": {
-    "build": "yarn bundle normal && yarn bundle gradient && yarn bundle recolor && yarn bundle distort",
+    "setup": "yarn install && yarn allow-scripts",
+    "build": "yarn bundle normal && yarn bundle gradient && yarn bundle recolor && yarn bundle distort && yarn bundle beta",
     "bundle": "./example/build.sh",
     "convert": "tsc convert.ts && node convert.js > fox.json",
     "lint": "eslint . --ext js,json",
     "lint:fix": "yarn lint --fix"
   },
   "files": [
-    "bundle.js",
-    "fox.json"
+    "fox.json",
+    "util.js"
   ],
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
@@ -29,6 +30,8 @@
   },
   "devDependencies": {
     "@types/node": "^13.11.0",
+    "@lavamoat/allow-scripts": "^1.0.6",
+    "@metamask/auto-changelog": "^2.3.0",
     "@metamask/eslint-config": "^3.2.0",
     "browserify": "^16.5.2",
     "copy-to-clipboard": "^3.0.5",
@@ -42,10 +45,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MetaMask/logo.git"
+    "url": "https://github.com/MetaMask/logo.git"
   },
   "bugs": {
     "url": "https://github.com/MetaMask/logo/issues"
   },
-  "homepage": "https://github.com/MetaMask/logo#readme"
+  "homepage": "https://github.com/MetaMask/logo#readme",
+  "lavamoat": {
+    "allowScripts": {
+      "@lavamoat/preinstall-always-fail": false
+    }
+  }
 }
