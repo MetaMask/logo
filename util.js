@@ -269,7 +269,7 @@ function createModelRenderer(container, cameraDistance, modelObj) {
   return (rect, lookPos, slowDrift) => {
     const matrix = computeMatrix(rect, lookPos, slowDrift);
     updatePositions(matrix);
-    updateFaces(rect, container, polygons, transformed);
+    updateFaces(rect);
   };
 }
 
@@ -288,13 +288,25 @@ function positionsFromModel(positions, modelJson) {
 function createPolygonsFromModelJson(modelJson, createSvgPolygon) {
   const polygons = [];
   const polygonsByChunk = modelJson.chunks.map((chunk, index) => {
-    const { faces } = chunk;
+    const { faces, mask: maskId } = chunk;
     return faces.map((face) => {
       const svgPolygon = createSvgPolygon(chunk, {
         gradients: modelJson.gradients,
         index,
       });
-      const polygon = new Polygon(svgPolygon, face);
+      let maskPolygon;
+      if (maskId) {
+        if (modelJson.masks[maskId] === undefined) {
+          throw new Error(`Unrecognized mask ID: '${maskId}'`);
+        }
+
+        maskPolygon = createSvgPolygon(chunk, {
+          gradients: modelJson.gradients,
+          mask: modelJson.masks[maskId],
+          index,
+        });
+      }
+      const polygon = new Polygon(svgPolygon, face, maskPolygon);
       polygons.push(polygon);
       return polygon;
     });
@@ -314,16 +326,21 @@ function createPolygonsFromModelJson(modelJson, createSvgPolygon) {
  * @param {object} options - Polygon options.
  * @param {(LinearGradientDefinition | RadialGradientDefinition)[]} [options.gradients] - The set of
  * all gradient definitions used in this model.
- * @param options.index - The index for the chunk this polygon is found in.
+ * @param {number} options.index - The index for the chunk this polygon is found in.
+ * @param {object} [options.mask] - The mask definition to use for this polygon.
  * @returns {Element} The `<polygon>` SVG element.
  */
-function createStandardModelPolygon(chunk, { gradients = {}, index }) {
+function createStandardModelPolygon(chunk, { gradients = {}, index, mask }) {
   const svgPolygon = createNode('polygon');
 
   if (chunk.gradient && chunk.color) {
     throw new Error(
       `Both gradient and color for chunk '${index}'. These options are mutually exclusive.`,
     );
+  } else if (mask) {
+    setAttribute(svgPolygon, 'mask', `url('#${chunk.mask}')`);
+    setAttribute(svgPolygon, 'fill', mask.modelColor);
+    setAttribute(svgPolygon, 'stroke', mask.modelColor);
   } else if (chunk.gradient) {
     const gradientId = chunk.gradient;
     if (!gradients[gradientId]) {
@@ -461,7 +478,6 @@ function createFaceUpdater(container, polygons, transformed) {
       const points = [];
       let zmax = -Infinity;
       let zmin = Infinity;
-      const element = poly.svg;
       for (let j = 0; j < 3; ++j) {
         const idx = indices[j];
         points.push(
@@ -473,20 +489,26 @@ function createFaceUpdater(container, polygons, transformed) {
         zmax = Math.max(zmax, z);
         zmin = Math.min(zmin, z);
       }
+
       poly.zIndex = zmax + 0.25 * zmin;
       const joinedPoints = points.join(' ');
 
       if (joinedPoints.indexOf('NaN') === -1) {
-        setAttribute(element, 'points', joinedPoints);
+        setAttribute(poly.svg, 'points', joinedPoints);
+        if (poly.maskSvg) {
+          setAttribute(poly.maskSvg, 'points', joinedPoints);
+        }
       }
-
       toDraw.push(poly);
     }
     toDraw.sort(compareZ);
 
-    const newPolygons = toDraw.map((poly) => poly.svg);
+    const newPolygons = toDraw
+      .map((poly) => [poly.svg, ...(poly.maskSvg ? [poly.maskSvg] : [])])
+      .flat();
     const defs = container.getElementsByTagName('defs');
-    container.replaceChildren(...defs, ...newPolygons);
+    const maskChildren = container.getElementsByTagName('mask');
+    container.replaceChildren(...defs, ...maskChildren, ...newPolygons);
   };
 }
 
@@ -524,10 +546,13 @@ function svgElementToSvgImageContent(svgElement) {
   return content;
 }
 
-function Polygon(svg, indices) {
+function Polygon(svg, indices, maskSvg) {
   this.svg = svg;
   this.indices = indices;
   this.zIndex = 0;
+  if (maskSvg) {
+    this.maskSvg = maskSvg;
+  }
 }
 
 /**
