@@ -10,7 +10,7 @@
     "setup": "yarn install && yarn allow-scripts",
     "build": "yarn bundle normal && yarn bundle gradient && yarn bundle recolor && yarn bundle distort && yarn bundle beta",
     "bundle": "./example/build.sh",
-    "convert": "node convert.js > fox.json",
+    "convert": "node convert.js",
     "lint": "eslint . --ext js,json",
     "lint:fix": "yarn lint --fix"
   },

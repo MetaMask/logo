@@ -102,16 +102,12 @@ for (const mtlKey of Object.keys(mtl)) {
           f.vertices[1][VI] - 1,
           f.vertices[2][VI] - 1,
         ])
-        console.log('we pushed some faces, eh?', chunk.faces)
-      } else {
-        console.log(`I guess ${f.material} !== ${mtlKey}`)
       }
     })
 
     output.chunks.push(chunk)
   } else {
-    console.log(`PROBLEM with ${mtlKey}`)
-    console.dir(m)
+    throw new Error(`Invalid MTL entry at key '${mtlKey}'`)
   }
 }
 
