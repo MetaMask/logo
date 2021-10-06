@@ -48,7 +48,8 @@
     "obj-file-parser-ts": "^0.6.4",
     "prettier": "^2.2.1",
     "prettier-plugin-packagejson": "^2.2.11",
-    "uglifyify": "^5.0.2"
+    "uglifyify": "^5.0.2",
+    "yargs": "^17.2.1"
   },
   "engines": {
     "node": ">=12.0.0"
