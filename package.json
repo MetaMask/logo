@@ -10,7 +10,7 @@
     "setup": "yarn install && yarn allow-scripts",
     "build": "yarn bundle normal && yarn bundle gradient && yarn bundle recolor && yarn bundle distort && yarn bundle beta",
     "bundle": "./example/build.sh",
-    "convert": "tsc convert.ts && node convert.js > fox.json",
+    "convert": "node convert.js > fox.json",
     "lint": "eslint . --ext js,json",
     "lint:fix": "yarn lint --fix"
   },
@@ -29,7 +29,6 @@
     "gl-vec3": "1.0.3"
   },
   "devDependencies": {
-    "@types/node": "^13.11.0",
     "@lavamoat/allow-scripts": "^1.0.6",
     "@metamask/auto-changelog": "^2.5.0",
     "@metamask/eslint-config": "^3.2.0",
@@ -39,9 +38,9 @@
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-json": "^2.1.2",
     "mersenne-twister": "^1.1.0",
-    "uglifyify": "^5.0.2",
     "obj-file-parser": "^0.5.0",
-    "obj-file-parser-ts": "^0.6.4"
+    "obj-file-parser-ts": "^0.6.4",
+    "uglifyify": "^5.0.2"
   },
   "repository": {
     "type": "git",
