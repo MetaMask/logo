@@ -10,7 +10,7 @@
     "setup": "yarn install && yarn allow-scripts",
     "build": "yarn bundle normal && yarn bundle gradient && yarn bundle recolor && yarn bundle distort && yarn bundle beta",
     "bundle": "./example/build.sh",
-    "convert": "node convert.js > fox.json",
+    "convert": "node convert.js",
     "lint": "eslint . --ext js,json",
     "lint:fix": "yarn lint --fix"
   },
@@ -38,6 +38,8 @@
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-json": "^2.1.2",
     "mersenne-twister": "^1.1.0",
+    "obj-file-parser": "^0.5.0",
+    "obj-file-parser-ts": "^0.6.4",
     "uglifyify": "^5.0.2"
   },
   "repository": {

@@ -1,22 +1,30 @@
 const fs = require('fs')
+const path = require('path')
+const OBJFile = require('obj-file-parser')
+
+const obj = fs.readFileSync('./fox.obj').toString()
+const mtlRaw = fs.readFileSync('./fox.mtl').toString('utf8')
 
 function parseMTL (mtl) {
   const output = {}
   mtl.split('newmtl ').slice(1).forEach(function (block) {
-    const lines = block.split('\r\n')
+    const lines = block.split('\n')
     const label = lines[0]
     const props = {}
     lines.slice(1).forEach(function (line) {
-      if (line.charAt(0) !== '\t') {
+
+      // Skip illum lines
+      if (line.indexOf('illum') === 0) {
         return
       }
-      const toks = line.split(/\s+/u).slice(1)
-      const tokenLabel = toks[0]
+
+      const toks = line.split(/\s+/u)
+      const lineLabel = toks[0]
       const data = toks.slice(1)
       if (data.length === 1) {
-        props[tokenLabel] = Number(data[0])
+        props[lineLabel] = Number(data[0])
       } else {
-        props[tokenLabel] = data.map(function (x) {
+        props[lineLabel] = data.map(function (x) {
           return Math.sqrt(x).toPrecision(4)
         })
       }
@@ -27,64 +35,80 @@ function parseMTL (mtl) {
   return output
 }
 
-const mtl = parseMTL(fs.readFileSync('fox.mtl').toString('utf8'))
+const mtl = parseMTL(mtlRaw)
 
-function parseOBJ (obj) {
-  const lines = obj.split('\r\n')
+const objF = new OBJFile(obj)
 
-  const positions = []
-  const faceGroups = {}
-  let currentMTL
+const data = objF.parse(objF)
 
-  lines.forEach(function (line) {
-    const toks = line.split(/\s+/u)
-    if (toks.length === 0) {
-      return
-    }
+const outpath = path.join(__dirname, 'fox.json')
 
-    let f
-    switch (toks[0]) {
-      case 'v':
-        positions.push(toks.slice(1, 4).map(function (p) {
-          return Number(p)
-        }))
-        break
-      case 'usemtl':
-        currentMTL = toks[1]
-        if (!(currentMTL in faceGroups)) {
-          faceGroups[currentMTL] = []
-        }
-        break
-      case 'f':
-        f = toks.slice(1, 4).map(function (tuple) {
-          return (tuple.split('/')[0] | 0) - 1
-        })
-        if (f[0] !== f[1] && f[1] !== f[2] && f[2] !== f[0]) {
-          faceGroups[currentMTL].push(f)
-        }
-        break
-      default:
-        break
-    }
-  })
+const output = {
+  positions: [],
+  chunks: [],
+}
 
-  const chunks = []
-  Object.keys(faceGroups).forEach(function (name) {
-    const material = mtl[name]
-    chunks.push({
-      color: material.Ka.map(function (c) {
-        return (255 * c) | 0
-      }),
-      faces: faceGroups[name],
+/*
+
+type colorValue = number; // 0-255
+type positionId = number; // Index of that position
+type CoordVal = number;
+
+type Position = [CoordVal, CoordVal, CoordVal];
+type Face = [positionId, positionId, positionId];
+
+export type EfficientModel = {
+  positions: Array<Position>;
+  chunks: Array<{
+    color: [colorValue, colorValue, colorValue];
+    faces: Array<Face>;
+  }>;
+}
+
+*/
+const VI = 'vertexIndex'
+
+const model = data.models[0]
+model.vertices.forEach((v) => {
+  output.positions.push([v.x, v.y, v.z])
+})
+
+for (const mtlKey of Object.keys(mtl)) {
+  const m = mtl[mtlKey]
+
+  if (m.Ka) {
+    const color = m.Kd.map(function (c) {
+      return (255 * c) | 0
     })
-  })
+    m.Kd.forEach((c, i) => {
+      if (color[i] === 0) {
+        color[i] = (255 * c) | 0
+      }
+    })
 
-  return {
-    positions,
-    chunks,
+    const chunk = {
+      color,
+      faces: [],
+    }
+
+    model.faces.forEach((f) => {
+
+      // Only if this face matches the material!
+      if (
+        f.material === mtlKey
+      ) {
+        chunk.faces.push([
+          f.vertices[0][VI] - 1,
+          f.vertices[1][VI] - 1,
+          f.vertices[2][VI] - 1,
+        ])
+      }
+    })
+
+    output.chunks.push(chunk)
+  } else {
+    throw new Error(`Invalid MTL entry at key '${mtlKey}'`)
   }
 }
 
-const obj = parseOBJ(fs.readFileSync('fox.obj').toString('utf8'))
-
-console.log(JSON.stringify(obj, null, 2))
+fs.writeFileSync(outpath, JSON.stringify(output, null, 2))
