@@ -10,11 +10,10 @@ The sample app javascript is `bundle.js`, which is built from `sample.js` using 
 ## API
 
 ```javascript
-const ModelViewer = require('@metamask/logo')
+const ModelViewer = require('@metamask/logo');
 
 // To render with fixed dimensions:
 const viewer = ModelViewer({
-
   // Dictates whether width & height are px or multiplied
   pxNotRatio: true,
   width: 500,
@@ -28,24 +27,23 @@ const viewer = ModelViewer({
 
   // head should slowly drift (overrides lookAt)
   slowDrift: false,
-
-})
+});
 
 // add viewer to DOM
-const container = document.getElementById('logo-container')
-container.appendChild(viewer.container)
+const container = document.getElementById('logo-container');
+container.appendChild(viewer.container);
 
 // look at something on the page
 viewer.lookAt({
   x: 100,
   y: 100,
-})
+});
 
 // enable mouse follow
-viewer.setFollowMouse(true)
+viewer.setFollowMouse(true);
 
 // deallocate nicely
-viewer.stopAnimation()
+viewer.stopAnimation();
 ```
 
 ## Running Example

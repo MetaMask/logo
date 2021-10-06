@@ -1,5 +1,5 @@
-
-# Created by https://www.gitignore.io/api/osx,node
+# Optional eslint cache
+.eslintcache
 
 ### OSX ###
 .DS_Store
