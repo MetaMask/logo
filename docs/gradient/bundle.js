@@ -8,8 +8,8 @@ const {
   createNode,
   setAttribute,
   svgElementToSvgImageContent,
-} = require('../util');
-const foxJson = require('../fox.json');
+} = require('../../util');
+const foxJson = require('../../fox.json');
 
 document.addEventListener('keypress', function (event) {
   if (event.keyCode === 99) {
@@ -105,7 +105,7 @@ function createMaskPolygon() {
   return svgPolygon;
 }
 
-},{"../fox.json":2,"../util":12,"copy-to-clipboard":3}],2:[function(require,module,exports){
+},{"../../fox.json":2,"../../util":12,"copy-to-clipboard":3}],2:[function(require,module,exports){
 module.exports={
   "positions": [
     [111.024597, 52.604599, 46.225899],

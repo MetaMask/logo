@@ -6,8 +6,8 @@ const {
   createModelRenderer,
   createNode,
   setAttribute,
-} = require('../util');
-const foxJson = require('../fox.json');
+} = require('../../util');
+const foxJson = require('../../fox.json');
 
 createDistortedLogo({
   width: 0.4,
@@ -138,7 +138,7 @@ function getSinIntensity(speed = 1000) {
   return (Math.sin(Date.now() / speed) + 1) / 2;
 }
 
-},{"../fox.json":2,"../util":10}],2:[function(require,module,exports){
+},{"../../fox.json":2,"../../util":10}],2:[function(require,module,exports){
 module.exports={
   "positions": [
     [111.024597, 52.604599, 46.225899],

@@ -2,10 +2,7 @@
 
 A browserifyable 3d metamask logo. [Live demo](https://metamask.github.io/logo/).
 
-This repo can both be included as a browserifiable module, and includes a sample app.
-
-The sample app address is `index.html`.
-The sample app javascript is `bundle.js`, which is built from `sample.js` using the `build` task (see the `package.json`).
+This repo can both be included as a browserifiable module, and includes a demo app.
 
 ## API
 
@@ -46,11 +43,6 @@ viewer.setFollowMouse(true);
 viewer.stopAnimation();
 ```
 
-## Running Example
-
-First, rebuild `browserify example/example.js -o bundle.js`.
-Then, run a local server in this folder and visit it. For example, `http-server`.
-
 ## Contributing
 
 ### Setup
@@ -60,6 +52,12 @@ Then, run a local server in this folder and visit it. For example, `http-server`
 - Install [Yarn v1](https://yarnpkg.com/en/docs/install)
 - Run `yarn setup` to install dependencies and run any requried post-install scripts
   - **Warning:** Do not use the `yarn` / `yarn install` command directly. Use `yarn setup` instead. The normal install command will skip required post-install scripts, leaving your development environment in an invalid state.
+
+### Building the demos
+
+The demos can be built with the command `yarn demo --all`, or a single demo can be built with `yarn demo <demo-name>`.
+
+Open `docs/index.html` in a browser to view the demo list.
 
 ### Testing and Linting
 
