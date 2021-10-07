@@ -101,6 +101,12 @@ async function main() {
           description: 'Build all demos.',
           type: 'boolean',
         })
+        .option('clear', {
+          default: false,
+          description: 'Empty the demo directory before building',
+          requiresArg: 'all',
+          type: 'boolean',
+        })
         .positional('demo-name', {
           describe: 'The name of the demo to build.',
           type: 'string',
@@ -109,7 +115,7 @@ async function main() {
     .version(false)
     .strict();
 
-  const { all, demoName } = argv;
+  const { all, clear, demoName } = argv;
 
   const demoSourceDir = path.join(__dirname, 'src');
 
@@ -123,7 +129,7 @@ async function main() {
       throw new UsageError('No demo files found');
     }
 
-    await buildIndex({ clear: true });
+    await buildIndex({ clear });
     for (const currentDemoName of demoNames) {
       await buildDemo(currentDemoName);
     }
