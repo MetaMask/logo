@@ -23,7 +23,7 @@ async function buildDemo(demoName, demoPath) {
   const demoDirectoryPath = path.resolve(__dirname, '..', 'docs', demoName);
 
   try {
-    fs.access(demoDirectoryPath, fsConstants.W_OK);
+    await fs.access(demoDirectoryPath, fsConstants.W_OK);
   } catch (error) {
     if (error.code === 'ENOENT') {
       await fs.mkdir(demoDirectoryPath, { recursive: true });
