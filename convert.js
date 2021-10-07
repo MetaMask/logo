@@ -38,7 +38,7 @@ function parseMTL(mtl) {
 
 const usageDescription = `Convert Maya .obj and .mtl files into our JSON model format.
 
-The polygons in the mode are divided into chunks according to the material (i.e. the color) of \
+The polygons in the model are divided into chunks according to the material (i.e. the color) of \
 each polygon. The output JSON model includes a list of vertex positions, and a list of chunks of \
 polygons.`;
 
