@@ -20,6 +20,7 @@ module.exports = {
   createFaceUpdater,
   createNode,
   setAttribute,
+  setGradientDefinitions,
   svgElementToSvgImageContent,
   Polygon,
 };
@@ -214,7 +215,9 @@ function createPolygonsFromModelJson(modelJson, createSvgPolygon) {
   const polygonsByChunk = modelJson.chunks.map((chunk) => {
     const { faces } = chunk;
     return faces.map((face) => {
-      const svgPolygon = createSvgPolygon(chunk);
+      const svgPolygon = createSvgPolygon(chunk, {
+        gradients: modelJson.gradients,
+      });
       const polygon = new Polygon(svgPolygon, face);
       polygons.push(polygon);
       return polygon;
@@ -223,11 +226,23 @@ function createPolygonsFromModelJson(modelJson, createSvgPolygon) {
   return { polygons, polygonsByChunk };
 }
 
-function createStandardModelPolygon(chunk) {
-  const color = `rgb(${chunk.color})`;
+function createStandardModelPolygon(chunk, { gradients = {} }) {
   const svgPolygon = createNode('polygon');
-  setAttribute(svgPolygon, 'fill', color);
-  setAttribute(svgPolygon, 'stroke', color);
+
+  if (chunk.gradient) {
+    const gradientId = chunk.gradient;
+    if (!gradients[gradientId]) {
+      throw new Error(`Gradient ID not found: '${gradientId}'`);
+    }
+
+    setAttribute(svgPolygon, 'fill', `url('#${gradientId}')`);
+    setAttribute(svgPolygon, 'stroke', `url('#${gradientId}')`);
+  } else {
+    const fill = `rgb(${chunk.color})`;
+    setAttribute(svgPolygon, 'fill', fill);
+    setAttribute(svgPolygon, 'stroke', fill);
+  }
+
   setAttribute(svgPolygon, 'points', '0,0, 10,0, 0,10');
   return svgPolygon;
 }
@@ -373,10 +388,10 @@ function createFaceUpdater(container, polygons, transformed) {
       toDraw.push(poly);
     }
     toDraw.sort(compareZ);
-    container.innerHTML = '';
-    for (i = 0; i < toDraw.length; ++i) {
-      container.appendChild(toDraw[i].svg);
-    }
+
+    const newPolygons = toDraw.map((poly) => poly.svg);
+    const defs = container.getElementsByTagName('defs');
+    container.replaceChildren(...defs, ...newPolygons);
   };
 }
 
@@ -418,4 +433,164 @@ function Polygon(svg, indices) {
   this.svg = svg;
   this.indices = indices;
   this.zIndex = 0;
+}
+
+function setGradientDefinitions(container, gradients) {
+  if (!gradients || Object.keys(gradients).length === 0) {
+    return;
+  }
+
+  const defsContainer = createNode('defs');
+
+  const linearCoordinateAttributes = ['x1', 'x2', 'y1', 'y2'];
+  const radialCoordinateAttributes = ['cx', 'cy', 'fr', 'fx', 'fy', 'r'];
+  const commonAttributes = ['gradientUnits', 'spreadMethod', 'stops', 'type'];
+  const allLinearAttributes = [
+    ...linearCoordinateAttributes,
+    ...commonAttributes,
+  ];
+  const allRadialAttributes = [
+    ...radialCoordinateAttributes,
+    ...commonAttributes,
+  ];
+
+  for (const [gradientId, gradientDefinition] of Object.entries(gradients)) {
+    let gradient;
+    if (gradientDefinition.type === 'linear') {
+      gradient = createNode('linearGradient');
+
+      const unsupportedLinearAttribute = Object.keys(gradientDefinition).find(
+        (attribute) => !allLinearAttributes.includes(attribute),
+      );
+      if (unsupportedLinearAttribute) {
+        throw new Error(
+          `Unsupported linear gradient attribute: '${unsupportedLinearAttribute}'`,
+        );
+      } else if (
+        linearCoordinateAttributes.some(
+          (attributeName) => gradientDefinition[attributeName] !== undefined,
+        )
+      ) {
+        const missingAttributes = linearCoordinateAttributes.filter(
+          (attributeName) => gradientDefinition[attributeName] === undefined,
+        );
+        if (missingAttributes.length > 0) {
+          throw new Error(
+            `Missing coordinate attributes: '${missingAttributes.join(', ')}'`,
+          );
+        }
+
+        for (const attribute of linearCoordinateAttributes) {
+          if (typeof gradientDefinition[attribute] !== 'string') {
+            throw new Error(
+              `Type of '${attribute}' option expected to be 'string'. Instead received type '${typeof gradientDefinition[
+                attribute
+              ]}'`,
+            );
+          }
+          setAttribute(gradient, attribute, gradientDefinition[attribute]);
+        }
+      }
+    } else if (gradientDefinition.type === 'radial') {
+      gradient = createNode('radialGradient');
+
+      const presentCoordinateAttributes = radialCoordinateAttributes.filter(
+        (attributeName) => gradientDefinition[attributeName] !== undefined,
+      );
+      const unsupportedRadialAttribute = Object.keys(gradientDefinition).find(
+        (attribute) => !allRadialAttributes.includes(attribute),
+      );
+      if (unsupportedRadialAttribute) {
+        throw new Error(
+          `Unsupported radial gradient attribute: '${unsupportedRadialAttribute}'`,
+        );
+      } else if (presentCoordinateAttributes.length > 0) {
+        for (const attribute of presentCoordinateAttributes) {
+          if (typeof gradientDefinition[attribute] !== 'string') {
+            throw new Error(
+              `Type of '${attribute}' option expected to be 'string'. Instead received type '${typeof gradientDefinition[
+                attribute
+              ]}'`,
+            );
+          }
+          setAttribute(gradient, attribute, gradientDefinition[attribute]);
+        }
+      }
+    } else {
+      throw new Error(`Unsupported gradent type: '${gradientDefinition.type}'`);
+    }
+
+    // Set common attributes
+    setAttribute(gradient, 'id', gradientId);
+    if (gradientDefinition.gradientUnits !== undefined) {
+      if (
+        !['userSpaceOnUse', 'objectBoundingBox'].includes(
+          gradientDefinition.gradientUnits,
+        )
+      ) {
+        throw new Error(
+          `Unrecognized value for 'gradientUnits' attribute: '${gradientDefinition.gradientUnits}'`,
+        );
+      }
+      setAttribute(gradient, 'gradientUnits', gradientDefinition.gradientUnits);
+    }
+
+    if (gradientDefinition.gradientTransform !== undefined) {
+      if (typeof gradientDefinition.gradientTransform !== 'string') {
+        throw new Error(
+          `Type of 'gradientTransform' option expected to be 'string'. Instead received type '${typeof gradientDefinition.gradientTransform}'`,
+        );
+      }
+
+      setAttribute(
+        gradient,
+        'gradientTransform',
+        gradientDefinition.gradientTransform,
+      );
+    }
+
+    if (gradientDefinition.spreadMethod !== undefined) {
+      if (
+        !['pad', 'reflect', 'repeat'].includes(gradientDefinition.spreadMethod)
+      ) {
+        throw new Error(
+          `Unrecognized value for 'spreadMethod' attribute: '${gradientDefinition.spreadMethod}'`,
+        );
+      }
+      setAttribute(gradient, 'spreadMethod', gradientDefinition.spreadMethod);
+    }
+
+    if (gradientDefinition.stops !== undefined) {
+      if (!Array.isArray(gradientDefinition.stops)) {
+        throw new Error(`The 'stop' attribute must be an array`);
+      }
+
+      for (const stopDefinition of gradientDefinition.stops) {
+        if (typeof stopDefinition !== 'object') {
+          throw new Error(
+            `Each entry in the 'stop' attribute must be an object. Instead received type '${typeof stopDefinition}'`,
+          );
+        }
+        const stop = createNode('stop');
+
+        if (stopDefinition.offset !== undefined) {
+          setAttribute(stop, 'offset', stopDefinition.offset);
+        }
+
+        if (stopDefinition['stop-color'] !== undefined) {
+          setAttribute(stop, 'stop-color', stopDefinition['stop-color']);
+        }
+
+        if (stopDefinition['stop-opacity'] !== undefined) {
+          setAttribute(stop, 'stop-opacity', stopDefinition['stop-opacity']);
+        }
+
+        gradient.appendChild(stop);
+      }
+    }
+
+    defsContainer.appendChild(gradient);
+  }
+
+  container.appendChild(defsContainer);
 }

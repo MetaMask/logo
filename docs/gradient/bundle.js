@@ -1,15 +1,357 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+module.exports={
+  "positions": [
+    [111.024597, 52.604599, 46.225899],
+    [114.025002, 87.673302, 58.9818],
+    [66.192001, 80.898003, 55.394299],
+    [72.113297, 35.491798, 30.871401],
+    [97.804497, 116.560997, 73.978798],
+    [16.7623, 58.010899, 58.078201],
+    [52.608898, 30.3641, 42.556099],
+    [106.881401, 31.945499, 46.9133],
+    [113.484596, 38.6049, 49.121498],
+    [108.6633, 43.2332, 46.315399],
+    [101.216599, 15.9822, 46.308201],
+    [16.6605, -16.2883, 93.618698],
+    [40.775002, -10.2288, 85.276398],
+    [23.926901, -2.5103, 86.736504],
+    [11.1691, -7.0037, 99.377602],
+    [9.5692, -34.393902, 141.671997],
+    [12.596, 7.1655, 88.740997],
+    [61.180901, 8.8142, 76.996803],
+    [39.719501, -28.927099, 88.963799],
+    [13.7962, -68.575699, 132.057007],
+    [15.2674, -62.32, 129.688004],
+    [14.8446, -52.6096, 140.113007],
+    [12.8917, -49.771599, 144.740997],
+    [35.604198, -71.758003, 81.063904],
+    [47.462502, -68.606102, 63.369701],
+    [38.2486, -64.730202, 38.909901],
+    [-12.8917, -49.771599, 144.740997],
+    [-13.7962, -68.575699, 132.057007],
+    [17.802099, -71.758003, 81.063904],
+    [19.1243, -69.0168, 49.420101],
+    [38.2486, -66.275597, 17.776199],
+    [12.8928, -36.703499, 141.671997],
+    [109.283997, -93.589897, 27.824301],
+    [122.117996, -36.8894, 35.025002],
+    [67.7668, -30.197001, 78.417801],
+    [33.180698, 101.851997, 25.3186],
+    [9.4063, -35.589802, 150.722],
+    [-9.5692, -34.393902, 141.671997],
+    [-9.4063, -35.589802, 150.722],
+    [11.4565, -37.899399, 150.722],
+    [-12.596, 7.1655, 88.740997],
+    [-11.1691, -7.0037, 99.377602],
+    [70.236504, 62.836201, -3.9475],
+    [47.263401, 54.293999, -27.414801],
+    [28.7302, 91.731102, -24.972601],
+    [69.167603, 6.5862, -12.7757],
+    [28.7302, 49.1003, -48.3596],
+    [31.903, 5.692, -47.821999],
+    [35.075802, -34.432899, -16.280899],
+    [115.284103, 48.681499, 48.684101],
+    [110.842796, 28.4821, 49.176201],
+    [-19.1243, -69.0168, 49.420101],
+    [-38.2486, -66.275597, 17.776199],
+    [-111.024597, 52.604599, 46.225899],
+    [-72.113297, 35.491798, 30.871401],
+    [-66.192001, 80.898003, 55.394299],
+    [-114.025002, 87.673302, 58.9818],
+    [-97.804497, 116.560997, 73.978798],
+    [-52.608898, 30.3641, 42.556099],
+    [-16.7623, 58.010899, 58.078201],
+    [-106.881401, 31.945499, 46.9133],
+    [-108.6633, 43.2332, 46.315399],
+    [-113.484596, 38.6049, 49.121498],
+    [-101.216599, 15.9822, 46.308201],
+    [-16.6605, -16.2883, 93.618698],
+    [-23.926901, -2.5103, 86.736504],
+    [-40.775002, -10.2288, 85.276398],
+    [-61.180901, 8.8142, 76.996803],
+    [-39.719501, -28.927099, 88.963799],
+    [-14.8446, -52.6096, 140.113007],
+    [-15.2674, -62.32, 129.688004],
+    [-47.462502, -68.606102, 63.369701],
+    [-35.604198, -71.758003, 81.063904],
+    [-38.2486, -64.730202, 38.909901],
+    [-17.802099, -71.758003, 81.063904],
+    [-12.8928, -36.703499, 141.671997],
+    [-67.7668, -30.197001, 78.417801],
+    [-122.117996, -36.8894, 35.025002],
+    [-109.283997, -93.589897, 27.824301],
+    [-33.180698, 101.851997, 25.3186],
+    [-11.4565, -37.899399, 150.722],
+    [-70.236504, 62.836201, -3.9475],
+    [-28.7302, 91.731102, -24.972601],
+    [-47.263401, 54.293999, -27.414801],
+    [-69.167603, 6.5862, -12.7757],
+    [-28.7302, 49.1003, -48.3596],
+    [-31.903, 5.692, -47.821999],
+    [-35.075802, -34.432899, -16.280899],
+    [-115.284103, 48.681499, 48.684101],
+    [-110.842796, 28.4821, 49.176201]
+  ],
+  "chunks": [
+    {
+      "color": [119, 57, 0],
+      "faces": [
+        [0, 1, 2],
+        [2, 3, 0],
+        [4, 5, 2],
+        [6, 3, 2],
+        [2, 5, 6],
+        [7, 8, 9],
+        [10, 3, 6],
+        [10, 50, 7],
+        [7, 3, 10],
+        [7, 9, 3],
+        [49, 0, 9],
+        [3, 9, 0],
+        [53, 54, 55],
+        [55, 56, 53],
+        [57, 56, 55],
+        [58, 59, 55],
+        [55, 54, 58],
+        [60, 61, 62],
+        [63, 58, 54],
+        [63, 60, 89],
+        [60, 63, 54],
+        [60, 54, 61],
+        [88, 61, 53],
+        [54, 53, 61],
+        [2, 1, 4],
+        [55, 59, 57]
+      ],
+      "gradient": "linear1"
+    },
+    {
+      "color": [36, 51, 67],
+      "faces": [
+        [11, 12, 13],
+        [64, 65, 66]
+      ],
+      "gradient": "linear1"
+    },
+    {
+      "color": [228, 116, 36],
+      "faces": [
+        [14, 15, 11],
+        [11, 16, 14],
+        [17, 12, 18],
+        [41, 64, 37],
+        [67, 68, 66]
+      ],
+      "gradient": "linear1"
+    },
+    {
+      "color": [192, 172, 157],
+      "faces": [
+        [19, 20, 21],
+        [21, 22, 19],
+        [20, 19, 23],
+        [23, 24, 20],
+        [23, 25, 24],
+        [19, 22, 26],
+        [26, 27, 19],
+        [23, 28, 29],
+        [23, 29, 30],
+        [25, 23, 30],
+        [29, 51, 52],
+        [52, 30, 29],
+        [27, 26, 69],
+        [69, 70, 27],
+        [70, 71, 72],
+        [72, 27, 70],
+        [72, 71, 73],
+        [51, 74, 72],
+        [52, 51, 72],
+        [73, 52, 72],
+        [19, 27, 74],
+        [74, 28, 19],
+        [51, 29, 28],
+        [28, 74, 51],
+        [74, 27, 72],
+        [28, 23, 19]
+      ],
+      "gradient": "linear1"
+    },
+    {
+      "color": [214, 194, 178],
+      "faces": [
+        [21, 20, 24],
+        [24, 31, 21],
+        [69, 71, 70],
+        [71, 69, 75]
+      ],
+      "gradient": "linear1"
+    },
+    {
+      "color": [228, 119, 25],
+      "faces": [
+        [31, 24, 18],
+        [6, 5, 16],
+        [16, 17, 6],
+        [24, 32, 33],
+        [33, 34, 24],
+        [5, 4, 35],
+        [75, 68, 71],
+        [58, 67, 40],
+        [40, 59, 58],
+        [71, 76, 77],
+        [77, 78, 71]
+      ],
+      "gradient": "linear1"
+    },
+    {
+      "color": [205, 98, 0],
+      "faces": [
+        [24, 34, 18],
+        [16, 13, 12],
+        [12, 17, 16],
+        [13, 16, 11],
+        [71, 68, 76],
+        [40, 67, 66],
+        [66, 65, 40],
+        [65, 64, 40]
+      ],
+      "gradient": "linear1"
+    },
+    {
+      "color": [0, 0, 0],
+      "faces": [
+        [36, 15, 37],
+        [37, 38, 36],
+        [31, 39, 22],
+        [22, 21, 31],
+        [31, 15, 36],
+        [36, 39, 31],
+        [75, 69, 26],
+        [26, 80, 75],
+        [75, 80, 38],
+        [38, 37, 75],
+        [38, 80, 39],
+        [39, 36, 38],
+        [39, 80, 26],
+        [26, 22, 39]
+      ],
+      "gradient": "linear1"
+    },
+    {
+      "color": [247, 132, 25],
+      "faces": [
+        [17, 33, 10],
+        [17, 18, 34],
+        [34, 33, 17],
+        [10, 6, 17],
+        [11, 15, 31],
+        [31, 18, 11],
+        [18, 12, 11],
+        [14, 16, 40],
+        [40, 41, 14],
+        [59, 5, 35],
+        [35, 79, 59],
+        [67, 63, 77],
+        [67, 77, 76],
+        [76, 68, 67],
+        [63, 67, 58],
+        [64, 68, 75],
+        [75, 37, 64],
+        [68, 64, 66],
+        [14, 41, 37],
+        [37, 15, 14],
+        [5, 59, 40],
+        [40, 16, 5]
+      ],
+      "gradient": "linear1"
+    },
+    {
+      "color": [225, 119, 25],
+      "faces": [
+        [35, 4, 42],
+        [4, 1, 42],
+        [42, 43, 44],
+        [44, 35, 42],
+        [45, 43, 42],
+        [42, 10, 45],
+        [30, 32, 24],
+        [24, 25, 30],
+        [30, 33, 32],
+        [33, 30, 10],
+        [44, 43, 46],
+        [43, 45, 47],
+        [47, 46, 43],
+        [48, 47, 45],
+        [45, 30, 48],
+        [30, 45, 10],
+        [49, 42, 0],
+        [8, 7, 42],
+        [50, 42, 7],
+        [50, 10, 42],
+        [1, 0, 42],
+        [42, 9, 8],
+        [42, 49, 9],
+        [64, 41, 40],
+        [57, 59, 79],
+        [79, 81, 57],
+        [57, 81, 56],
+        [82, 79, 35],
+        [35, 44, 82],
+        [81, 79, 82],
+        [82, 83, 81],
+        [84, 63, 81],
+        [81, 83, 84],
+        [44, 46, 85],
+        [85, 82, 44],
+        [52, 73, 71],
+        [71, 78, 52],
+        [52, 78, 77],
+        [77, 63, 52],
+        [82, 85, 83],
+        [83, 85, 86],
+        [86, 84, 83],
+        [87, 52, 84],
+        [84, 86, 87],
+        [52, 63, 84],
+        [88, 53, 81],
+        [62, 81, 60],
+        [89, 60, 81],
+        [89, 81, 63],
+        [56, 81, 53],
+        [81, 62, 61],
+        [81, 61, 88],
+        [48, 87, 86],
+        [86, 47, 48],
+        [47, 86, 85],
+        [85, 46, 47],
+        [48, 30, 52],
+        [52, 87, 48]
+      ],
+      "gradient": "linear1"
+    }
+  ],
+  "gradients": {
+    "linear1": {
+      "gradientUnits": "userSpaceOnUse",
+      "type": "linear",
+      "stops": [
+        {
+          "stop-color": "#fbaee3"
+        },
+        {
+          "offset": "1",
+          "stop-color": "#ffd982"
+        }
+      ]
+    }
+  }
+}
+
+},{}],2:[function(require,module,exports){
 const copy = require('copy-to-clipboard');
-const {
-  calculateSizingOptions,
-  createLogoViewer,
-  loadModelFromJson,
-  createModelRenderer,
-  createNode,
-  setAttribute,
-  svgElementToSvgImageContent,
-} = require('../../util');
-const foxJson = require('../../fox.json');
+const createViewer = require('../..');
+const { svgElementToSvgImageContent } = require('../../util');
+const meshJson = require('../gradient-fox.json');
 
 document.addEventListener('keypress', function (event) {
   if (event.keyCode === 99) {
@@ -20,92 +362,15 @@ document.addEventListener('keypress', function (event) {
   }
 });
 
-createGradientLogo({
+createViewer({
   width: 0.4,
   height: 0.4,
   followMouse: true,
   followMotion: true,
+  meshJson,
 });
 
-function createGradientLogo(options) {
-  const cameraDistance = options.cameraDistance || 400;
-  const { height, width } = calculateSizingOptions(options);
-
-  const container = createNode('svg');
-  setAttribute(container, 'width', `${width}px`);
-  setAttribute(container, 'height', `${height}px`);
-  document.body.appendChild(container);
-  const { mask1 } = createSvgDefs(container);
-  createMaskedGradientRect(container, height, width);
-
-  const modelObj = loadModelFromJson(foxJson, createMaskPolygon);
-  const renderFox = createModelRenderer(mask1, cameraDistance, modelObj);
-  const renderScene = (lookCurrent, slowDrift) => {
-    const rect = container.getBoundingClientRect();
-    renderFox(rect, lookCurrent, slowDrift);
-  };
-
-  return createLogoViewer(
-    container,
-    renderScene,
-    Object.assign({ cameraDistance }, options),
-  );
-}
-
-function createMaskedGradientRect(container, height, width) {
-  // <rect width="400" height="400"
-  // style="fill: url(#gradient1); mask: url(#mask1)"/>
-  const maskedRect = createNode('rect');
-  maskedRect.setAttribute('width', width);
-  maskedRect.setAttribute('height', height);
-  maskedRect.setAttribute('style', 'fill: url(#gradient1); mask: url(#mask1)');
-  container.appendChild(maskedRect);
-}
-
-function createSvgDefs(container) {
-  // <defs>
-  //   <linearGradient id="grad">
-  //       <stop offset="0" stop-color="#fbaee3"/>
-  //       <stop offset="1" stop-color="#ffd982"/>
-  //   </linearGradient>
-  //   <mask id="mask1">
-  //     <polygon style="stroke:none; fill: #ffffff" points="212.49258854612708,113.06104078888893 166.50741145387292,113.06104078888893 148.1171049848199,67.39842438697815"></polygon>
-  //     ...
-  //   </mask>
-  // </defs>
-  const defsContainer = createNode('defs');
-  container.appendChild(defsContainer);
-  const linearGradient = createNode('linearGradient');
-  defsContainer.appendChild(linearGradient);
-  linearGradient.id = 'gradient1';
-  // linearGradient.setAttribute('id', 'gradient1')
-  const color1 = createNode('stop');
-  color1.setAttribute('offset', '0');
-  color1.setAttribute('stop-color', '#fbaee3');
-  linearGradient.appendChild(color1);
-  const color2 = createNode('stop');
-  color2.setAttribute('offset', '1');
-  color2.setAttribute('stop-color', '#ffd982');
-  linearGradient.appendChild(color2);
-  const mask1 = createNode('mask');
-  mask1.id = 'mask1';
-  defsContainer.appendChild(mask1);
-
-  return { defsContainer, linearGradient, mask1 };
-}
-
-function createMaskPolygon() {
-  // <polygon
-  //   style="stroke:none; fill: #ffffff"
-  //   points="212.49258854612708,113.06104078888893 166.50741145387292,113.06104078888893 148.1171049848199,67.39842438697815"
-  // ></polygon>
-  const svgPolygon = createNode('polygon');
-  setAttribute(svgPolygon, 'style', 'stroke:#ffffff; fill: #ffffff');
-  setAttribute(svgPolygon, 'points', '0,0, 10,0, 0,10');
-  return svgPolygon;
-}
-
-},{"../../fox.json":2,"../../util":12,"copy-to-clipboard":3}],2:[function(require,module,exports){
+},{"../..":4,"../../util":14,"../gradient-fox.json":1,"copy-to-clipboard":5}],3:[function(require,module,exports){
 module.exports={
   "positions": [
     [111.024597, 52.604599, 46.225899],
@@ -429,7 +694,47 @@ module.exports={
   ]
 }
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
+const foxJson = require('./fox.json');
+const {
+  calculateSizingOptions,
+  createLogoViewer,
+  loadModelFromJson,
+  createModelRenderer,
+  createNode,
+  setAttribute,
+  setGradientDefinitions,
+} = require('./util');
+
+module.exports = createLogo;
+
+function createLogo(options = {}) {
+  const cameraDistance = options.cameraDistance || 400;
+  const { height, width } = calculateSizingOptions(options);
+  const meshJson = options.meshJson || foxJson;
+
+  const container = createNode('svg');
+  setAttribute(container, 'width', `${width}px`);
+  setAttribute(container, 'height', `${height}px`);
+  document.body.appendChild(container);
+
+  setGradientDefinitions(container, meshJson.gradients);
+
+  const modelObj = loadModelFromJson(meshJson);
+  const renderFox = createModelRenderer(container, cameraDistance, modelObj);
+  const renderScene = (lookCurrent, slowDrift) => {
+    const rect = container.getBoundingClientRect();
+    renderFox(rect, lookCurrent, slowDrift);
+  };
+
+  return createLogoViewer(
+    container,
+    renderScene,
+    Object.assign({ cameraDistance }, options),
+  );
+}
+
+},{"./fox.json":3,"./util":14}],5:[function(require,module,exports){
 'use strict';
 
 var deselectCurrent = require('toggle-selection');
@@ -509,7 +814,7 @@ function copy(text, options) {
 
 module.exports = copy;
 
-},{"toggle-selection":11}],4:[function(require,module,exports){
+},{"toggle-selection":13}],6:[function(require,module,exports){
 module.exports = identity;
 
 /**
@@ -537,7 +842,7 @@ function identity(out) {
     out[15] = 1;
     return out;
 };
-},{}],5:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 module.exports = invert;
 
 /**
@@ -593,7 +898,7 @@ function invert(out, a) {
 
     return out;
 };
-},{}],6:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 var identity = require('./identity');
 
 module.exports = lookAt;
@@ -684,7 +989,7 @@ function lookAt(out, eye, center, up) {
 
     return out;
 };
-},{"./identity":4}],7:[function(require,module,exports){
+},{"./identity":6}],9:[function(require,module,exports){
 module.exports = multiply;
 
 /**
@@ -727,7 +1032,7 @@ function multiply(out, a, b) {
     out[15] = b0*a03 + b1*a13 + b2*a23 + b3*a33;
     return out;
 };
-},{}],8:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 module.exports = perspective;
 
 /**
@@ -761,7 +1066,7 @@ function perspective(out, fovy, aspect, near, far) {
     out[15] = 0;
     return out;
 };
-},{}],9:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 module.exports = rotate;
 
 /**
@@ -826,7 +1131,7 @@ function rotate(out, a, rad, axis) {
     }
     return out;
 };
-},{}],10:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 module.exports = transformMat4;
 
 /**
@@ -847,7 +1152,7 @@ function transformMat4(out, a, m) {
     out[2] = (m[2] * x + m[6] * y + m[10] * z + m[14]) / w
     return out
 }
-},{}],11:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 
 module.exports = function () {
   var selection = document.getSelection();
@@ -888,7 +1193,7 @@ module.exports = function () {
   };
 };
 
-},{}],12:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 const perspective = require('gl-mat4/perspective');
 const multiply = require('gl-mat4/multiply');
 const lookAt = require('gl-mat4/lookAt');
@@ -911,6 +1216,7 @@ module.exports = {
   createFaceUpdater,
   createNode,
   setAttribute,
+  setGradientDefinitions,
   svgElementToSvgImageContent,
   Polygon,
 };
@@ -1105,7 +1411,9 @@ function createPolygonsFromModelJson(modelJson, createSvgPolygon) {
   const polygonsByChunk = modelJson.chunks.map((chunk) => {
     const { faces } = chunk;
     return faces.map((face) => {
-      const svgPolygon = createSvgPolygon(chunk);
+      const svgPolygon = createSvgPolygon(chunk, {
+        gradients: modelJson.gradients,
+      });
       const polygon = new Polygon(svgPolygon, face);
       polygons.push(polygon);
       return polygon;
@@ -1114,11 +1422,23 @@ function createPolygonsFromModelJson(modelJson, createSvgPolygon) {
   return { polygons, polygonsByChunk };
 }
 
-function createStandardModelPolygon(chunk) {
-  const color = `rgb(${chunk.color})`;
+function createStandardModelPolygon(chunk, { gradients = {} }) {
   const svgPolygon = createNode('polygon');
-  setAttribute(svgPolygon, 'fill', color);
-  setAttribute(svgPolygon, 'stroke', color);
+
+  if (chunk.gradient) {
+    const gradientId = chunk.gradient;
+    if (!gradients[gradientId]) {
+      throw new Error(`Gradient ID not found: '${gradientId}'`);
+    }
+
+    setAttribute(svgPolygon, 'fill', `url('#${gradientId}')`);
+    setAttribute(svgPolygon, 'stroke', `url('#${gradientId}')`);
+  } else {
+    const fill = `rgb(${chunk.color})`;
+    setAttribute(svgPolygon, 'fill', fill);
+    setAttribute(svgPolygon, 'stroke', fill);
+  }
+
   setAttribute(svgPolygon, 'points', '0,0, 10,0, 0,10');
   return svgPolygon;
 }
@@ -1264,10 +1584,10 @@ function createFaceUpdater(container, polygons, transformed) {
       toDraw.push(poly);
     }
     toDraw.sort(compareZ);
-    container.innerHTML = '';
-    for (i = 0; i < toDraw.length; ++i) {
-      container.appendChild(toDraw[i].svg);
-    }
+
+    const newPolygons = toDraw.map((poly) => poly.svg);
+    const defs = container.getElementsByTagName('defs');
+    container.replaceChildren(...defs, ...newPolygons);
   };
 }
 
@@ -1311,4 +1631,164 @@ function Polygon(svg, indices) {
   this.zIndex = 0;
 }
 
-},{"gl-mat4/invert":5,"gl-mat4/lookAt":6,"gl-mat4/multiply":7,"gl-mat4/perspective":8,"gl-mat4/rotate":9,"gl-vec3/transformMat4":10}]},{},[1]);
+function setGradientDefinitions(container, gradients) {
+  if (!gradients || Object.keys(gradients).length === 0) {
+    return;
+  }
+
+  const defsContainer = createNode('defs');
+
+  const linearCoordinateAttributes = ['x1', 'x2', 'y1', 'y2'];
+  const radialCoordinateAttributes = ['cx', 'cy', 'fr', 'fx', 'fy', 'r'];
+  const commonAttributes = ['gradientUnits', 'spreadMethod', 'stops', 'type'];
+  const allLinearAttributes = [
+    ...linearCoordinateAttributes,
+    ...commonAttributes,
+  ];
+  const allRadialAttributes = [
+    ...radialCoordinateAttributes,
+    ...commonAttributes,
+  ];
+
+  for (const [gradientId, gradientDefinition] of Object.entries(gradients)) {
+    let gradient;
+    if (gradientDefinition.type === 'linear') {
+      gradient = createNode('linearGradient');
+
+      const unsupportedLinearAttribute = Object.keys(gradientDefinition).find(
+        (attribute) => !allLinearAttributes.includes(attribute),
+      );
+      if (unsupportedLinearAttribute) {
+        throw new Error(
+          `Unsupported linear gradient attribute: '${unsupportedLinearAttribute}'`,
+        );
+      } else if (
+        linearCoordinateAttributes.some(
+          (attributeName) => gradientDefinition[attributeName] !== undefined,
+        )
+      ) {
+        const missingAttributes = linearCoordinateAttributes.filter(
+          (attributeName) => gradientDefinition[attributeName] === undefined,
+        );
+        if (missingAttributes.length > 0) {
+          throw new Error(
+            `Missing coordinate attributes: '${missingAttributes.join(', ')}'`,
+          );
+        }
+
+        for (const attribute of linearCoordinateAttributes) {
+          if (typeof gradientDefinition[attribute] !== 'string') {
+            throw new Error(
+              `Type of '${attribute}' option expected to be 'string'. Instead received type '${typeof gradientDefinition[
+                attribute
+              ]}'`,
+            );
+          }
+          setAttribute(gradient, attribute, gradientDefinition[attribute]);
+        }
+      }
+    } else if (gradientDefinition.type === 'radial') {
+      gradient = createNode('radialGradient');
+
+      const presentCoordinateAttributes = radialCoordinateAttributes.filter(
+        (attributeName) => gradientDefinition[attributeName] !== undefined,
+      );
+      const unsupportedRadialAttribute = Object.keys(gradientDefinition).find(
+        (attribute) => !allRadialAttributes.includes(attribute),
+      );
+      if (unsupportedRadialAttribute) {
+        throw new Error(
+          `Unsupported radial gradient attribute: '${unsupportedRadialAttribute}'`,
+        );
+      } else if (presentCoordinateAttributes.length > 0) {
+        for (const attribute of presentCoordinateAttributes) {
+          if (typeof gradientDefinition[attribute] !== 'string') {
+            throw new Error(
+              `Type of '${attribute}' option expected to be 'string'. Instead received type '${typeof gradientDefinition[
+                attribute
+              ]}'`,
+            );
+          }
+          setAttribute(gradient, attribute, gradientDefinition[attribute]);
+        }
+      }
+    } else {
+      throw new Error(`Unsupported gradent type: '${gradientDefinition.type}'`);
+    }
+
+    // Set common attributes
+    setAttribute(gradient, 'id', gradientId);
+    if (gradientDefinition.gradientUnits !== undefined) {
+      if (
+        !['userSpaceOnUse', 'objectBoundingBox'].includes(
+          gradientDefinition.gradientUnits,
+        )
+      ) {
+        throw new Error(
+          `Unrecognized value for 'gradientUnits' attribute: '${gradientDefinition.gradientUnits}'`,
+        );
+      }
+      setAttribute(gradient, 'gradientUnits', gradientDefinition.gradientUnits);
+    }
+
+    if (gradientDefinition.gradientTransform !== undefined) {
+      if (typeof gradientDefinition.gradientTransform !== 'string') {
+        throw new Error(
+          `Type of 'gradientTransform' option expected to be 'string'. Instead received type '${typeof gradientDefinition.gradientTransform}'`,
+        );
+      }
+
+      setAttribute(
+        gradient,
+        'gradientTransform',
+        gradientDefinition.gradientTransform,
+      );
+    }
+
+    if (gradientDefinition.spreadMethod !== undefined) {
+      if (
+        !['pad', 'reflect', 'repeat'].includes(gradientDefinition.spreadMethod)
+      ) {
+        throw new Error(
+          `Unrecognized value for 'spreadMethod' attribute: '${gradientDefinition.spreadMethod}'`,
+        );
+      }
+      setAttribute(gradient, 'spreadMethod', gradientDefinition.spreadMethod);
+    }
+
+    if (gradientDefinition.stops !== undefined) {
+      if (!Array.isArray(gradientDefinition.stops)) {
+        throw new Error(`The 'stop' attribute must be an array`);
+      }
+
+      for (const stopDefinition of gradientDefinition.stops) {
+        if (typeof stopDefinition !== 'object') {
+          throw new Error(
+            `Each entry in the 'stop' attribute must be an object. Instead received type '${typeof stopDefinition}'`,
+          );
+        }
+        const stop = createNode('stop');
+
+        if (stopDefinition.offset !== undefined) {
+          setAttribute(stop, 'offset', stopDefinition.offset);
+        }
+
+        if (stopDefinition['stop-color'] !== undefined) {
+          setAttribute(stop, 'stop-color', stopDefinition['stop-color']);
+        }
+
+        if (stopDefinition['stop-opacity'] !== undefined) {
+          setAttribute(stop, 'stop-opacity', stopDefinition['stop-opacity']);
+        }
+
+        gradient.appendChild(stop);
+      }
+    }
+
+    defsContainer.appendChild(gradient);
+  }
+
+  container.appendChild(defsContainer);
+}
+
+},{"gl-mat4/invert":7,"gl-mat4/lookAt":8,"gl-mat4/multiply":9,"gl-mat4/perspective":10,"gl-mat4/rotate":11,"gl-vec3/transformMat4":12}]},{},[2]);
