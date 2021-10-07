@@ -57,7 +57,7 @@ viewer.stopAnimation();
 
 The demos can be built with the command `yarn demo --all`, or a single demo can be built with `yarn demo <demo-name>`.
 
-Open `docs/index.html` in a browser to view the demo list.
+Open `demo/dist/index.html` in a browser to view the demo list.
 
 ### Testing and Linting
 

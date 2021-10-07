@@ -19,7 +19,8 @@
   ],
   "scripts": {
     "convert": "node convert.js",
-    "demo": "node example/build.js",
+    "demo": "node demo/build.js",
+    "demo:all": "yarn demo --all",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
@@ -48,6 +49,7 @@
     "obj-file-parser-ts": "^0.6.4",
     "prettier": "^2.2.1",
     "prettier-plugin-packagejson": "^2.2.11",
+    "rimraf": "^3.0.2",
     "uglifyify": "^5.0.2",
     "yargs": "^17.2.1"
   },

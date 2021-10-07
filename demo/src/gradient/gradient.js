@@ -1,7 +1,7 @@
 const copy = require('copy-to-clipboard');
-const createViewer = require('../..');
-const { svgElementToSvgImageContent } = require('../../util');
-const meshJson = require('../gradient-fox.json');
+const createViewer = require('../../..');
+const { svgElementToSvgImageContent } = require('../../../util');
+const meshJson = require('./gradient-fox.json');
 
 document.addEventListener('keypress', function (event) {
   if (event.keyCode === 99) {

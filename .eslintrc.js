@@ -5,7 +5,7 @@ module.exports = {
 
   overrides: [
     {
-      files: ['./example/src/*.js', './index.js', './util.js'],
+      files: ['./demo/src/**/*.js', './index.js', './util.js'],
       globals: {
         Blob: true,
         document: true,
@@ -14,5 +14,5 @@ module.exports = {
     },
   ],
 
-  ignorePatterns: ['!.eslintrc.js', '!.prettierrc.js', 'bundle.js'],
+  ignorePatterns: ['!.eslintrc.js', '!.prettierrc.js', 'demo/dist/'],
 };
