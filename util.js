@@ -517,7 +517,9 @@ function setGradientDefinitions(container, gradients) {
         }
       }
     } else {
-      throw new Error(`Unsupported gradent type: '${gradientDefinition.type}'`);
+      throw new Error(
+        `Unsupported gradient type: '${gradientDefinition.type}'`,
+      );
     }
 
     // Set common attributes
