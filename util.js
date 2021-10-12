@@ -212,11 +212,12 @@ function positionsFromModel(positions, modelJson) {
 
 function createPolygonsFromModelJson(modelJson, createSvgPolygon) {
   const polygons = [];
-  const polygonsByChunk = modelJson.chunks.map((chunk) => {
+  const polygonsByChunk = modelJson.chunks.map((chunk, index) => {
     const { faces } = chunk;
     return faces.map((face) => {
       const svgPolygon = createSvgPolygon(chunk, {
         gradients: modelJson.gradients,
+        index,
       });
       const polygon = new Polygon(svgPolygon, face);
       polygons.push(polygon);
@@ -226,10 +227,14 @@ function createPolygonsFromModelJson(modelJson, createSvgPolygon) {
   return { polygons, polygonsByChunk };
 }
 
-function createStandardModelPolygon(chunk, { gradients = {} }) {
+function createStandardModelPolygon(chunk, { gradients = {}, index }) {
   const svgPolygon = createNode('polygon');
 
-  if (chunk.gradient) {
+  if (chunk.gradient && chunk.color) {
+    throw new Error(
+      `Both gradient and color for chunk '${index}'. These options are mutually exclusive.`,
+    );
+  } else if (chunk.gradient) {
     const gradientId = chunk.gradient;
     if (!gradients[gradientId]) {
       throw new Error(`Gradient ID not found: '${gradientId}'`);

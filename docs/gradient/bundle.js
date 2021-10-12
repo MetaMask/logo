@@ -94,7 +94,6 @@ module.exports={
   ],
   "chunks": [
     {
-      "color": [119, 57, 0],
       "faces": [
         [0, 1, 2],
         [2, 3, 0],
@@ -126,7 +125,6 @@ module.exports={
       "gradient": "linear1"
     },
     {
-      "color": [36, 51, 67],
       "faces": [
         [11, 12, 13],
         [64, 65, 66]
@@ -134,7 +132,6 @@ module.exports={
       "gradient": "linear1"
     },
     {
-      "color": [228, 116, 36],
       "faces": [
         [14, 15, 11],
         [11, 16, 14],
@@ -145,7 +142,6 @@ module.exports={
       "gradient": "linear1"
     },
     {
-      "color": [192, 172, 157],
       "faces": [
         [19, 20, 21],
         [21, 22, 19],
@@ -177,7 +173,6 @@ module.exports={
       "gradient": "linear1"
     },
     {
-      "color": [214, 194, 178],
       "faces": [
         [21, 20, 24],
         [24, 31, 21],
@@ -187,7 +182,6 @@ module.exports={
       "gradient": "linear1"
     },
     {
-      "color": [228, 119, 25],
       "faces": [
         [31, 24, 18],
         [6, 5, 16],
@@ -204,7 +198,6 @@ module.exports={
       "gradient": "linear1"
     },
     {
-      "color": [205, 98, 0],
       "faces": [
         [24, 34, 18],
         [16, 13, 12],
@@ -218,7 +211,6 @@ module.exports={
       "gradient": "linear1"
     },
     {
-      "color": [0, 0, 0],
       "faces": [
         [36, 15, 37],
         [37, 38, 36],
@@ -238,7 +230,6 @@ module.exports={
       "gradient": "linear1"
     },
     {
-      "color": [247, 132, 25],
       "faces": [
         [17, 33, 10],
         [17, 18, 34],
@@ -266,7 +257,6 @@ module.exports={
       "gradient": "linear1"
     },
     {
-      "color": [225, 119, 25],
       "faces": [
         [35, 4, 42],
         [4, 1, 42],
@@ -1408,11 +1398,12 @@ function positionsFromModel(positions, modelJson) {
 
 function createPolygonsFromModelJson(modelJson, createSvgPolygon) {
   const polygons = [];
-  const polygonsByChunk = modelJson.chunks.map((chunk) => {
+  const polygonsByChunk = modelJson.chunks.map((chunk, index) => {
     const { faces } = chunk;
     return faces.map((face) => {
       const svgPolygon = createSvgPolygon(chunk, {
         gradients: modelJson.gradients,
+        index,
       });
       const polygon = new Polygon(svgPolygon, face);
       polygons.push(polygon);
@@ -1422,10 +1413,14 @@ function createPolygonsFromModelJson(modelJson, createSvgPolygon) {
   return { polygons, polygonsByChunk };
 }
 
-function createStandardModelPolygon(chunk, { gradients = {} }) {
+function createStandardModelPolygon(chunk, { gradients = {}, index }) {
   const svgPolygon = createNode('polygon');
 
-  if (chunk.gradient) {
+  if (chunk.gradient && chunk.color) {
+    throw new Error(
+      `Both gradient and color for chunk '${index}'. These options are mutually exclusive.`,
+    );
+  } else if (chunk.gradient) {
     const gradientId = chunk.gradient;
     if (!gradients[gradientId]) {
       throw new Error(`Gradient ID not found: '${gradientId}'`);
@@ -1713,7 +1708,9 @@ function setGradientDefinitions(container, gradients) {
         }
       }
     } else {
-      throw new Error(`Unsupported gradent type: '${gradientDefinition.type}'`);
+      throw new Error(
+        `Unsupported gradient type: '${gradientDefinition.type}'`,
+      );
     }
 
     // Set common attributes
