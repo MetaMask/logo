@@ -25,6 +25,81 @@ module.exports = {
   Polygon,
 };
 
+/**
+ * A distance measurement used for SVG attributes. A length is specified as a number followed by a
+ * unit identifier.
+ *
+ * See {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Content_type#length} for further
+ * information.
+ *
+ * @typedef {`${number}${'em' | 'ex' | 'px' | 'in' | 'cm' | 'mm' | 'pt' | 'pc' | '%'}`} SvgLength
+ */
+
+/**
+ * A definition for a `<stop>` SVG element, which defines a color and the position for that color
+ * on a gradient. This element is always a child of either a `<linearGradient>` or
+ * `<radialGradient>` element.
+ *
+ * See {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/stop} for more information
+ * about the `<stop>` element.
+ *
+ * @typedef {object} StopDefinition
+ * @property {number | `${number}%`} [offset] - The location of the gradient stop along the
+ * gradient vector.
+ * @property {string} [stop-color] - The color of the gradient stop. See {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/stop}.
+ * @property {number} [stop-opacity] - The opacity of the gradient stop. See {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stop-opacity}.
+ */
+
+/**
+ * A definition for a `<linearGradient>` SVG element. This definition includes all supported
+ * `<linearGradient>` attributes, and it includes a `stops` property which is an array of
+ * definitions for each `<stop>` child node.
+ *
+ * See {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/linearGradient} for more
+ * information about the `<linearGradient>` element.
+ *
+ * @typedef {object} LinearGradientDefinition
+ * @property {string} [gradientTransform] - A transform from the gradient coordinate system to the
+ * target coordinate system. See {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/gradientTransform}.
+ * @property {'userSpaceOnUse' | 'objectBoundingBox'} [gradientUnits] - The coordinate system used.
+ * for the coordinate attributes. See {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/gradientUnits}.
+ * @property {'pad' | 'reflect' | 'repeat'} [spreadMethod] - The method used to fill a shape beyond
+ * the defined edges of a gradient. See {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/spreadMethod}.
+ * @property {StopDefinition[]} [stops] - The colors of the gradient, and the position of each
+ * color along the gradient vector.
+ * @property {'linear'} type - The type of the gradient.
+ * @property {SvgLength} [x1] - The x coordinate of the starting point of the vector gradient.
+ * @property {SvgLength} [x2] - The x coordinate of the ending point of the vector gradient.
+ * @property {SvgLength} [y1] - The y coordinate of the starting point of the vector gradient.
+ * @property {SvgLength} [y2] - The y coordinate of the ending point of the vector gradient.
+ */
+
+/**
+ * A definition for a `<radialGradient>` SVG element. This definition includes all supported
+ * `<radialGradient>` attributes, and it includes a `stops` property which is an array of
+ * definitions for each `<stop>` child node.
+ *
+ * See {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/radialGradient} for more
+ * information about the `<radialGradient>` element.
+ *
+ * @typedef {object} RadialGradientDefinition
+ * @property {SvgLength} [cx] - The x coordinate of the end circle of the radial gradiant.
+ * @property {SvgLength} [cy] - The y coordinate of the end circle of the radial gradient.
+ * @property {SvgLength} [fr] - The radius of the start circle of the radial gradient.
+ * @property {SvgLength} [fx] - The x coordinate of the start circle of the radial gradient.
+ * @property {SvgLength} [fy] - The y coordinate of the start circle of the radial gradient.
+ * @property {string} [gradientTransform] - A transform from the gradient coordinate system to the
+ * target coordinate system. See {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/gradientTransform}.
+ * @property {'userSpaceOnUse' | 'objectBoundingBox'} [gradientUnits] - The coordinate system used
+ * for the coordinate attributes. See {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/gradientUnits}.
+ * @property {SvgLength} [r] - The radius of the end circle of the radial gradient.
+ * @property {'pad' | 'reflect' | 'repeat'} [spreadMethod] - The method used to fill a shape beyond
+ * the defined edges of a gradient. See {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/spreadMethod}.
+ * @property {StopDefinition[]} [stops] - The colors of the gradient, and the position of each
+ * color along the gradient vector.
+ * @property {'radial'} type - The type of the gradient.
+ */
+
 function createLogoViewer(
   container,
   renderScene,
@@ -227,6 +302,21 @@ function createPolygonsFromModelJson(modelJson, createSvgPolygon) {
   return { polygons, polygonsByChunk };
 }
 
+/**
+ * Create an SVG `<polygon> element.
+ *
+ * This polygon is assigned the correct `fill` and `stroke` attributes, according to the chunk
+ * definition provided. But the `points` attribute is always set to a dummy value, as it gets reset
+ * later to the correct position during each render loop.
+ *
+ * @param {object} chunk - The definition for the chunk of the model this polygon is a part of.
+ * This includes the color or gradient to apply to the polygon.
+ * @param {object} options - Polygon options.
+ * @param {(LinearGradientDefinition | RadialGradientDefinition)[]} [options.gradients] - The set of
+ * all gradient definitions used in this model.
+ * @param options.index - The index for the chunk this polygon is found in.
+ * @returns {Element} The `<polygon>` SVG element.
+ */
 function createStandardModelPolygon(chunk, { gradients = {}, index }) {
   const svgPolygon = createNode('polygon');
 
@@ -440,6 +530,15 @@ function Polygon(svg, indices) {
   this.zIndex = 0;
 }
 
+/**
+ * Parse gradient definitions and construct them in the DOM.
+ *
+ * Both `<linearGradient>` and `<radialGradient>` are supported. All gradients get added to a
+ * `<defs>` element that is added as a direct child of the container element.
+ *
+ * @param {Element} container - The `<svg>` HTML element that the definitions should be added to.
+ * @param {(LinearGradientDefinition | RadialGradientDefinition)[]} [gradients] - The gradient definitions.
+ */
 function setGradientDefinitions(container, gradients) {
   if (!gradients || Object.keys(gradients).length === 0) {
     return;
