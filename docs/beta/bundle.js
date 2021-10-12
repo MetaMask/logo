@@ -339,9 +339,9 @@ module.exports={
 
 },{}],2:[function(require,module,exports){
 const copy = require('copy-to-clipboard');
-const createViewer = require('..');
-const { svgElementToSvgImageContent } = require('../util');
-const meshJson = require('../beta-fox.json');
+const createViewer = require('../..');
+const { svgElementToSvgImageContent } = require('../../util');
+const meshJson = require('../../beta-fox.json');
 
 document.addEventListener('keypress', function (event) {
   if (event.keyCode === 99) {
@@ -360,7 +360,7 @@ createViewer({
   meshJson,
 });
 
-},{"..":4,"../beta-fox.json":1,"../util":14,"copy-to-clipboard":5}],3:[function(require,module,exports){
+},{"../..":4,"../../beta-fox.json":1,"../../util":14,"copy-to-clipboard":5}],3:[function(require,module,exports){
 module.exports={
   "positions": [
     [111.024597, 52.604599, 46.225899],

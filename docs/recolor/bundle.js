@@ -8,8 +8,8 @@ const {
   createNode,
   setAttribute,
   svgElementToSvgImageContent,
-} = require('../util');
-const foxJson = require('../fox.json');
+} = require('../../util');
+const foxJson = require('../../fox.json');
 
 let colorSeed = pickColorSeed();
 const colors = [
@@ -131,7 +131,7 @@ function download(data, filename, type) {
   }
 }
 
-},{"../fox.json":2,"../util":11,"mersenne-twister":10}],2:[function(require,module,exports){
+},{"../../fox.json":2,"../../util":11,"mersenne-twister":10}],2:[function(require,module,exports){
 module.exports={
   "positions": [
     [111.024597, 52.604599, 46.225899],

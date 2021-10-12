@@ -7,8 +7,8 @@ const {
   createNode,
   setAttribute,
   svgElementToSvgImageContent,
-} = require('../util');
-const foxJson = require('../fox.json');
+} = require('../../util');
+const foxJson = require('../../fox.json');
 
 document.addEventListener('keypress', function (event) {
   if (event.keyCode === 99) {

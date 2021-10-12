@@ -5,8 +5,8 @@ const {
   createModelRenderer,
   createNode,
   setAttribute,
-} = require('../util');
-const foxJson = require('../fox.json');
+} = require('../../util');
+const foxJson = require('../../fox.json');
 
 createDistortedLogo({
   width: 0.4,
