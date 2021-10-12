@@ -36,6 +36,47 @@ function parseMTL(mtl) {
   return output;
 }
 
+/**
+ * This is a list of simple and distinct colors. These are used to help identify chunks of the
+ * model.
+ *
+ * These were taken from this blog post: https://sashamaps.net/docs/resources/20-colors/
+ */
+const distinctiveColors = {
+  red: [230, 25, 75],
+  green: [60, 180, 75],
+  yellow: [255, 255, 25],
+  blue: [67, 99, 216],
+  orange: [245, 130, 49],
+  purple: [145, 30, 180],
+  cyan: [66, 212, 244],
+  magenta: [240, 50, 230],
+  lime: [191, 239, 69],
+  pink: [250, 190, 212],
+  teal: [70, 153, 144],
+  lavender: [220, 190, 255],
+  brown: [154, 99, 36],
+  beige: [255, 250, 200],
+  maroon: [128, 0, 0],
+  mint: [170, 255, 195],
+  olive: [128, 128, 0],
+  apricot: [255, 216, 177],
+  navy: [0, 0, 117],
+  grey: [169, 169, 169],
+  white: [255, 255, 255],
+  black: [0, 0, 0],
+};
+
+/**
+ * Get a color for the given index.
+ *
+ * @param {number} index - The index of the color to get.
+ */
+function getColor(index) {
+  const distinctiveColorNames = Object.keys(distinctiveColors);
+  return distinctiveColorNames[index % distinctiveColorNames.length];
+}
+
 const usageDescription = `Convert Maya .obj and .mtl files into our JSON model format.
 
 The polygons in the model are divided into chunks according to the material (i.e. the color) of \
@@ -72,6 +113,12 @@ async function main() {
           default: false,
           description: contiguousOptionDescription,
           type: 'boolean',
+        })
+        .option('repaint', {
+          default: false,
+          description:
+            'Color and label each chunk with a distinctive color. This can makes chunks easier to identify.',
+          type: 'boolean',
         }),
     )
     .version(false)
@@ -82,6 +129,7 @@ async function main() {
     out: outputFilename,
     obj: objFilename,
     mtl: mtlFilename,
+    repaint,
   } = argv;
 
   const [objContents, mtlContents] = await Promise.all([
@@ -192,12 +240,17 @@ async function main() {
     allChunks.push(...currentChunks);
   }
 
-  output.chunks = allChunks.map((chunk) => {
+  output.chunks = allChunks.map((chunk, index) => {
     const finalChunk = {
       color: chunk.color,
       faces: chunk.polygons.map(({ vertices }) => vertices),
     };
 
+    if (repaint) {
+      const colorName = getColor(index);
+      finalChunk.name = colorName;
+      finalChunk.color = distinctiveColors[colorName];
+    }
     return finalChunk;
   });
 
