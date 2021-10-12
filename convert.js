@@ -36,36 +36,53 @@ function parseMTL(mtl) {
   return output;
 }
 
+const usageDescription = `Convert Maya .obj and .mtl files into our JSON model format.
+
+The polygons in the model are divided into chunks according to the material (i.e. the color) of \
+each polygon. The output JSON model includes a list of vertex positions, and a list of chunks of \
+polygons.`;
+
+const contiguousOptionDescription = `Set whether the chunks in the output JSON model file should \
+be contiguous. If unset, the pieces in each chunk might not be connected. If set, the chunks are \
+fully connected, but there will be more chunks overall.`;
+
 async function main() {
   const { argv } = yargs(hideBin(process.argv))
-    .usage(
-      '$0 [options]',
-      'Convert Maya .obj and .mtl files into our JSON model format.',
-      (_yargs) =>
-        _yargs
-          .option('out', {
-            default: 'fox.json',
-            description: 'The output file path',
-            type: 'string',
-            normalize: true,
-          })
-          .option('obj', {
-            default: 'fox.obj',
-            description: 'The input OBJ file path',
-            type: 'string',
-            normalize: true,
-          })
-          .option('mtl', {
-            default: 'fox.mtl',
-            description: 'The input MTL file path',
-            type: 'string',
-            normalize: true,
-          }),
+    .usage('$0 [options]', usageDescription, (_yargs) =>
+      _yargs
+        .option('out', {
+          default: 'fox.json',
+          description: 'The output file path',
+          type: 'string',
+          normalize: true,
+        })
+        .option('obj', {
+          default: 'fox.obj',
+          description: 'The input OBJ file path',
+          type: 'string',
+          normalize: true,
+        })
+        .option('mtl', {
+          default: 'fox.mtl',
+          description: 'The input MTL file path',
+          type: 'string',
+          normalize: true,
+        })
+        .option('contiguous', {
+          default: false,
+          description: contiguousOptionDescription,
+          type: 'boolean',
+        }),
     )
     .version(false)
     .strict();
 
-  const { out: outputFilename, obj: objFilename, mtl: mtlFilename } = argv;
+  const {
+    contiguous,
+    out: outputFilename,
+    obj: objFilename,
+    mtl: mtlFilename,
+  } = argv;
 
   const [objContents, mtlContents] = await Promise.all([
     fs.readFile(objFilename, 'utf8'),
@@ -78,7 +95,6 @@ async function main() {
 
   const output = {
     positions: [],
-    chunks: [],
   };
 
   /*
@@ -105,40 +121,85 @@ async function main() {
     output.positions.push([v.x, v.y, v.z]);
   });
 
+  const allChunks = [];
   for (const mtlKey of Object.keys(mtl)) {
     const m = mtl[mtlKey];
-
-    if (m.Ka) {
-      const color = m.Kd.map(function (c) {
-        return Math.floor(255 * c);
-      });
-      m.Kd.forEach((c, i) => {
-        if (color[i] === 0) {
-          color[i] = Math.floor(255 * c);
-        }
-      });
-
-      const chunk = {
-        color,
-        faces: [],
-      };
-
-      model.faces.forEach((f) => {
-        // Only if this face matches the material!
-        if (f.material === mtlKey) {
-          chunk.faces.push([
-            f.vertices[0][VI] - 1,
-            f.vertices[1][VI] - 1,
-            f.vertices[2][VI] - 1,
-          ]);
-        }
-      });
-
-      output.chunks.push(chunk);
-    } else {
+    if (!m.Ka) {
       throw new Error(`Invalid MTL entry at key '${mtlKey}'`);
     }
+
+    const color = m.Kd.map(function (c) {
+      return Math.floor(255 * c);
+    });
+    m.Kd.forEach((c, i) => {
+      if (color[i] === 0) {
+        color[i] = Math.floor(255 * c);
+      }
+    });
+
+    let currentChunks = [];
+    model.faces.forEach((f, index) => {
+      if (f.material !== mtlKey) {
+        return;
+      }
+
+      const xVertex = f.vertices[0][VI] - 1;
+      const yVertex = f.vertices[1][VI] - 1;
+      const zVertex = f.vertices[2][VI] - 1;
+
+      const polygon = { index, vertices: [xVertex, yVertex, zVertex] };
+
+      if (!contiguous) {
+        if (currentChunks.length) {
+          currentChunks[0].polygons.push(polygon);
+        } else {
+          currentChunks.push({ color, polygons: [polygon] });
+        }
+        return;
+      }
+
+      const chunksWithAdjacentPolygons = currentChunks.filter((chunk) =>
+        chunk.polygons.some(
+          ({ vertices }) =>
+            (vertices.includes(xVertex) &&
+              (vertices.includes(yVertex) || vertices.includes(zVertex))) ||
+            (vertices.includes(yVertex) && vertices.includes(zVertex)),
+        ),
+      );
+
+      let chunk;
+      if (chunksWithAdjacentPolygons.length === 0) {
+        chunk = { color, polygons: [] };
+        currentChunks.push(chunk);
+      } else if (chunksWithAdjacentPolygons.length === 1) {
+        chunk = chunksWithAdjacentPolygons[0];
+      } else {
+        chunk = chunksWithAdjacentPolygons[0];
+        const chunksToMerge = chunksWithAdjacentPolygons.slice(1);
+        for (const chunkToMerge of chunksToMerge) {
+          chunk.polygons.push(...chunkToMerge.polygons);
+        }
+
+        currentChunks = currentChunks.filter(
+          (_chunk) => !chunksToMerge.includes(_chunk),
+        );
+        // I don't know if order really matters here, but, it has been preserved just in case
+        chunk.polygons.sort((faceA, faceB) => faceA.index - faceB.index);
+      }
+
+      chunk.polygons.push(polygon);
+    });
+    allChunks.push(...currentChunks);
   }
+
+  output.chunks = allChunks.map((chunk) => {
+    const finalChunk = {
+      color: chunk.color,
+      faces: chunk.polygons.map(({ vertices }) => vertices),
+    };
+
+    return finalChunk;
+  });
 
   const stringifiedOutput = JSON.stringify(output, null, 2);
   const formattedOutput = prettier.format(stringifiedOutput, {
