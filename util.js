@@ -449,7 +449,13 @@ function setGradientDefinitions(container, gradients) {
 
   const linearCoordinateAttributes = ['x1', 'x2', 'y1', 'y2'];
   const radialCoordinateAttributes = ['cx', 'cy', 'fr', 'fx', 'fy', 'r'];
-  const commonAttributes = ['gradientUnits', 'spreadMethod', 'stops', 'type'];
+  const commonAttributes = [
+    'gradientTransform',
+    'gradientUnits',
+    'spreadMethod',
+    'stops',
+    'type',
+  ];
   const allLinearAttributes = [
     ...linearCoordinateAttributes,
     ...commonAttributes,
