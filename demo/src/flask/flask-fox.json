@@ -418,7 +418,7 @@
         [52, 87, 48]
       ],
       "name": "back",
-      "gradient": "forehead-gradient"
+      "gradient": "back-gradient"
     },
     {
       "faces": [[57, 59, 79]],
@@ -808,6 +808,23 @@
         {
           "offset": "1",
           "stop-color": "#BCABFB"
+        }
+      ]
+    },
+    "back-gradient": {
+      "type": "linear",
+      "x1": "50%",
+      "y1": "12.790180412371136%",
+      "x2": "50%",
+      "y2": "81.08904639175258%",
+      "gradientUnits": "userSpaceOnUse",
+      "stops": [
+        {
+          "stop-color": "#FB7FE4"
+        },
+        {
+          "offset": "1",
+          "stop-color": "#5C5CE0"
         }
       ]
     }
