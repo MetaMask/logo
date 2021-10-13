@@ -552,26 +552,18 @@
     },
     "right-top-ear-gradient": {
       "type": "linear",
-      "x1": "57.31666666666667%",
+      "x1": "95.056858513189448%",
       "y1": "15.06958762886598%",
-      "x2": "95.05695443645084%",
+      "x2": "57.31654676258992%",
       "y2": "15.06958762886598%",
       "gradientUnits": "userSpaceOnUse",
       "stops": [
         {
-          "stop-color": "#E560E3"
-        },
-        {
-          "offset": "0.2946",
-          "stop-color": "#DE61E5"
-        },
-        {
-          "offset": "0.7098",
-          "stop-color": "#CC63E9"
+          "stop-color": "#BB65ED"
         },
         {
           "offset": "1",
-          "stop-color": "#BB65ED"
+          "stop-color": "#E560E3"
         }
       ]
     },
