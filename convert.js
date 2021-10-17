@@ -1,8 +1,10 @@
 const fs = require('fs').promises;
+const { strict: assert } = require('assert');
 const OBJFile = require('obj-file-parser');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 const prettier = require('prettier');
+const { parse } = require('svg-parser');
 
 function parseMTL(mtl) {
   const output = {};
@@ -109,6 +111,12 @@ async function main() {
           type: 'string',
           normalize: true,
         })
+        .option('gradient', {
+          description:
+            'The file path for an SVG file to take gradient definitions from',
+          type: 'string',
+          normalize: true,
+        })
         .option('contiguous', {
           default: false,
           description: contiguousOptionDescription,
@@ -126,15 +134,17 @@ async function main() {
 
   const {
     contiguous,
+    gradient,
     out: outputFilename,
     obj: objFilename,
     mtl: mtlFilename,
     repaint,
   } = argv;
 
-  const [objContents, mtlContents] = await Promise.all([
+  const [objContents, mtlContents, gradientSvgContents] = await Promise.all([
     fs.readFile(objFilename, 'utf8'),
     fs.readFile(mtlFilename, 'utf8'),
+    gradient ? fs.readFile(gradient, 'utf8') : null,
   ]);
 
   const mtl = parseMTL(mtlContents);
@@ -253,6 +263,107 @@ async function main() {
     }
     return finalChunk;
   });
+
+  if (gradientSvgContents) {
+    const svgRoot = parse(gradientSvgContents);
+    assert.equal(svgRoot.children.length, 1);
+
+    const svgElement = svgRoot.children[0];
+    const { width, height } = svgElement.properties || {};
+    assert.equal(typeof width, 'number');
+    assert.equal(typeof height, 'number');
+
+    const defsElements = svgElement.children.filter(
+      (child) => child.tagName === 'defs',
+    );
+    assert.equal(defsElements.length, 1);
+    const defsElement = defsElements[0];
+
+    // Add padding to reflect that the 3D model has more padding than the SVG
+    // These are percentages
+    const leftPadding = 10;
+    const rightPadding = 10;
+    const topPadding = 10;
+    const bottomPadding = 10;
+    const xScalingRatio = (100 - leftPadding - rightPadding) / 100;
+    const yScalingRatio = (100 - topPadding - bottomPadding) / 100;
+    const xTranslation = leftPadding;
+    const yTranslation = topPadding;
+
+    const gradients = {};
+    for (const child of defsElement.children) {
+      if (child.tagName === 'linearGradient') {
+        const linearGradient = { type: 'linear', stops: [] };
+        let id;
+        for (const propertyName of Object.keys(child.properties || {})) {
+          const value = child.properties[propertyName];
+          if (propertyName === 'id') {
+            id = value;
+          } else if (['x1', 'x2'].includes(propertyName)) {
+            assert.equal(typeof value, 'number');
+            const percentage =
+              (value / width) * 100 * xScalingRatio + xTranslation;
+            assert.ok(Number.isFinite(percentage));
+
+            linearGradient[propertyName] = `${percentage}%`;
+          } else if (['y1', 'y2'].includes(propertyName)) {
+            assert.equal(typeof value, 'number');
+            const percentage =
+              (value / height) * 100 * yScalingRatio + yTranslation;
+            assert.ok(Number.isFinite(percentage));
+            linearGradient[propertyName] = `${percentage}%`;
+          } else {
+            linearGradient[propertyName] = value;
+          }
+        }
+        assert.ok(id);
+        const stopNodes = child.children.filter(
+          (potentialStopNode) => potentialStopNode.tagName === 'stop',
+        );
+        for (const stopNode of stopNodes) {
+          linearGradient.stops.push(stopNode.properties);
+        }
+        gradients[id] = linearGradient;
+      } else if (child.tagName === 'radialGradient') {
+        const radialGradient = { type: 'radial', stops: [] };
+        let id;
+        for (const propertyName of Object.keys(child.properties || {})) {
+          const value = child.properties[propertyName];
+          if (propertyName === 'id') {
+            id = value;
+          } else if (['cx', 'fr', 'fx', 'r'].includes(propertyName)) {
+            assert.equal(typeof value, 'number');
+            const percentage =
+              (value / width) * 100 * xScalingRatio + xTranslation;
+            assert.ok(Number.isFinite(percentage));
+            radialGradient[propertyName] = `${percentage}%`;
+          } else if (['cy', 'fy'].includes(propertyName)) {
+            assert.equal(typeof value, 'number');
+            const percentage =
+              (value / height) * 100 * yScalingRatio + yTranslation;
+            assert.ok(Number.isFinite(percentage));
+            radialGradient[propertyName] = `${percentage}%`;
+          } else {
+            radialGradient[propertyName] = value;
+          }
+        }
+        assert.ok(id);
+        const stopNodes = child.children.filter(
+          (potentialStopNode) => potentialStopNode.tagName === 'stop',
+        );
+        for (const stopNode of stopNodes) {
+          radialGradient.stops.push(stopNode.properties);
+        }
+        gradients[id] = radialGradient;
+      }
+    }
+
+    if (Object.keys(gradients).length > 0) {
+      output.gradients = gradients;
+    } else {
+      console.warn('No gradients found');
+    }
+  }
 
   const stringifiedOutput = JSON.stringify(output, null, 2);
   const formattedOutput = prettier.format(stringifiedOutput, {
