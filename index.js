@@ -7,6 +7,7 @@ const {
   createNode,
   setAttribute,
   setGradientDefinitions,
+  setMaskDefinitions,
 } = require('./util');
 
 module.exports = createLogo;
@@ -22,6 +23,7 @@ function createLogo(options = {}) {
   document.body.appendChild(container);
 
   setGradientDefinitions(container, meshJson.gradients);
+  setMaskDefinitions({ container, masks: meshJson.masks, height, width });
 
   const modelObj = loadModelFromJson(meshJson);
   const renderFox = createModelRenderer(container, cameraDistance, modelObj);

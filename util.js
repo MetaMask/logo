@@ -21,6 +21,7 @@ module.exports = {
   createNode,
   setAttribute,
   setGradientDefinitions,
+  setMaskDefinitions,
   svgElementToSvgImageContent,
   Polygon,
 };
@@ -293,6 +294,7 @@ function createPolygonsFromModelJson(modelJson, createSvgPolygon) {
       const svgPolygon = createSvgPolygon(chunk, {
         gradients: modelJson.gradients,
         index,
+        masks: modelJson.masks,
       });
       const polygon = new Polygon(svgPolygon, face);
       polygons.push(polygon);
@@ -317,7 +319,7 @@ function createPolygonsFromModelJson(modelJson, createSvgPolygon) {
  * @param options.index - The index for the chunk this polygon is found in.
  * @returns {Element} The `<polygon>` SVG element.
  */
-function createStandardModelPolygon(chunk, { gradients = {}, index }) {
+function createStandardModelPolygon(chunk, { gradients = {}, index, masks }) {
   const svgPolygon = createNode('polygon');
 
   if (chunk.gradient && chunk.color) {
@@ -333,9 +335,17 @@ function createStandardModelPolygon(chunk, { gradients = {}, index }) {
     setAttribute(svgPolygon, 'fill', `url('#${gradientId}')`);
     setAttribute(svgPolygon, 'stroke', `url('#${gradientId}')`);
   } else {
-    const fill = `rgb(${chunk.color})`;
+    const fill =
+      typeof chunk.color === 'string' ? chunk.color : `rgb(${chunk.color})`;
     setAttribute(svgPolygon, 'fill', fill);
     setAttribute(svgPolygon, 'stroke', fill);
+  }
+
+  if (chunk.mask) {
+    if (!masks[chunk.mask]) {
+      throw new Error(`Mask ID not found: '${chunk.mask}'`);
+    }
+    setAttribute(svgPolygon, 'mask', `url('#${chunk.mask}')`);
   }
 
   setAttribute(svgPolygon, 'points', '0,0, 10,0, 0,10');
@@ -486,7 +496,8 @@ function createFaceUpdater(container, polygons, transformed) {
 
     const newPolygons = toDraw.map((poly) => poly.svg);
     const defs = container.getElementsByTagName('defs');
-    container.replaceChildren(...defs, ...newPolygons);
+    const maskChildren = container.getElementsByTagName('mask');
+    container.replaceChildren(...defs, ...maskChildren, ...newPolygons);
   };
 }
 
@@ -705,4 +716,53 @@ function setGradientDefinitions(container, gradients) {
   }
 
   container.appendChild(defsContainer);
+}
+
+/**
+ * The properties of a single SVG mask.
+ *
+ * @typedef MaskDefinition
+ * @property {string} color - The color or gradient to apply to the mask.
+ */
+
+/**
+ * Parse mask definitions and construct them in the DOM.
+ *
+ * The `<mask>` element contains a single rectangle that should cover the full extent of the SVG
+ * model. The color of this rectangle can be set to single color or a gradient. Anything the mask
+ * is applied to will be invisible if under a black pixel, visible if under a white pixel, and
+ * partially translucent if under a pixel that is between white and black.
+ *
+ * Later this could be extended to include custom paths and other shapes, rather than just a single
+ * rectangle.
+ *
+ * @param options - The mask options.
+ * @param {Element} options.container - The `<svg>` HTML element that the mask should be added to.
+ * @param {Record<string, MaskDefinition>} [options.masks] - The gradient definitions.
+ * @param {number} options.height - The height of the SVG container.
+ * @param {number} options.width - The width of the SVG container.
+ */
+function setMaskDefinitions({ container, masks, height, width }) {
+  if (!masks || Object.keys(masks).length === 0) {
+    return;
+  }
+
+  for (const [maskId, maskDefinition] of Object.entries(masks)) {
+    const mask = createNode('mask');
+    setAttribute(mask, 'id', maskId);
+
+    const maskedRect = createNode('rect');
+
+    // Extend mask beyond container to ensure it completely covers the model.
+    // The model can extend beyond the container as well.
+    setAttribute(maskedRect, 'width', width * 1.5);
+    setAttribute(maskedRect, 'height', height * 1.5);
+    setAttribute(maskedRect, 'x', `-${Math.floor(width / 4)}`);
+    setAttribute(maskedRect, 'y', `-${Math.floor(height / 4)}`);
+
+    setAttribute(maskedRect, 'fill', maskDefinition.color);
+    mask.appendChild(maskedRect);
+
+    container.appendChild(mask);
+  }
 }
