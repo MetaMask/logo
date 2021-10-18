@@ -6,6 +6,13 @@ const { hideBin } = require('yargs/helpers');
 const prettier = require('prettier');
 const { parse } = require('svg-parser');
 
+/**
+ * Parse a material settings file. Each material is returned as a
+ * separate entry.
+ *
+ * @param {string} mtl - The contents of a material settings file.
+ * @returns A map of material names to properties.
+ */
 function parseMTL(mtl) {
   const output = {};
   mtl
@@ -151,27 +158,53 @@ async function main() {
   const objFile = new OBJFile(objContents);
   const data = objFile.parse(objFile);
 
+  /**
+   * A single position in 3D space. A position is represented by a tuple of X, Y, and Z
+   * coordinates.
+   *
+   * @typedef {[number, number, number]} Position
+   */
+
+  /**
+   * An RGB color. The color is represented by a tuple of 3 numbers, which are the red, blue, and
+   * green values. Each value is an integer between 0 and 255.
+   *
+   * @typedef {[number, number, number]} RgbColor
+   */
+
+  /**
+   * One face of the model. Each face is a triangle, and is represented by three vertices. Each
+   * vertex is present in the model's `position` array, and is represented as an index of this
+   * array.
+   *
+   * @typedef {[number, number, number]} Face
+   */
+
+  /**
+   * A set of faces with the same color.
+   *
+   * @typedef {object} Chunk
+   * @property {RgbColor} color - The color of the chunk.
+   * @property {Array<Face>} faces - The faces included in this chunk.
+   */
+
+  /**
+   * A JSON representation of a 3D model.
+   *
+   * @typedef Model
+   * @property {Array<Position>} positions - The vertex positions of the model.
+   * @property {Array<Chunk>} chunks - Sets of faces that share a common color.
+   * @property {Array<object>} [gradients] - Gradient definitions (see the types defined in `util.js`
+   * for details)
+   */
+
+  /**
+   * @type {Partial<Model>}
+   */
   const output = {
     positions: [],
   };
 
-  /*
-  type colorValue = number; // 0-255
-  type positionId = number; // Index of that position
-  type CoordVal = number;
-
-  type Position = [CoordVal, CoordVal, CoordVal];
-  type Face = [positionId, positionId, positionId];
-
-  export type EfficientModel = {
-    positions: Array<Position>;
-    chunks: Array<{
-      color: [colorValue, colorValue, colorValue];
-      faces: Array<Face>;
-    }>;
-  }
-
-  */
   const VI = 'vertexIndex';
 
   const model = data.models[0];
@@ -197,6 +230,7 @@ async function main() {
 
     let currentChunks = [];
     model.faces.forEach((f, index) => {
+      // Skip faces that don't match the current color
       if (f.material !== mtlKey) {
         return;
       }
@@ -205,8 +239,12 @@ async function main() {
       const yVertex = f.vertices[1][VI] - 1;
       const zVertex = f.vertices[2][VI] - 1;
 
+      // A polygon represents a single face, including its index in the underlying model and its
+      // vertices. This representation is used so that we can preserve the polygon order within
+      // each chunk.
       const polygon = { index, vertices: [xVertex, yVertex, zVertex] };
 
+      // Non-contiguous chunks contain all polygons of a given color
       if (!contiguous) {
         if (currentChunks.length) {
           currentChunks[0].polygons.push(polygon);
@@ -216,6 +254,8 @@ async function main() {
         return;
       }
 
+      // Search the current list of chunks for the current color that include an adjacent polygon.
+      // A polygon is adjacent if it shares two vertices.
       const chunksWithAdjacentPolygons = currentChunks.filter((chunk) =>
         chunk.polygons.some(
           ({ vertices }) =>
@@ -227,11 +267,15 @@ async function main() {
 
       let chunk;
       if (chunksWithAdjacentPolygons.length === 0) {
+        // If no chunks with adjacent polygons are found, this polygon forms a new chunk
         chunk = { color, polygons: [] };
         currentChunks.push(chunk);
       } else if (chunksWithAdjacentPolygons.length === 1) {
+        // If a single chunk with an adjacent polygon is found, this polygon joins that chunk.
         chunk = chunksWithAdjacentPolygons[0];
       } else {
+        // If multiple chunks with an adjacent polygon are found, they are merged together before
+        // adding the new polygon.
         chunk = chunksWithAdjacentPolygons[0];
         const chunksToMerge = chunksWithAdjacentPolygons.slice(1);
         for (const chunkToMerge of chunksToMerge) {
@@ -253,6 +297,7 @@ async function main() {
   output.chunks = allChunks.map((chunk, index) => {
     const finalChunk = {
       color: chunk.color,
+      // The final model includes just the vertices of each face. The index is not needed.
       faces: chunk.polygons.map(({ vertices }) => vertices),
     };
 
