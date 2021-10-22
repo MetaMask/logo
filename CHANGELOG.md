@@ -6,6 +6,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.0]
+### Uncategorized
+- Add `mask` support ([#76](https://github.com/MetaMask/logo/pull/76))
+- Add additional comments to the `convert.js` script ([#78](https://github.com/MetaMask/logo/pull/78))
+- Automate the extraction of gradient definitions from SVGs ([#75](https://github.com/MetaMask/logo/pull/75))
+- Update beta logo to use gradients ([#74](https://github.com/MetaMask/logo/pull/74))
+- Add Flask logo demo ([#72](https://github.com/MetaMask/logo/pull/72))
+- Fix GitHub Pages deployment ([#73](https://github.com/MetaMask/logo/pull/73))
+- Deploy demo from `gh-pages` branch ([#70](https://github.com/MetaMask/logo/pull/70))
+- Add gradient support ([#71](https://github.com/MetaMask/logo/pull/71))
+- Add `repaint` option to `convert.js` ([#68](https://github.com/MetaMask/logo/pull/68))
+- Rewrite demo build script ([#69](https://github.com/MetaMask/logo/pull/69))
+- Add `contiguous` option to `convert.js` ([#67](https://github.com/MetaMask/logo/pull/67))
+- Use `yargs` for `convert.js` CLI ([#66](https://github.com/MetaMask/logo/pull/66))
+- Update the ESLint config to v8 ([#65](https://github.com/MetaMask/logo/pull/65))
+- Bump hosted-git-info from 2.8.5 to 2.8.9 ([#64](https://github.com/MetaMask/logo/pull/64))
+- Bump elliptic from 6.4.0 to 6.5.4 ([#63](https://github.com/MetaMask/logo/pull/63))
+- Bump lodash from 4.17.15 to 4.17.21 ([#62](https://github.com/MetaMask/logo/pull/62))
+- Update conversion script ([#49](https://github.com/MetaMask/logo/pull/49))
+- Update and setup `@metamask/auto-changelog` ([#59](https://github.com/MetaMask/logo/pull/59))
+- Add release automation ([#60](https://github.com/MetaMask/logo/pull/60))
+- Add `@lavamoat/allow-scripts` ([#58](https://github.com/MetaMask/logo/pull/58))
+- Bump path-parse from 1.0.5 to 1.0.7 ([#57](https://github.com/MetaMask/logo/pull/57))
+
 ## [3.0.1] - 2021-06-08
 ### Fixed
 - Provides missing util.js when used as dependency ([#54](https://github.com/MetaMask/logo/pull/54))
@@ -28,7 +52,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed unnecessary files from published package
   - Node and browser consumers should be unaffected
 
-[Unreleased]: https://github.com/MetaMask/logo/compare/v3.0.1...HEAD
+[Unreleased]: https://github.com/MetaMask/logo/compare/v3.1.0...HEAD
+[3.1.0]: https://github.com/MetaMask/logo/compare/v3.0.1...v3.1.0
 [3.0.1]: https://github.com/MetaMask/logo/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/MetaMask/logo/compare/v2.5.0...v3.0.0
 [2.5.0]: https://github.com/MetaMask/logo/releases/tag/v2.5.0
