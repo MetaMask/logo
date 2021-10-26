@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.0]
+### Added
+- Add `mask` support ([#76](https://github.com/MetaMask/logo/pull/76))
+- Add gradient support ([#71](https://github.com/MetaMask/logo/pull/71))
+- Add `@lavamoat/allow-scripts` ([#58](https://github.com/MetaMask/logo/pull/58))
+
 ## [3.0.1] - 2021-06-08
 ### Fixed
 - Provides missing util.js when used as dependency ([#54](https://github.com/MetaMask/logo/pull/54))
@@ -28,7 +34,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed unnecessary files from published package
   - Node and browser consumers should be unaffected
 
-[Unreleased]: https://github.com/MetaMask/logo/compare/v3.0.1...HEAD
+[Unreleased]: https://github.com/MetaMask/logo/compare/v3.1.0...HEAD
+[3.1.0]: https://github.com/MetaMask/logo/compare/v3.0.1...v3.1.0
 [3.0.1]: https://github.com/MetaMask/logo/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/MetaMask/logo/compare/v2.5.0...v3.0.0
 [2.5.0]: https://github.com/MetaMask/logo/releases/tag/v2.5.0
