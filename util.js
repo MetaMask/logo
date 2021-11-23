@@ -9,7 +9,7 @@ const SVG_NS = 'http://www.w3.org/2000/svg';
 
 // Taken from https://github.com/yuzhe-han/ParentNode-replaceChildren
 // This is to support browsers that do not yet support `replaceChildren`
-const replaceChildrenPolyfill = function (...addNodes) {
+const replaceChildrenPonyfill = function (...addNodes) {
   while (this.lastChild) {
     this.removeChild(this.lastChild);
   }
@@ -512,7 +512,7 @@ function createFaceUpdater(container, polygons, transformed) {
     if (container.replaceChildren) {
       container.replaceChildren(...defs, ...maskChildren, ...newPolygons);
     } else {
-      replaceChildrenPolyfill.bind(container)(
+      replaceChildrenPonyfill.bind(container)(
         ...defs,
         ...maskChildren,
         ...newPolygons,
