@@ -14,7 +14,7 @@ const replaceChildrenPolyfill = function (...addNodes) {
     this.removeChild(this.lastChild);
   }
 
-  if (addNodes !== undefined) {
+  if (addNodes.length > 0) {
     this.append(...addNodes);
   }
 };
