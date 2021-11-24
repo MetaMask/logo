@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.1]
+### Fixed
+- Add a ponyfill for `replaceChildren`, so that the call to it does not break on old browsers ([#81](https://github.com/MetaMask/logo/pull/81))
+
 ## [3.1.0]
 ### Added
 - Add `mask` support ([#76](https://github.com/MetaMask/logo/pull/76))
@@ -34,7 +38,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed unnecessary files from published package
   - Node and browser consumers should be unaffected
 
-[Unreleased]: https://github.com/MetaMask/logo/compare/v3.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/logo/compare/v3.1.1...HEAD
+[3.1.1]: https://github.com/MetaMask/logo/compare/v3.1.0...v3.1.1
 [3.1.0]: https://github.com/MetaMask/logo/compare/v3.0.1...v3.1.0
 [3.0.1]: https://github.com/MetaMask/logo/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/MetaMask/logo/compare/v2.5.0...v3.0.0
