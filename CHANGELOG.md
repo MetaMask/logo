@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.1.1]
 ### Fixed
-- Added a ponyfill for `replaceChildren`, so that the call to it does not break on old browsers ([#81](https://github.com/MetaMask/logo/pull/81))
+- Add a ponyfill for `replaceChildren`, so that the call to it does not break on old browsers ([#81](https://github.com/MetaMask/logo/pull/81))
 
 ## [3.1.0]
 ### Added
