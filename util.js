@@ -7,6 +7,18 @@ const transform = require('gl-vec3/transformMat4');
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
+// Taken from https://github.com/yuzhe-han/ParentNode-replaceChildren
+// This is to support browsers that do not yet support `replaceChildren`
+const replaceChildrenPonyfill = function (...addNodes) {
+  while (this.lastChild) {
+    this.removeChild(this.lastChild);
+  }
+
+  if (addNodes.length > 0) {
+    this.append(...addNodes);
+  }
+};
+
 module.exports = {
   calculateSizingOptions,
   createLogoViewer,
@@ -511,7 +523,15 @@ function createFaceUpdater(container, polygons, transformed) {
       .flat();
     const defs = container.getElementsByTagName('defs');
     const maskChildren = container.getElementsByTagName('mask');
-    container.replaceChildren(...defs, ...maskChildren, ...newPolygons);
+    if (container.replaceChildren) {
+      container.replaceChildren(...defs, ...maskChildren, ...newPolygons);
+    } else {
+      replaceChildrenPonyfill.bind(container)(
+        ...defs,
+        ...maskChildren,
+        ...newPolygons,
+      );
+    }
   };
 }
 
