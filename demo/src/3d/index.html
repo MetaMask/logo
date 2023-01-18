@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="../style.css">
+    <title>---</title>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+    <meta charset=utf-8>
+<style>
+
+svg {
+  position: absolute;
+  mix-blend-mode: screen;
+  cursor: none;
+}
+
+svg:first-of-type {
+  transform: translateX(20px);
+  filter: saturate(1.5) hue-rotate(196deg);
+}
+
+svg:last-of-type {
+  filter: saturate(1.5) opacity(0.82) brightness(1.1) hue-rotate(-25deg);
+}
+
+</style>
+  </head>
+  <body>
+    <div></div>
+    <script src="bundle.js"></script>
+  </body>
+</html>
