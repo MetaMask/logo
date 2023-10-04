@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.2]
+### Uncategorized
+- Bump word-wrap from 1.2.3 to 1.2.4 ([#105](https://github.com/MetaMask/logo/pull/105))
+- Bump semver from 5.7.1 to 5.7.2 ([#104](https://github.com/MetaMask/logo/pull/104))
+- feat: added mmi logo for the metamerge project ([#98](https://github.com/MetaMask/logo/pull/98))
+- Bump json5 from 1.0.1 to 1.0.2 ([#96](https://github.com/MetaMask/logo/pull/96))
+- Bump cached-path-relative from 1.0.2 to 1.1.0 ([#84](https://github.com/MetaMask/logo/pull/84))
+- Bump ajv from 6.10.2 to 6.12.6 ([#85](https://github.com/MetaMask/logo/pull/85))
+- Bump shell-quote from 1.6.1 to 1.7.4 ([#94](https://github.com/MetaMask/logo/pull/94))
+- Bump minimatch from 3.0.4 to 3.1.2 ([#95](https://github.com/MetaMask/logo/pull/95))
+- Bump qs from 6.5.2 to 6.5.3 ([#93](https://github.com/MetaMask/logo/pull/93))
+- Bump minimist from 1.2.5 to 1.2.6 ([#86](https://github.com/MetaMask/logo/pull/86))
+- Bump minimist from 1.2.0 to 1.2.5 ([#83](https://github.com/MetaMask/logo/pull/83))
+
 ## [3.1.1]
 ### Fixed
 - Add a ponyfill for `replaceChildren`, so that the call to it does not break on old browsers ([#81](https://github.com/MetaMask/logo/pull/81))
@@ -38,7 +52,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed unnecessary files from published package
   - Node and browser consumers should be unaffected
 
-[Unreleased]: https://github.com/MetaMask/logo/compare/v3.1.1...HEAD
+[Unreleased]: https://github.com/MetaMask/logo/compare/v3.1.2...HEAD
+[3.1.2]: https://github.com/MetaMask/logo/compare/v3.1.1...v3.1.2
 [3.1.1]: https://github.com/MetaMask/logo/compare/v3.1.0...v3.1.1
 [3.1.0]: https://github.com/MetaMask/logo/compare/v3.0.1...v3.1.0
 [3.0.1]: https://github.com/MetaMask/logo/compare/v3.0.0...v3.0.1
