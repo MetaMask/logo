@@ -1,3 +1,4 @@
+const foxJson = require('../../../src/fox.json');
 const {
   calculateSizingOptions,
   createLogoViewer,
@@ -6,7 +7,6 @@ const {
   createNode,
   setAttribute,
 } = require('../../../src/util');
-const foxJson = require('../../../src/fox.json');
 
 createDistortedLogo({
   width: 0.4,
@@ -16,6 +16,10 @@ createDistortedLogo({
   lazyRender: false,
 });
 
+/**
+ *
+ * @param options
+ */
 function createDistortedLogo(options) {
   const cameraDistance = options.cameraDistance || 400;
   const { height, width } = calculateSizingOptions(options);
@@ -61,6 +65,11 @@ function createDistortedLogo(options) {
 }
 
 // glitch up and down
+/**
+ *
+ * @param positions
+ * @param origPositions
+ */
 function distortGlitch(positions, origPositions) {
   const pointCount = positions.length / 3;
   for (let polygonIndex = 0; polygonIndex < pointCount; polygonIndex++) {
@@ -75,6 +84,11 @@ function distortGlitch(positions, origPositions) {
 }
 
 // bug: grow head slowly?
+/**
+ *
+ * @param positions
+ * @param origPositions
+ */
 function distortGrow(positions, origPositions) {
   const progress = getSinIntensity();
   const pointCount = positions.length / 3;
@@ -103,6 +117,11 @@ function distortGrow(positions, origPositions) {
 }
 
 // bug: grow head slowly?
+/**
+ *
+ * @param positions
+ * @param origPositions
+ */
 function distortFold(positions, origPositions) {
   const progress = getSinIntensity(5000);
   const pointCount = positions.length / 3;
@@ -133,6 +152,10 @@ function distortFold(positions, origPositions) {
 }
 
 // sin between 0-1
+/**
+ *
+ * @param speed
+ */
 function getSinIntensity(speed = 1000) {
   return (Math.sin(Date.now() / speed) + 1) / 2;
 }

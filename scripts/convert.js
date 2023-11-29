@@ -1,16 +1,15 @@
 const fs = require('fs').promises;
-const path = require('path');
 const { strict: assert } = require('assert');
 const OBJFile = require('obj-file-parser');
-const yargs = require('yargs/yargs');
-const { hideBin } = require('yargs/helpers');
+const path = require('path');
 const prettier = require('prettier');
 const { parse } = require('svg-parser');
+const { hideBin } = require('yargs/helpers');
+const yargs = require('yargs/yargs');
 
 /**
  * Parse a material settings file. Each material is returned as a
  * separate entry.
- *
  * @param {string} mtl - The contents of a material settings file.
  * @returns A map of material names to properties.
  */
@@ -79,7 +78,6 @@ const distinctiveColors = {
 
 /**
  * Get a color for the given index.
- *
  * @param {number} index - The index of the color to get.
  */
 function getColor(index) {
@@ -97,6 +95,9 @@ const contiguousOptionDescription = `Set whether the chunks in the output JSON m
 be contiguous. If unset, the pieces in each chunk might not be connected. If set, the chunks are \
 fully connected, but there will be more chunks overall.`;
 
+/**
+ *
+ */
 async function main() {
   const { argv } = yargs(hideBin(process.argv))
     .usage('$0 [options]', usageDescription, (_yargs) =>
@@ -162,14 +163,12 @@ async function main() {
   /**
    * A single position in 3D space. A position is represented by a tuple of X, Y, and Z
    * coordinates.
-   *
    * @typedef {[number, number, number]} Position
    */
 
   /**
    * An RGB color. The color is represented by a tuple of 3 numbers, which are the red, blue, and
    * green values. Each value is an integer between 0 and 255.
-   *
    * @typedef {[number, number, number]} RgbColor
    */
 
@@ -177,13 +176,11 @@ async function main() {
    * One face of the model. Each face is a triangle, and is represented by three vertices. Each
    * vertex is present in the model's `position` array, and is represented as an index of this
    * array.
-   *
    * @typedef {[number, number, number]} Face
    */
 
   /**
    * A set of faces with the same color.
-   *
    * @typedef {object} Chunk
    * @property {RgbColor} color - The color of the chunk.
    * @property {Array<Face>} faces - The faces included in this chunk.
@@ -191,7 +188,6 @@ async function main() {
 
   /**
    * A JSON representation of a 3D model.
-   *
    * @typedef Model
    * @property {Array<Position>} positions - The vertex positions of the model.
    * @property {Array<Chunk>} chunks - Sets of faces that share a common color.

@@ -1,7 +1,7 @@
-const perspective = require('gl-mat4/perspective');
-const multiply = require('gl-mat4/multiply');
-const lookAt = require('gl-mat4/lookAt');
 const invert = require('gl-mat4/invert');
+const lookAt = require('gl-mat4/lookAt');
+const multiply = require('gl-mat4/multiply');
+const perspective = require('gl-mat4/perspective');
 const rotate = require('gl-mat4/rotate');
 const transform = require('gl-vec3/transformMat4');
 
@@ -44,7 +44,6 @@ module.exports = {
  *
  * See {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Content_type#length} for further
  * information.
- *
  * @typedef {`${number}${'em' | 'ex' | 'px' | 'in' | 'cm' | 'mm' | 'pt' | 'pc' | '%'}`} SvgLength
  */
 
@@ -55,7 +54,6 @@ module.exports = {
  *
  * See {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/stop} for more information
  * about the `<stop>` element.
- *
  * @typedef {object} StopDefinition
  * @property {number | `${number}%`} [offset] - The location of the gradient stop along the
  * gradient vector.
@@ -70,7 +68,6 @@ module.exports = {
  *
  * See {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/linearGradient} for more
  * information about the `<linearGradient>` element.
- *
  * @typedef {object} LinearGradientDefinition
  * @property {string} [gradientTransform] - A transform from the gradient coordinate system to the
  * target coordinate system. See {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/gradientTransform}.
@@ -94,7 +91,6 @@ module.exports = {
  *
  * See {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/radialGradient} for more
  * information about the `<radialGradient>` element.
- *
  * @typedef {object} RadialGradientDefinition
  * @property {SvgLength} [cx] - The x coordinate of the end circle of the radial gradiant.
  * @property {SvgLength} [cy] - The y coordinate of the end circle of the radial gradient.
@@ -113,6 +109,17 @@ module.exports = {
  * @property {'radial'} type - The type of the gradient.
  */
 
+/**
+ * Set up the logo, including its interaction with mouse and motion events, and return an object with methods to control the logo's behavior.
+ * @param {Element} container - The SVG container for the logo.
+ * @param {Function} renderScene - The function to render the scene.
+ * @param {object} options - The options for the logo viewer.
+ * @param {boolean} options.followMouse - Whether the logo should follow the mouse.
+ * @param {boolean} options.followMotion - Whether the logo should follow motion.
+ * @param {boolean} options.slowDrift - Whether the logo should slowly drift.
+ * @param {boolean} options.lazyRender - Whether the logo should be lazily rendered.
+ * @returns {object} The logo viewer object.
+ */
 function createLogoViewer(
   container,
   renderScene,
@@ -131,35 +138,41 @@ function createLogoViewer(
   const lookCurrent = [0, 0];
   const lookRate = 0.3;
 
+  const updateLookCurrent = () => {
+    const li = 1.0 - lookRate;
+    lookCurrent[0] = li * lookCurrent[0] + lookRate * mouse.x;
+    lookCurrent[1] = li * lookCurrent[1] + lookRate * mouse.y + 0.085;
+  };
+
   // closes over scene state
   const renderCurrentScene = () => {
     updateLookCurrent();
     renderScene(lookCurrent, slowDrift);
   };
 
-  function setLookAtTarget(target) {
+  const setLookAtTarget = (target) => {
     const bounds = container.getBoundingClientRect();
     mouse.x = 1.0 - (2.0 * (target.x - bounds.left)) / bounds.width;
     mouse.y = 1.0 - (2.0 * (target.y - bounds.top)) / bounds.height;
-  }
+  };
 
-  function stopAnimation() {
+  const stopAnimation = () => {
     shouldRender = false;
-  }
+  };
 
-  function startAnimation() {
+  const startAnimation = () => {
     shouldRender = true;
-  }
+  };
 
-  function setFollowMouse(state) {
+  const setFollowMouse = (state) => {
     // eslint-disable-next-line no-param-reassign
     followMouse = state;
-  }
+  };
 
-  function setFollowMotion(state) {
+  const setFollowMotion = (state) => {
     // eslint-disable-next-line no-param-reassign
     followMotion = state;
-  }
+  };
 
   window.addEventListener('mousemove', function (ev) {
     if (!shouldRender) {
@@ -200,7 +213,7 @@ function createLogoViewer(
     }
   });
 
-  function lookAtAndRender(target) {
+  const lookAtAndRender = (target) => {
     // update look target
     setLookAtTarget(target);
     // this should prolly just call updateLookCurrent or set lookCurrent values to eaxactly lookTarget
@@ -208,21 +221,15 @@ function createLogoViewer(
     lookCurrent[0] = mouse.x;
     lookCurrent[1] = mouse.y + 0.085 / lookRate;
     renderCurrentScene();
-  }
+  };
 
-  function renderLoop() {
+  const renderLoop = () => {
     if (!shouldRender) {
       return;
     }
     window.requestAnimationFrame(renderLoop);
     renderCurrentScene();
-  }
-
-  function updateLookCurrent() {
-    const li = 1.0 - lookRate;
-    lookCurrent[0] = li * lookCurrent[0] + lookRate * mouse.x;
-    lookCurrent[1] = li * lookCurrent[1] + lookRate * mouse.y + 0.085;
-  }
+  };
 
   if (lazyRender) {
     renderCurrentScene();
@@ -242,6 +249,12 @@ function createLogoViewer(
   };
 }
 
+/**
+ * Parse the model data, create polygons for each face of the model, and return an object that can be used to update and render the model.
+ * @param {object} modelJson - The JSON object containing the model data.
+ * @param {Function} createSvgPolygon - The function to create an SVG polygon.
+ * @returns {object} The model object.
+ */
 function loadModelFromJson(
   modelJson,
   createSvgPolygon = createStandardModelPolygon,
@@ -269,6 +282,13 @@ function loadModelFromJson(
   return modelObj;
 }
 
+/**
+ * Set up the rendering of a 3D model, including its transformation and projection from 3D to 2D space.
+ * @param {Element} container - The SVG container for the model.
+ * @param {number} cameraDistance - The distance of the camera from the model.
+ * @param {object} modelObj - The model object.
+ * @returns {Function} The function to render the model.
+ */
 function createModelRenderer(container, cameraDistance, modelObj) {
   const { updatePositions, transformed, polygons } = modelObj;
 
@@ -286,10 +306,16 @@ function createModelRenderer(container, cameraDistance, modelObj) {
   };
 }
 
+/**
+ * Read the positions of the vertices in the model and store them in a Float32Array.
+ * @param {Float32Array} positions - The array to store the positions.
+ * @param {object} modelJson - The JSON object containing the model data.
+ */
 function positionsFromModel(positions, modelJson) {
   const pp = modelJson.positions;
   let ptr = 0;
   for (let i = 0; i < pp.length; ++i) {
+    // eslint-disable-next-line id-length
     const p = pp[i];
     for (let j = 0; j < 3; ++j) {
       positions[ptr] = p[j];
@@ -298,6 +324,12 @@ function positionsFromModel(positions, modelJson) {
   }
 }
 
+/**
+ * Read the model data, creates an SVG polygon for each face of the model, and return an object containing the polygons and a map of polygons by chunk.
+ * @param {object} modelJson - The JSON object containing the model data.
+ * @param {Function} createSvgPolygon - The function to create an SVG polygon.
+ * @returns {object} An object containing the polygons and polygons by chunk.
+ */
 function createPolygonsFromModelJson(modelJson, createSvgPolygon) {
   const polygons = [];
   const polygonsByChunk = modelJson.chunks.map((chunk, index) => {
@@ -322,13 +354,13 @@ function createPolygonsFromModelJson(modelJson, createSvgPolygon) {
  * This polygon is assigned the correct `fill` and `stroke` attributes, according to the chunk
  * definition provided. But the `points` attribute is always set to a dummy value, as it gets reset
  * later to the correct position during each render loop.
- *
  * @param {object} chunk - The definition for the chunk of the model this polygon is a part of.
  * This includes the color or gradient to apply to the polygon.
  * @param {object} options - Polygon options.
  * @param {(LinearGradientDefinition | RadialGradientDefinition)[]} [options.gradients] - The set of
  * all gradient definitions used in this model.
- * @param options.index - The index for the chunk this polygon is found in.
+ * @param {number} options.index - The index for the chunk this polygon is found in.
+ * @param {object} options.masks - The masks used in this model.
  * @returns {Element} The `<polygon>` SVG element.
  */
 function createStandardModelPolygon(chunk, { gradients = {}, index, masks }) {
@@ -364,6 +396,11 @@ function createStandardModelPolygon(chunk, { gradients = {}, index, masks }) {
   return svgPolygon;
 }
 
+/**
+ * Set up the computation of the transformation matrix for the model, based on the size of the viewport and the position of the camera.
+ * @param {number} distance - The distance of the camera from the model.
+ * @returns {Function} The function to compute the matrix.
+ */
 function createMatrixComputer(distance) {
   const objectCenter = new Float32Array(3);
   const up = new Float32Array([0, 1, 0]);
@@ -380,8 +417,14 @@ function createMatrixComputer(distance) {
   const target = new Float32Array(3);
   const transformedMatrix = new Float32Array(16);
 
+  // X is the standard name of an axis in 3D graphics.
+  // eslint-disable-next-line id-length
   const X = new Float32Array([1, 0, 0]);
+  // Y is the standard name of an axis in 3D graphics.
+  // eslint-disable-next-line id-length
   const Y = new Float32Array([0, 1, 0]);
+  // Z is the standard name of an axis in 3D graphics.
+  // eslint-disable-next-line id-length
   const Z = new Float32Array([0, 0, 1]);
 
   return (rect, lookPos, slowDrift) => {
@@ -419,7 +462,16 @@ function createMatrixComputer(distance) {
   };
 }
 
+/**
+ * Set up the updating of the positions of the vertices of the model, based on a transformation matrix.
+ * @param {Float32Array} positions - The original positions.
+ * @param {Float32Array} transformed - The transformed positions.
+ * @param {number} vertCount - The number of vertices.
+ * @returns {Function} The function to update the positions.
+ */
 function createPositionUpdater(positions, transformed, vertCount) {
+  // M is commonly used as a name for a matrix in 3D graphics.
+  // eslint-disable-next-line id-length
   return (M) => {
     const m00 = M[0];
     const m01 = M[1];
@@ -439,8 +491,14 @@ function createPositionUpdater(positions, transformed, vertCount) {
     const m33 = M[15];
 
     for (let i = 0; i < vertCount; ++i) {
+      // X is the standard name of an axis in 3D graphics.
+      // eslint-disable-next-line id-length
       const x = positions[3 * i];
+      // Y is the standard name of an axis in 3D graphics.
+      // eslint-disable-next-line id-length
       const y = positions[3 * i + 1];
+      // Z is the standard name of an axis in 3D graphics.
+      // eslint-disable-next-line id-length
       const z = positions[3 * i + 2];
 
       const tw = x * m03 + y * m13 + z * m23 + m33;
@@ -451,15 +509,32 @@ function createPositionUpdater(positions, transformed, vertCount) {
   };
 }
 
+/**
+ * Compares two values based on their z-index. This function is used for sorting polygons based on their z-index, which determines the order in which they are rendered.
+ * @param {object} a - The first value.
+ * @param {object} b - The second value.
+ * @returns {number} The difference between the z-index of the two values.
+ */
 function compareZ(a, b) {
   return b.zIndex - a.zIndex;
 }
 
+/**
+ * Set up the updating of the faces of the model, including their position and visibility.
+ * @param {Element} container - The SVG container for the faces.
+ * @param {Array} polygons - The polygons of the faces.
+ * @param {Float32Array} transformed - The transformed positions.
+ * @returns {Function} The function to update the faces.
+ */
 function createFaceUpdater(container, polygons, transformed) {
   const toDraw = [];
   return (rect) => {
     let i;
+    // It is understood that this is the width.
+    // eslint-disable-next-line id-length
     const w = rect.width;
+    // It is understood that this is the height.
+    // eslint-disable-next-line id-length
     const h = rect.height;
     toDraw.length = 0;
     for (i = 0; i < polygons.length; ++i) {
@@ -491,6 +566,8 @@ function createFaceUpdater(container, polygons, transformed) {
             0.5 * h * (1.0 - transformed[3 * idx + 1])
           }`,
         );
+        // TODO: This is a bit cryptic and we might want to change this name.
+        // eslint-disable-next-line id-length
         const z = transformed[3 * idx + 2];
         zmax = Math.max(zmax, z);
         zmin = Math.min(zmin, z);
@@ -521,6 +598,11 @@ function createFaceUpdater(container, polygons, transformed) {
   };
 }
 
+/**
+ * Calculate the size of the logo based on the provided options and the size of the window.
+ * @param {object} options - The options for sizing.
+ * @returns {object} The calculated sizing options.
+ */
 function calculateSizingOptions(options = {}) {
   let width = options.width || 400;
   let height = options.height || 400;
@@ -529,6 +611,9 @@ function calculateSizingOptions(options = {}) {
     width = Math.floor(window.innerWidth * (options.width || 0.25));
     height = Math.floor(window.innerHeight * options.height || width);
 
+    // Using `in` is okay here since we don't want to introduce `@metamask/utils`.
+    // TODO: Copy over `hasProperty` from `@metamask/utils`.
+    // eslint-disable-next-line no-restricted-syntax
     if ('minWidth' in options && width < options.minWidth) {
       width = options.minWidth;
       height = Math.floor((options.minWidth * options.height) / options.width);
@@ -537,14 +622,30 @@ function calculateSizingOptions(options = {}) {
   return { width, height };
 }
 
+/**
+ * Create an SVG element of the specified type.
+ * @param {string} type - The type of the node.
+ * @returns {Element} The SVG node.
+ */
 function createNode(type) {
   return document.createElementNS(SVG_NS, type);
 }
 
+/**
+ * Set the specified attribute of the node to the specified value.
+ * @param {Element} node - The node.
+ * @param {string} attribute - The attribute.
+ * @param {string} value - The value.
+ */
 function setAttribute(node, attribute, value) {
   node.setAttributeNS(null, attribute, value);
 }
 
+/**
+ * Serialize an SVG element into a string that can be used as the content of an SVG image.
+ * @param {Element} svgElement - The SVG element.
+ * @returns {string} The SVG image content.
+ */
 function svgElementToSvgImageContent(svgElement) {
   const inner = svgElement.innerHTML;
   const head =
@@ -555,6 +656,11 @@ function svgElementToSvgImageContent(svgElement) {
   return content;
 }
 
+/**
+ * Construct a SVG polygon element and its associated data.
+ * @param {Element} svg - The SVG element of the polygon.
+ * @param {Array} indices - The indices of the polygon.
+ */
 function Polygon(svg, indices) {
   this.svg = svg;
   this.indices = indices;
@@ -566,7 +672,6 @@ function Polygon(svg, indices) {
  *
  * Both `<linearGradient>` and `<radialGradient>` are supported. All gradients get added to a
  * `<defs>` element that is added as a direct child of the container element.
- *
  * @param {Element} container - The `<svg>` HTML element that the definitions should be added to.
  * @param {(LinearGradientDefinition | RadialGradientDefinition)[]} [gradients] - The gradient definitions.
  */
@@ -740,7 +845,6 @@ function setGradientDefinitions(container, gradients) {
 
 /**
  * The properties of a single SVG mask.
- *
  * @typedef MaskDefinition
  * @property {string} color - The color or gradient to apply to the mask.
  */
@@ -755,8 +859,7 @@ function setGradientDefinitions(container, gradients) {
  *
  * Later this could be extended to include custom paths and other shapes, rather than just a single
  * rectangle.
- *
- * @param options - The mask options.
+ * @param {object} options - The mask options.
  * @param {Element} options.container - The `<svg>` HTML element that the mask should be added to.
  * @param {Record<string, MaskDefinition>} [options.masks] - The gradient definitions.
  * @param {number} options.height - The height of the SVG container.
