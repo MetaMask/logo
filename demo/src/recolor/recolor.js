@@ -1,4 +1,6 @@
 const MersenneTwister = require('mersenne-twister');
+
+const foxJson = require('../../../src/fox.json');
 const {
   calculateSizingOptions,
   createLogoViewer,
@@ -8,7 +10,6 @@ const {
   setAttribute,
   svgElementToSvgImageContent,
 } = require('../../../src/util');
-const foxJson = require('../../../src/fox.json');
 
 let colorSeed = pickColorSeed();
 const colors = [
@@ -26,6 +27,10 @@ const colors = [
 
 let cycling = false;
 let cycleInterval;
+/**
+ *
+ * @param modelObj
+ */
 function toggleCycle(modelObj) {
   if (cycling && cycleInterval) {
     console.dir(cycleInterval);
@@ -44,6 +49,9 @@ document.addEventListener('keypress', (event) => {
   }
 });
 
+/**
+ *
+ */
 function saveImage() {
   const svg = document.querySelector('svg');
   const content = svgElementToSvgImageContent(svg);
@@ -60,6 +68,10 @@ const viewer = createRecolorLogo({
 const foxDiv = document.querySelector('body div.fox');
 foxDiv.appendChild(viewer.container);
 
+/**
+ *
+ * @param options
+ */
 function createRecolorLogo(options) {
   const cameraDistance = options.cameraDistance || 400;
   const { height, width } = calculateSizingOptions(options);
@@ -90,6 +102,10 @@ function createRecolorLogo(options) {
   );
 }
 
+/**
+ *
+ * @param modelObj
+ */
 function recolor(modelObj) {
   colorSeed = pickColorSeed();
   const twister = new MersenneTwister(colorSeed);
@@ -105,11 +121,20 @@ function recolor(modelObj) {
   viewer.renderCurrentScene();
 }
 
+/**
+ *
+ */
 function pickColorSeed() {
   return Math.floor(Math.random() * 10000000);
 }
 
 // Function to download data to a file
+/**
+ *
+ * @param data
+ * @param filename
+ * @param type
+ */
 function download(data, filename, type) {
   const file = new Blob([data], { type });
   // IE10+

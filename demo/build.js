@@ -1,10 +1,9 @@
-const path = require('path');
-const { promises: fs } = require('fs');
-const { promisify } = require('util');
-
-const yargs = require('yargs/yargs');
-const { hideBin } = require('yargs/helpers');
 const execa = require('execa');
+const { promises: fs } = require('fs');
+const path = require('path');
+const { promisify } = require('util');
+const { hideBin } = require('yargs/helpers');
+const yargs = require('yargs/yargs');
 const rimraf = promisify(require('rimraf'));
 
 /**
@@ -17,7 +16,6 @@ class UsageError extends Error {}
 
 /**
  *  Build a single demo.
- *
  * @param {string} demoName - The name of the demo.
  */
 async function buildDemo(demoName) {
@@ -57,7 +55,6 @@ async function buildDemo(demoName) {
 
 /**
  * Build the main page of the demo.
- *
  * @param {object} [options] - Build options.
  * @param {boolean} [options.clear] - Whether to clear the directory of contents first before building.
  */

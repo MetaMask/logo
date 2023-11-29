@@ -1,4 +1,5 @@
 const copy = require('copy-to-clipboard');
+
 const createViewer = require('../../../src');
 const { svgElementToSvgImageContent } = require('../../../src/util');
 const meshJson = require('./fade-fox.json');
