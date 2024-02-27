@@ -21,7 +21,7 @@ jobs:
           paths_ignored: |
             .storybook/
             '**/__snapshots__/'
-            '**/**snapshots**/'
+            '**/**snapshots**'
             '**/*.snap'
             '**/*.stories.js'
             '**/*.stories.tsx'
