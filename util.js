@@ -301,14 +301,22 @@ function positionsFromModel(positions, modelJson) {
 function createPolygonsFromModelJson(modelJson, createSvgPolygon) {
   const polygons = [];
   const polygonsByChunk = modelJson.chunks.map((chunk, index) => {
-    const { faces } = chunk;
+    const { faces, overlay } = chunk;
     return faces.map((face) => {
       const svgPolygon = createSvgPolygon(chunk, {
         gradients: modelJson.gradients,
         index,
         masks: modelJson.masks,
       });
-      const polygon = new Polygon(svgPolygon, face);
+      let overlaySvgPolygon;
+      if (overlay) {
+        overlaySvgPolygon = createSvgPolygon(overlay, {
+          gradients: modelJson.gradients,
+          index,
+          masks: modelJson.masks,
+        });
+      }
+      const polygon = new Polygon(svgPolygon, face, overlaySvgPolygon);
       polygons.push(polygon);
       return polygon;
     });
@@ -483,7 +491,6 @@ function createFaceUpdater(container, polygons, transformed) {
       const points = [];
       let zmax = -Infinity;
       let zmin = Infinity;
-      const element = poly.svg;
       for (let j = 0; j < 3; ++j) {
         const idx = indices[j];
         points.push(
@@ -499,14 +506,21 @@ function createFaceUpdater(container, polygons, transformed) {
       const joinedPoints = points.join(' ');
 
       if (joinedPoints.indexOf('NaN') === -1) {
-        setAttribute(element, 'points', joinedPoints);
+        setAttribute(poly.svg, 'points', joinedPoints);
+        if (poly.overlaySvg) {
+          setAttribute(poly.overlaySvg, 'points', joinedPoints);
+        }
       }
 
       toDraw.push(poly);
     }
     toDraw.sort(compareZ);
 
-    const newPolygons = toDraw.map((poly) => poly.svg);
+    // Polygons must be set in z-index order with the overlay SVG drawn last, so that it covers
+    // the non-overlay SVG.
+    const newPolygons = toDraw
+      .map((poly) => [poly.svg, ...(poly.overlaySvg ? [poly.overlaySvg] : [])])
+      .flat();
     const defs = container.getElementsByTagName('defs');
     const maskChildren = container.getElementsByTagName('mask');
     if (container.replaceChildren) {
@@ -555,10 +569,21 @@ function svgElementToSvgImageContent(svgElement) {
   return content;
 }
 
-function Polygon(svg, indices) {
+/**
+ * A single polygon from the JSON model.
+ *
+ * @param {Element} svg - The SVG element representing this polygon.
+ * @param {[number, number, number]} indices - The position IDs for the three vertices of the polygon.
+ * @param {Element} [overlaySvg] - The overlay SVG element representing this polygon. If present,
+ * this is rendered over the non-overlay SVG.
+ */
+function Polygon(svg, indices, overlaySvg) {
   this.svg = svg;
   this.indices = indices;
   this.zIndex = 0;
+  if (overlaySvg) {
+    this.overlaySvg = overlaySvg;
+  }
 }
 
 /**
