@@ -1,6 +1,6 @@
 const copy = require('copy-to-clipboard');
-const createViewer = require('../../..');
-const { svgElementToSvgImageContent } = require('../../../util');
+const createViewer = require('../../../src');
+const { svgElementToSvgImageContent } = require('../../../src/util');
 
 document.addEventListener('keypress', function (event) {
   if (event.keyCode === 99) {
