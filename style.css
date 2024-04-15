@@ -1,0 +1,19 @@
+html, body{
+  height: 100%;
+}
+
+body{
+  background: #202123;
+  text-align: center;
+  color: white;
+  font-family: roboto;
+}
+
+div{
+  height:140px;
+  overflow: visible;
+}
+
+svg {
+  overflow: visible;
+}
