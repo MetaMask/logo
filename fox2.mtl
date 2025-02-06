@@ -1,0 +1,24 @@
+newmtl model:model1:brown
+Kd 0.4 0.09411764705882353 0
+illum 0
+
+newmtl model:model1:orange_dark
+Kd 0.8901960784313725 0.2823529411764706 0.027450980392156862
+illum 0
+
+newmtl model:model1:orange_mid
+Kd 1 0.3607843137254902 0.08627450980392157
+illum 0
+
+newmtl model:model1:white_underside
+Kd 0.7529411764705882 0.7686274509803922 0.803921568627451
+illum 0
+
+newmtl model:model1:pasted__orange_bright_alt
+Kd 1 0.5529411764705883 0.36470588235294116
+illum 0
+
+newmtl model:model1:white_side
+Kd 0.9058823529411765 0.9215686274509803 0.9647058823529412
+illum 0
+

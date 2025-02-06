@@ -46,9 +46,9 @@ function createLogo({
   // render options
   lazyRender = true,
   cameraDistance = defaultCameraDistance,
-  verticalFieldOfView = Math.PI / 4.0,
+  verticalFieldOfView = Math.PI / 50.0,
   near = 100,
-  far = 1000,
+  far = 340,
   // size options
   width: specifiedWidth,
   height: specifiedHeight,
