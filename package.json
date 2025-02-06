@@ -14,7 +14,8 @@
   "author": "MetaMask",
   "main": "src/index.js",
   "files": [
-    "src/fox.json",
+    "data/fox.json",
+    "src/index.js",
     "src/util.js"
   ],
   "scripts": {

@@ -107,19 +107,19 @@ async function main() {
     .usage('$0 [options]', usageDescription, (_yargs) =>
       _yargs
         .option('out', {
-          default: path.resolve(__dirname, '../src/fox.json'),
+          default: path.resolve(__dirname, '../data/fox.json'),
           description: 'The output file path',
           type: 'string',
           normalize: true,
         })
         .option('obj', {
-          default: path.resolve(__dirname, '../src/fox.obj'),
+          default: path.resolve(__dirname, '../data/fox.obj'),
           description: 'The input OBJ file path',
           type: 'string',
           normalize: true,
         })
         .option('mtl', {
-          default: path.resolve(__dirname, '../src/fox.mtl'),
+          default: path.resolve(__dirname, '../data/fox.mtl'),
           description: 'The input MTL file path',
           type: 'string',
           normalize: true,

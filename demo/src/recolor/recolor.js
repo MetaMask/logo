@@ -8,7 +8,7 @@ const {
   setAttribute,
   svgElementToSvgImageContent,
 } = require('../../../src/util');
-const foxJson = require('../../../src/fox.json');
+const foxJson = require('../../../data/fox.json');
 
 let colorSeed = pickColorSeed();
 const colors = [

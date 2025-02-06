@@ -1,4 +1,4 @@
-const foxJson = require('./fox.json');
+const foxJson = require('../data/fox.json');
 const {
   calculateSizingOptions,
   createLogoViewer,
