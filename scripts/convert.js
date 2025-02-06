@@ -278,7 +278,7 @@ async function main() {
       const triangleVertices =
         rawVertices.length === 3
           ? [rawVertices]
-          : // The vertex omitted by each triange must be opposite each other so that the triangles
+          : // The vertex omitted by each triangle must be opposite each other so that the triangles
             // evenly split the polygon in two, rather than overlapping. e.g.
             // A---B
             // |   |
