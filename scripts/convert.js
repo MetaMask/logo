@@ -303,22 +303,19 @@ async function main() {
           continue;
         }
 
+        const xVertex = currentVertices[0];
+        const yVertex = currentVertices[1];
+        const zVertex = currentVertices[2];
+
         // Search the current list of chunks for the current color that include an adjacent polygon.
         // A polygon is adjacent if it shares two vertices.
         const chunksWithAdjacentPolygons = currentChunks.filter((chunk) =>
-          chunk.polygons.some(({ vertices }) => {
-            const firstSharedVertexIndex = currentVertices.findIndex((vertex) =>
-              vertices.includes(vertex),
-            );
-            const lastSharedVertexIndex = currentVertices.findIndex((vertex) =>
-              vertices.includes(vertex),
-            );
-            return (
-              firstSharedVertexIndex &&
-              lastSharedVertexIndex &&
-              firstSharedVertexIndex !== lastSharedVertexIndex
-            );
-          }),
+          chunk.polygons.some(
+            ({ vertices }) =>
+              (vertices.includes(xVertex) &&
+                (vertices.includes(yVertex) || vertices.includes(zVertex))) ||
+              (vertices.includes(yVertex) && vertices.includes(zVertex)),
+          ),
         );
 
         let chunk;
