@@ -134,6 +134,26 @@ async function main() {
           description:
             'Color and label each chunk with a distinctive color. This can makes chunks easier to identify.',
           type: 'boolean',
+        })
+        .option('scale', {
+          default: 1,
+          description: 'Apply a scaling factor to the input model',
+          type: 'number',
+        })
+        .option('translateX', {
+          default: 0,
+          description: 'Apply a translation to the model in the X axis',
+          type: 'number',
+        })
+        .option('translateY', {
+          default: 0,
+          description: 'Apply a translation to the model in the Y axis',
+          type: 'number',
+        })
+        .option('translateZ', {
+          default: 0,
+          description: 'Apply a translation to the model in the Z axis',
+          type: 'number',
         }),
     )
     .version(false)
@@ -146,6 +166,10 @@ async function main() {
     obj: objFilename,
     mtl: mtlFilename,
     repaint,
+    scale,
+    translateX,
+    translateY,
+    translateZ,
   } = argv;
 
   const [objContents, mtlContents, gradientSvgContents] = await Promise.all([
@@ -209,7 +233,11 @@ async function main() {
 
   const model = data.models[0];
   model.vertices.forEach((v) => {
-    output.positions.push([v.x, v.y, v.z]);
+    output.positions.push([
+      (v.x + translateX) * scale,
+      (v.y + translateY) * scale,
+      (v.z + translateZ) * scale,
+    ]);
   });
 
   const allChunks = [];
