@@ -2,6 +2,7 @@ const MersenneTwister = require('mersenne-twister');
 const {
   calculateSizingOptions,
   createLogoViewer,
+  defaultCameraDistance,
   loadModelFromJson,
   createModelRenderer,
   createNode,
@@ -61,7 +62,7 @@ const foxDiv = document.querySelector('body div.fox');
 foxDiv.appendChild(viewer.container);
 
 function createRecolorLogo(options) {
-  const cameraDistance = options.cameraDistance || 400;
+  const cameraDistance = options.cameraDistance || defaultCameraDistance;
   const { height, width } = calculateSizingOptions(options);
 
   const container = createNode('svg');

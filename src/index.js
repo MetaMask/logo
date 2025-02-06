@@ -2,6 +2,7 @@ const foxJson = require('../data/fox.json');
 const {
   calculateSizingOptions,
   createLogoViewer,
+  defaultCameraDistance,
   loadModelFromJson,
   createModelRenderer,
   createNode,
@@ -13,7 +14,7 @@ const {
 module.exports = createLogo;
 
 function createLogo(options = {}) {
-  const cameraDistance = options.cameraDistance || 400;
+  const cameraDistance = options.cameraDistance || defaultCameraDistance;
   const { height, width } = calculateSizingOptions(options);
   const meshJson = options.meshJson || foxJson;
 
