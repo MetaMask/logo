@@ -235,8 +235,6 @@ async function main() {
     positions: [],
   };
 
-  const VI = 'vertexIndex';
-
   const model = data.models[0];
   model.vertices.forEach((v) => {
     output.positions.push([
@@ -269,61 +267,86 @@ async function main() {
         return;
       }
 
-      const xVertex = f.vertices[0][VI] - 1;
-      const yVertex = f.vertices[1][VI] - 1;
-      const zVertex = f.vertices[2][VI] - 1;
-
-      // A polygon represents a single face, including its index in the underlying model and its
-      // vertices. This representation is used so that we can preserve the polygon order within
-      // each chunk.
-      const polygon = { index, vertices: [xVertex, yVertex, zVertex] };
-
-      // Non-contiguous chunks contain all polygons of a given color
-      if (!contiguous) {
-        if (currentChunks.length) {
-          currentChunks[0].polygons.push(polygon);
-        } else {
-          currentChunks.push({ color, polygons: [polygon] });
-        }
-        return;
+      if (f.vertices.length < 3 || f.vertices.length > 4) {
+        throw new Error(`Invalid number of vertices: ${f.vertices.length}`);
       }
 
-      // Search the current list of chunks for the current color that include an adjacent polygon.
-      // A polygon is adjacent if it shares two vertices.
-      const chunksWithAdjacentPolygons = currentChunks.filter((chunk) =>
-        chunk.polygons.some(
-          ({ vertices }) =>
-            (vertices.includes(xVertex) &&
-              (vertices.includes(yVertex) || vertices.includes(zVertex))) ||
-            (vertices.includes(yVertex) && vertices.includes(zVertex)),
-        ),
-      );
+      const rawVertices = f.vertices.map((vertex) => vertex.vertexIndex - 1);
 
-      let chunk;
-      if (chunksWithAdjacentPolygons.length === 0) {
-        // If no chunks with adjacent polygons are found, this polygon forms a new chunk
-        chunk = { color, polygons: [] };
-        currentChunks.push(chunk);
-      } else if (chunksWithAdjacentPolygons.length === 1) {
-        // If a single chunk with an adjacent polygon is found, this polygon joins that chunk.
-        chunk = chunksWithAdjacentPolygons[0];
-      } else {
-        // If multiple chunks with an adjacent polygon are found, they are merged together before
-        // adding the new polygon.
-        chunk = chunksWithAdjacentPolygons[0];
-        const chunksToMerge = chunksWithAdjacentPolygons.slice(1);
-        for (const chunkToMerge of chunksToMerge) {
-          chunk.polygons.push(...chunkToMerge.polygons);
+      // Currently the runtime code only supports triangles. Four-sided polygons are split here
+      // into two trianges.
+      const triangleVertices =
+        rawVertices.length === 3
+          ? [rawVertices]
+          : [
+              rawVertices.slice().toSpliced(3, 1),
+              rawVertices.slice().toSpliced(1, 1),
+            ];
+
+      for (const currentVertices of triangleVertices) {
+        // A polygon represents a single face, including its index in the underlying model and its
+        // vertices. This representation is used so that we can preserve the polygon order within
+        // each chunk.
+        const polygon = { index, vertices: currentVertices };
+
+        // Non-contiguous chunks contain all polygons of a given color
+        if (!contiguous) {
+          if (currentChunks.length) {
+            currentChunks[0].polygons.push(polygon);
+          } else {
+            currentChunks.push({
+              color,
+              polygons: [polygon],
+              materialName: mtlKey,
+            });
+          }
+          continue;
         }
 
-        currentChunks = currentChunks.filter(
-          (_chunk) => !chunksToMerge.includes(_chunk),
+        // Search the current list of chunks for the current color that include an adjacent polygon.
+        // A polygon is adjacent if it shares two vertices.
+        const chunksWithAdjacentPolygons = currentChunks.filter((chunk) =>
+          chunk.polygons.some(({ vertices }) => {
+            const firstSharedVertexIndex = currentVertices.findIndex((vertex) =>
+              vertices.includes(vertex),
+            );
+            const lastSharedVertexIndex = currentVertices.findIndex((vertex) =>
+              vertices.includes(vertex),
+            );
+            return (
+              firstSharedVertexIndex &&
+              lastSharedVertexIndex &&
+              firstSharedVertexIndex !== lastSharedVertexIndex
+            );
+          }),
         );
-        // I don't know if order really matters here, but, it has been preserved just in case
-        chunk.polygons.sort((faceA, faceB) => faceA.index - faceB.index);
-      }
 
-      chunk.polygons.push(polygon);
+        let chunk;
+        if (chunksWithAdjacentPolygons.length === 0) {
+          // If no chunks with adjacent polygons are found, this polygon forms a new chunk
+          chunk = { color, polygons: [] };
+          currentChunks.push(chunk);
+        } else if (chunksWithAdjacentPolygons.length === 1) {
+          // If a single chunk with an adjacent polygon is found, this polygon joins that chunk.
+          chunk = chunksWithAdjacentPolygons[0];
+        } else {
+          // If multiple chunks with an adjacent polygon are found, they are merged together before
+          // adding the new polygon.
+          chunk = chunksWithAdjacentPolygons[0];
+          const chunksToMerge = chunksWithAdjacentPolygons.slice(1);
+          for (const chunkToMerge of chunksToMerge) {
+            chunk.polygons.push(...chunkToMerge.polygons);
+          }
+
+          currentChunks = currentChunks.filter(
+            (_chunk) => !chunksToMerge.includes(_chunk),
+          );
+          // I don't know if order really matters here, but, it has been preserved just in case
+          chunk.polygons.sort((faceA, faceB) => faceA.index - faceB.index);
+        }
+
+        chunk.polygons.push(polygon);
+      }
     });
     allChunks.push(...currentChunks);
   }
