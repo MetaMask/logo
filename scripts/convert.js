@@ -302,9 +302,7 @@ async function main() {
           continue;
         }
 
-        const xVertex = currentVertices[0];
-        const yVertex = currentVertices[1];
-        const zVertex = currentVertices[2];
+        const [xVertex, yVertex, zVertex] = currentVertices;
 
         // Search the current list of chunks for the current color that include an adjacent polygon.
         // A polygon is adjacent if it shares two vertices.
