@@ -297,7 +297,6 @@ async function main() {
             currentChunks.push({
               color,
               polygons: [polygon],
-              materialName: mtlKey,
             });
           }
           continue;
