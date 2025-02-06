@@ -12,13 +12,14 @@
   },
   "license": "ISC",
   "author": "MetaMask",
-  "main": "index.js",
+  "main": "src/index.js",
   "files": [
-    "fox.json",
-    "util.js"
+    "data/fox.json",
+    "src/index.js",
+    "src/util.js"
   ],
   "scripts": {
-    "convert": "node convert.js",
+    "convert": "node scripts/convert.js",
     "demo": "node demo/build.js",
     "demo:all": "yarn demo --all",
     "lint": "yarn lint:eslint && yarn lint:misc --check",

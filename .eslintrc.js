@@ -5,7 +5,7 @@ module.exports = {
 
   overrides: [
     {
-      files: ['./demo/src/**/*.js', './index.js', './util.js'],
+      files: ['./demo/src/**/*.js', './src/index.js', './src/util.js'],
       globals: {
         Blob: true,
         document: true,
