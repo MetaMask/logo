@@ -23,8 +23,13 @@ function parseMTL(mtl) {
       const label = lines[0];
       const props = {};
       lines.slice(1).forEach(function (line) {
-        // Skip illum lines
+        // Only a constant illumination model (illum 0) is supported
         if (line.indexOf('illum') === 0) {
+          if (!line.startsWith('illum 0')) {
+            throw new Error(
+              `Only 'illum 0' supported in MTL files, received '${line}'`,
+            );
+          }
           return;
         }
 
@@ -35,7 +40,7 @@ function parseMTL(mtl) {
           props[lineLabel] = Number(data[0]);
         } else {
           props[lineLabel] = data.map(function (x) {
-            return Math.sqrt(x).toPrecision(4);
+            return Number(x);
           });
         }
       });
@@ -243,7 +248,7 @@ async function main() {
   const allChunks = [];
   for (const mtlKey of Object.keys(mtl)) {
     const m = mtl[mtlKey];
-    if (!m.Ka) {
+    if (!m.Kd) {
       throw new Error(`Invalid MTL entry at key '${mtlKey}'`);
     }
 
