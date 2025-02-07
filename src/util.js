@@ -133,7 +133,7 @@ module.exports = {
  * A JSON specification for a set of polygons with the same color/texture.
  *
  * @typedef {object} ChunkJson
- * @property {RgbColor} color - The color of the current chunk, specified as RGB
+ * @property {RgbColor} color - The color of the current chunk, specified as RGB.
  * values (from 0-255 inclusive).
  * @property {PolygonVertices[]} faces - A collection of polygon vertices.
  * @property {string} [mask] - The ID of the mask to apply to this chunk.
@@ -153,7 +153,7 @@ module.exports = {
  * @property {[number, number, number][]} positions - A list of vertex positions. Each entry includes
  * an X, Y, and X coordinate for a single vertex.
  * @property {ChunkJson[]} chunks - Sets of polygons with the same color/texture.
- * @property {Record<string, MaskDefinition>} masks - Mask definitions.
+ * @property {Record<string, MaskDefinition>} [masks] - Mask definitions.
  */
 
 /**
@@ -343,7 +343,7 @@ function createLogoViewer(
  * Load the model object from the model JSON specification.
  *
  * @param {ModelJson} modelJson - The model JSON specification.
- * @param {typeof createStandardModelPolygon} createSvgPolygon - A function for creating an SVG
+ * @param {typeof createStandardModelPolygon} [createSvgPolygon] - A function for creating an SVG
  * polygon node.
  * @returns {ModelObject} The model object.
  */
@@ -458,7 +458,7 @@ function createPolygonsFromModelJson(modelJson, createSvgPolygon) {
  * @param {(LinearGradientDefinition | RadialGradientDefinition)[]} [options.gradients] - The set
  * of all gradient definitions used in this model.
  * @param {number} options.index - The index for the chunk this polygon is found in.
- * @param {ModelJson['masks']} options.masks - The set of all mask definitions.
+ * @param {ModelJson['masks']} [options.masks] - The set of all mask definitions.
  * @returns {SVGPolygonElement} The `<polygon>` SVG element.
  */
 function createStandardModelPolygon(chunk, { gradients = {}, index, masks }) {

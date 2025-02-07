@@ -16,7 +16,7 @@ module.exports = createLogo;
 /**
  * Create an animated SVG logo.
  *
- * The size defaults to 25% of the screen size, or 400x400px if `pxNotRatio` is true
+ * The size defaults to 25% of the screen size, or 400x400px if `pxNotRatio` is true.
  *
  * @param {object} [options] - Options.
  * @param {ModelJson} [options.meshJson] - The 3D model.
