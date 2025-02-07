@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- Add material labels to default JSON model (`fox.json`) ([#119](https://github.com/MetaMask/logo/pull/119))
 
 ## [3.1.2]
 ### Added

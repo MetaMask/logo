@@ -303,6 +303,7 @@ async function main() {
             currentChunks.push({
               color,
               polygons: [polygon],
+              materialName: mtlKey,
             });
           }
           continue;
@@ -356,6 +357,8 @@ async function main() {
       color: chunk.color,
       // The final model includes just the vertices of each face. The index is not needed.
       faces: chunk.polygons.map(({ vertices }) => vertices),
+
+      materialName: chunk.materialName,
     };
 
     if (repaint) {
