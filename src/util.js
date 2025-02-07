@@ -116,6 +116,86 @@ module.exports = {
  * @property {'radial'} type - The type of the gradient.
  */
 
+/**
+ * A color, specified as three numbers (RGB) where each number is between 0-255 (inclusive).
+ *
+ * @typedef {[number, number, number]} RgbColor
+ */
+
+/**
+ * Three vertex indices, representing the vertices of a single three-sided polygon. Each vertex
+ * index corresponds to the index of the vertex in the `positions` array of {@link ModelJson}.
+ *
+ * @typedef {[number, number, number]} PolygonVertices
+ */
+
+/**
+ * A JSON specification for a set of polygons with the same color/texture.
+ *
+ * @typedef {object} ChunkJson
+ * @property {RgbColor} color - The color of the current chunk, specified as RGB.
+ * values (from 0-255 inclusive).
+ * @property {PolygonVertices[]} faces - A collection of polygon vertices.
+ * @property {string} [mask] - The ID of the mask to apply to this chunk.
+ */
+
+/**
+ * The properties of a single SVG mask.
+ *
+ * @typedef MaskDefinition
+ * @property {string} color - The color or gradient to apply to the mask.
+ */
+
+/**
+ * A JSON specification for the logo model.
+ *
+ * @typedef {object} ModelJson
+ * @property {[number, number, number][]} positions - A list of vertex positions. Each entry includes
+ * an X, Y, and X coordinate for a single vertex.
+ * @property {ChunkJson[]} chunks - Sets of polygons with the same color/texture.
+ * @property {Record<string, MaskDefinition>} [masks] - Mask definitions.
+ */
+
+/**
+ * The width and height of the SVG container.
+ *
+ * @typedef {object} SvgSize
+ * @property {number} width - The width of the SVG container.
+ * @property {number} height - The height of the SVG container.
+ */
+
+/**
+ * This object contains a reference to the SVG element where the logo is rendered, and it includes
+ * a set of functions for controlling the logo animation.
+ *
+ * @typedef {object} LogoViewer
+ * @property {SVGSVGElement} container - The SVG element containing the animation.
+ * @property {(target: [number, number]) => void} lookAt - Update the model to look at the given
+ * target.
+ * @property {(followMouse: boolean) => void} setFollowMouse - Set the `followMouse` option.
+ * @property {(followMotion: boolean) => void} setFollowMotion - Set the `followMotion` option.
+ * @property {() => void} startAnimation - Start the animation.
+ * @property {() => void} stopAnimation - Stop the animation.
+ * @property {(target: [number, number]) => void} lookAtAndRender - Update the model to look at the
+ * given target, and manually trigger the animation to be rendered.
+ * @property {() => void} renderCurrentScene - Render the animation manually. This can be useful if
+ * `lazyRender` is enabled, and some model change happens outside of mouse/device movement.
+ */
+
+/**
+ * Create an animated logo and return a set of functions for controlling the animation.
+ *
+ * @param {SVGSVGElement} container - The SVG element to render within.
+ * @param {(lookCurrent: [number, number], slowDrift: boolean) => void} renderScene - A function
+ * that renders the model.
+ * @param {object} options - Options.
+ * @param {boolean} [options.followMouse] - The model looks at the mouse.
+ * @param {boolean} [options.followMotion] - The model moves in response to device movement.
+ * @param {boolean} [options.slowDrift] - The model slowly rotates.
+ * @param {boolean} [options.lazyRender] - Determines whether to render each animation frame, or
+ * just when requested (e.g. by mouse/device movement).
+ * @returns {LogoViewer} A collection of functions for controlling the animation.
+ */
 function createLogoViewer(
   container,
   renderScene,
@@ -245,6 +325,28 @@ function createLogoViewer(
   };
 }
 
+/**
+ * An object representing the model.
+ *
+ * @typedef {object} ModelObject
+ * @property {(M: Float32Array) => void} updatePositions - A function that updates model vertex
+ * positions with the given set of transformations.
+ * @property {Float32Array} positions - All vertex position coordinates. Each vertex position is
+ * stored in this array as adjacent X, Y, Z coordinates.
+ * @property {Float32Array} transformed - Transformations to be applied to each vertex position
+ * coordinate on render.
+ * @property {Polygon[]} polygons - A list of all model polygons.
+ * @property {Polygon[][]} polygonsByChunk - A list of all model polygons, sorted by chunk.
+ */
+
+/**
+ * Load the model object from the model JSON specification.
+ *
+ * @param {ModelJson} modelJson - The model JSON specification.
+ * @param {typeof createStandardModelPolygon} [createSvgPolygon] - A function for creating an SVG
+ * polygon node.
+ * @returns {ModelObject} The model object.
+ */
 function loadModelFromJson(
   modelJson,
   createSvgPolygon = createStandardModelPolygon,
@@ -272,6 +374,15 @@ function loadModelFromJson(
   return modelObj;
 }
 
+/**
+ * Create a model renderer.
+ *
+ * @param {SVGSVGElement} container - The SVG element to render within.
+ * @param {number} cameraDistance - The distance between the model and the camera.
+ * @param {ModelObject} modelObj - The model to render.
+ * @returns {(rect: SvgSize, lookPos: [number, number], slowDrift: boolean) => void}
+ * A function for rendering the model.
+ */
 function createModelRenderer(container, cameraDistance, modelObj) {
   const { updatePositions, transformed, polygons } = modelObj;
 
@@ -289,6 +400,12 @@ function createModelRenderer(container, cameraDistance, modelObj) {
   };
 }
 
+/**
+ * Populate vertex positions from the model JSON specification.
+ *
+ * @param {Float32Array} positions - The positions array to populate (this is the output).
+ * @param {ModelJson} modelJson - The model JSON specification.
+ */
 function positionsFromModel(positions, modelJson) {
   const pp = modelJson.positions;
   let ptr = 0;
@@ -301,6 +418,15 @@ function positionsFromModel(positions, modelJson) {
   }
 }
 
+/**
+ * Create polygons from model.
+ *
+ * @param {ModelJson} modelJson - The model.
+ * @param {typeof createStandardModelPolygon} createSvgPolygon - A function for creating an SVG
+ * polygon node.
+ * @returns {{ polygons: Polygon[], polygonsByChunk: Polygon[][]}} All model polygons, returned
+ * both as a flat list, and sorted by chunk.
+ */
 function createPolygonsFromModelJson(modelJson, createSvgPolygon) {
   const polygons = [];
   const polygonsByChunk = modelJson.chunks.map((chunk, index) => {
@@ -326,13 +452,14 @@ function createPolygonsFromModelJson(modelJson, createSvgPolygon) {
  * definition provided. But the `points` attribute is always set to a dummy value, as it gets reset
  * later to the correct position during each render loop.
  *
- * @param {object} chunk - The definition for the chunk of the model this polygon is a part of.
+ * @param {ChunkJson} chunk - The definition for the chunk of the model this polygon is a part of.
  * This includes the color or gradient to apply to the polygon.
  * @param {object} options - Polygon options.
- * @param {(LinearGradientDefinition | RadialGradientDefinition)[]} [options.gradients] - The set of
- * all gradient definitions used in this model.
- * @param options.index - The index for the chunk this polygon is found in.
- * @returns {Element} The `<polygon>` SVG element.
+ * @param {(LinearGradientDefinition | RadialGradientDefinition)[]} [options.gradients] - The set
+ * of all gradient definitions used in this model.
+ * @param {number} options.index - The index for the chunk this polygon is found in.
+ * @param {ModelJson['masks']} [options.masks] - The set of all mask definitions.
+ * @returns {SVGPolygonElement} The `<polygon>` SVG element.
  */
 function createStandardModelPolygon(chunk, { gradients = {}, index, masks }) {
   const svgPolygon = createNode('polygon');
@@ -367,6 +494,15 @@ function createStandardModelPolygon(chunk, { gradients = {}, index, masks }) {
   return svgPolygon;
 }
 
+/**
+ * Create function for computing transformation matrix for rendering. This transformation matrix
+ * renders the model at the given distance from the camera, and it adjusts the model to look at
+ * the given position on each render.
+ *
+ * @param {number} distance - The distance between the model and the camera
+ * @returns {(rect: SvgSize, lookPos: [number, number], slowDrift: boolean) => Float32Array} A
+ * function for computing the transformation matrix.
+ */
 function createMatrixComputer(distance) {
   const objectCenter = new Float32Array(3);
   const up = new Float32Array([0, 1, 0]);
@@ -422,6 +558,15 @@ function createMatrixComputer(distance) {
   };
 }
 
+/**
+ * Create a function that updates the positions of each vertex.
+ *
+ * @param {number[]} positions - Vertex positions.
+ * @param {number[]} transformed - Vertex transformations (this is the output of the returned
+ * function).
+ * @param {number} vertCount - The number of vertices.
+ * @returns {(M: Float32Array) => void} A function that updates vertex positions.
+ */
 function createPositionUpdater(positions, transformed, vertCount) {
   return (M) => {
     const m00 = M[0];
@@ -454,10 +599,27 @@ function createPositionUpdater(positions, transformed, vertCount) {
   };
 }
 
+/**
+ * A sort comparison function for comparing the z-index of two polygons.
+ *
+ * @param {Polygon} a - The first polygon.
+ * @param {Polygon} b - The second polygon.
+ * @returns {number} A number indicating whether the sort order should change; a positive number
+ * indicates that b comes first.
+ */
 function compareZ(a, b) {
   return b.zIndex - a.zIndex;
 }
 
+/**
+ * Create a function for updating positions of each polygon.
+ *
+ * @param {SVGSVGElement} container - The SVG element that the model is rendered within.
+ * @param {Polygon[]} polygons - The polygons to update.
+ * @param {number[]} transformed - Vertex transformations.
+ * @returns {(rect: SvgSize) => void} A function that updates the position of each polygon in the
+ * model.
+ */
 function createFaceUpdater(container, polygons, transformed) {
   const toDraw = [];
   return (rect) => {
@@ -524,6 +686,19 @@ function createFaceUpdater(container, polygons, transformed) {
   };
 }
 
+/**
+ * Calculate wigth and height of SVG. Width and height can be specified either as a ratio of window
+ * size, or in pixels.
+ *
+ * @param {object} [options] - Options.
+ * @param {number} [options.width] - Width, either in pixels or as a ratio of window width.
+ * @param {number} [options.height] - Height, either in pixels or as a ratio of window height.
+ * @param {number} [options.minWidth] - Minimum width (in pixels), used as a lower bound if the
+ * width is specified as a ratio.
+ * @param {boolean} [options.pxNotRatio] - True indicates the width and height are in pixels, false
+ * indicates they are a ratio.
+ * @returns {SvgSize} Calculated width and height.
+ */
 function calculateSizingOptions(options = {}) {
   let width = options.width || 400;
   let height = options.height || 400;
@@ -540,14 +715,33 @@ function calculateSizingOptions(options = {}) {
   return { width, height };
 }
 
+/**
+ * Create SVG node.
+ *
+ * @param {keyof SVGElementEventMap} type - The SVG node type.
+ * @returns {SVGElement} The created SVG node.
+ */
 function createNode(type) {
   return document.createElementNS(SVG_NS, type);
 }
 
+/**
+ * Set an attribute on the given SVG node.
+ *
+ * @param {SVGElement} node - The SVG node.
+ * @param {string} attribute - The name of the attribute to set.
+ * @param {unknown} value - The attribute value to set.
+ */
 function setAttribute(node, attribute, value) {
   node.setAttributeNS(null, attribute, value);
 }
 
+/**
+ * Capture the given SVG element as a string.
+ *
+ * @param {SVGSVGElement} svgElement - The SVG element to capture.
+ * @returns {string} A snapshot of the SVG.
+ */
 function svgElementToSvgImageContent(svgElement) {
   const inner = svgElement.innerHTML;
   const head =
@@ -558,6 +752,12 @@ function svgElementToSvgImageContent(svgElement) {
   return content;
 }
 
+/**
+ * A three-sided polygon.
+ *
+ * @param {SVGPolygonElement} svg - The SVG polygon element.
+ * @param {[number, number, number]} indices - The indices of each vertex of the polygon.
+ */
 function Polygon(svg, indices) {
   this.svg = svg;
   this.indices = indices;
@@ -570,8 +770,10 @@ function Polygon(svg, indices) {
  * Both `<linearGradient>` and `<radialGradient>` are supported. All gradients get added to a
  * `<defs>` element that is added as a direct child of the container element.
  *
- * @param {Element} container - The `<svg>` HTML element that the definitions should be added to.
- * @param {(LinearGradientDefinition | RadialGradientDefinition)[]} [gradients] - The gradient definitions.
+ * @param {SVGSVGElement} container - The `<svg>` HTML element that the definitions should be added
+ * to.
+ * @param {(LinearGradientDefinition | RadialGradientDefinition)[]} [gradients] - The gradient
+ * definitions.
  */
 function setGradientDefinitions(container, gradients) {
   if (!gradients || Object.keys(gradients).length === 0) {
@@ -742,13 +944,6 @@ function setGradientDefinitions(container, gradients) {
 }
 
 /**
- * The properties of a single SVG mask.
- *
- * @typedef MaskDefinition
- * @property {string} color - The color or gradient to apply to the mask.
- */
-
-/**
  * Parse mask definitions and construct them in the DOM.
  *
  * The `<mask>` element contains a single rectangle that should cover the full extent of the SVG
@@ -760,8 +955,9 @@ function setGradientDefinitions(container, gradients) {
  * rectangle.
  *
  * @param options - The mask options.
- * @param {Element} options.container - The `<svg>` HTML element that the mask should be added to.
- * @param {Record<string, MaskDefinition>} [options.masks] - The gradient definitions.
+ * @param {SVGSVGElement} options.container - The `<svg>` HTML element that the mask should be added
+ * to.
+ * @param {ModelJson['masks']} [options.masks] - The gradient definitions.
  * @param {number} options.height - The height of the SVG container.
  * @param {number} options.width - The width of the SVG container.
  */
