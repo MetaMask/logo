@@ -1,6 +1,7 @@
 const {
   calculateSizingOptions,
   createLogoViewer,
+  defaultCameraDistance,
   loadModelFromJson,
   createModelRenderer,
   createNode,
@@ -17,7 +18,7 @@ createDistortedLogo({
 });
 
 function createDistortedLogo(options) {
-  const cameraDistance = options.cameraDistance || 400;
+  const cameraDistance = options.cameraDistance || defaultCameraDistance;
   const { height, width } = calculateSizingOptions(options);
 
   const container = createNode('svg');
