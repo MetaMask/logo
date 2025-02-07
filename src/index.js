@@ -25,7 +25,7 @@ module.exports = createLogo;
  * @param {boolean} [options.slowDrift] - The model slowly rotates.
  * @param {boolean} [options.lazyRender] - Determines whether to render each animation frame, or
  * just when requested (e.g. by mouse/device movement).
- * @param {number} [options.cameraDistance] - The distance between the model and the camera,
+ * @param {number} [options.cameraDistance] - The distance between the model and the camera.
  * @param {number} [options.width] - Width, either in pixels or as a ratio of window width.
  * @param {number} [options.height] - Height, either in pixels or as a ratio of window height.
  * @param {number} [options.minWidth] - Minimum width (in pixels), used as a lower bound if the
