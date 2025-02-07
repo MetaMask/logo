@@ -380,17 +380,30 @@ function loadModelFromJson(
  * @param {SVGSVGElement} container - The SVG element to render within.
  * @param {number} cameraDistance - The distance between the model and the camera.
  * @param {ModelObject} modelObj - The model to render.
+ * @param {object} options - Options.
+ * @param {number} options.verticalFieldOfView - Vertical field of view (in radians).
+ * @param {number} options.near - Near bound of the frustrum.
+ * @param {number} options.far - Far bound of the frustrum.
  * @returns {(rect: SvgSize, lookPos: [number, number], slowDrift: boolean) => void}
  * A function for rendering the model.
  */
-function createModelRenderer(container, cameraDistance, modelObj) {
+function createModelRenderer(
+  container,
+  cameraDistance,
+  modelObj,
+  { verticalFieldOfView, near, far },
+) {
   const { updatePositions, transformed, polygons } = modelObj;
 
   for (const polygon of polygons) {
     container.appendChild(polygon.svg);
   }
 
-  const computeMatrix = createMatrixComputer(cameraDistance);
+  const computeMatrix = createMatrixComputer(cameraDistance, {
+    verticalFieldOfView,
+    near,
+    far,
+  });
   const updateFaces = createFaceUpdater(container, polygons, transformed);
 
   return (rect, lookPos, slowDrift) => {
@@ -500,10 +513,14 @@ function createStandardModelPolygon(chunk, { gradients = {}, index, masks }) {
  * the given position on each render.
  *
  * @param {number} distance - The distance between the model and the camera
+ * @param {object} options - Options.
+ * @param {number} options.verticalFieldOfView - Vertical field of view (in radians).
+ * @param {number} options.near - Near bound of the frustrum.
+ * @param {number} options.far - Far bound of the frustrum.
  * @returns {(rect: SvgSize, lookPos: [number, number], slowDrift: boolean) => Float32Array} A
  * function for computing the transformation matrix.
  */
-function createMatrixComputer(distance) {
+function createMatrixComputer(distance, { verticalFieldOfView, near, far }) {
   const objectCenter = new Float32Array(3);
   const up = new Float32Array([0, 1, 0]);
   const projection = new Float32Array(16);
@@ -528,10 +545,10 @@ function createMatrixComputer(distance) {
     const viewportHeight = rect.height;
     perspective(
       projection,
-      Math.PI / 4.0,
+      verticalFieldOfView,
       viewportWidth / viewportHeight,
-      100.0,
-      1000.0,
+      near,
+      far,
     );
     invert(invProjection, projection);
     target[0] = lookPos[0];

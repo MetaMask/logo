@@ -26,6 +26,9 @@ module.exports = createLogo;
  * @param {boolean} [options.lazyRender] - Determines whether to render each animation frame, or
  * just when requested (e.g. by mouse/device movement).
  * @param {number} [options.cameraDistance] - The distance between the model and the camera.
+ * @param {number} [options.verticalFieldOfView] - Vertical field of view (in radians).
+ * @param {number} [options.near] - Near bound of the frustrum.
+ * @param {number} [options.far] - Far bound of the frustrum.
  * @param {number} [options.width] - Width, either in pixels or as a ratio of window width.
  * @param {number} [options.height] - Height, either in pixels or as a ratio of window height.
  * @param {number} [options.minWidth] - Minimum width (in pixels), used as a lower bound if the
@@ -43,6 +46,9 @@ function createLogo({
   // render options
   lazyRender = true,
   cameraDistance = defaultCameraDistance,
+  verticalFieldOfView = Math.PI / 4.0,
+  near = 100,
+  far = 1000,
   // size options
   width: specifiedWidth,
   height: specifiedHeight,
@@ -65,7 +71,11 @@ function createLogo({
   setMaskDefinitions({ container, masks: meshJson.masks, height, width });
 
   const modelObj = loadModelFromJson(meshJson);
-  const renderFox = createModelRenderer(container, cameraDistance, modelObj);
+  const renderFox = createModelRenderer(container, cameraDistance, modelObj, {
+    verticalFieldOfView,
+    near,
+    far,
+  });
   const renderScene = (lookCurrent, _slowDrift) => {
     const rect = container.getBoundingClientRect();
     renderFox(rect, lookCurrent, _slowDrift);

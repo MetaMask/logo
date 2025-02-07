@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Add options for controlling render perspective ([#122](https://github.com/MetaMask/logo/pull/122))
+  - The options are `verticalFieldOfView`, `near`, and `far`.
+  - These options were added to `createLogo`, `createModelRenderer`, and `createMatrixComputer`.
+
 ### Changed
 - Add material labels to default JSON model (`fox.json`) ([#119](https://github.com/MetaMask/logo/pull/119))
 
