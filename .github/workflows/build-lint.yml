@@ -16,12 +16,18 @@ jobs:
         node-version: [18.x, 20.x]
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - name: Install Corepack via Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+      - name: Install Yarn
+        run: corepack enable
+      - name: Install Node.js ${{ matrix.node-version }} and restore Yarn cache
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      - run: yarn --frozen-lockfile
-      - run: yarn allow-scripts
+          cache: 'yarn'
+      - run: yarn --immutable
       - run: yarn lint
       - name: Ensure demo build script works
         run: yarn demo --all
