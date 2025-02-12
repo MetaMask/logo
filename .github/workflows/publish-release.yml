@@ -26,17 +26,6 @@ jobs:
       - uses: MetaMask/action-publish-release@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: yarn --immutable
-      - run: yarn build
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: publish-release-artifacts-${{ github.sha }}
-          retention-days: 4
-          include-hidden-files: true
-          path: |
-            ./dist
-            ./node_modules/.yarn-state.yml
 
   publish-npm-dry-run:
     needs: publish-release
@@ -51,10 +40,6 @@ jobs:
           node-version-file: '.nvmrc'
       - name: Install Yarn
         run: corepack enable
-      - name: Restore build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: publish-release-artifacts-${{ github.sha }}
       - name: Dry Run Publish
         # omit npm-token token to perform dry run publish
         uses: MetaMask/action-npm-publish@v4
@@ -78,10 +63,6 @@ jobs:
           node-version-file: '.nvmrc'
       - name: Install Yarn
         run: corepack enable
-      - name: Restore build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: publish-release-artifacts-${{ github.sha }}
       - name: Publish
         uses: MetaMask/action-npm-publish@v2
         with:
