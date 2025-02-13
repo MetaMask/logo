@@ -9,25 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [4.0.0]
 
-### Uncategorized
-
-- chore: Update workflows and automate releases ([#125](https://github.com/MetaMask/logo/pull/125))
-- chore: Migrate from Yarn v1 to v4 ([#124](https://github.com/MetaMask/logo/pull/124))
-- Bump the npm_and_yarn group with 3 updates ([#115](https://github.com/MetaMask/logo/pull/115))
-- chore: Add JSDoc comments ([#121](https://github.com/MetaMask/logo/pull/121))
-- chore: Remove CODEOWNERS ([#123](https://github.com/MetaMask/logo/pull/123))
-- chore: Move default camera distance to constant ([#120](https://github.com/MetaMask/logo/pull/120))
-- chore: Update `convert` to support four-sided polygon inputs ([#118](https://github.com/MetaMask/logo/pull/118))
-- Restructure project to match others ([#110](https://github.com/MetaMask/logo/pull/110))
-- Upgrade allow-scripts; add preinstall-always-fail ([#109](https://github.com/MetaMask/logo/pull/109))
-- chore: Simplify `.mtl` color conversion ([#116](https://github.com/MetaMask/logo/pull/116))
-- chore: Add scale/translate conversion options ([#117](https://github.com/MetaMask/logo/pull/117))
-- Bump braces in the npm_and_yarn group across 1 directory ([#114](https://github.com/MetaMask/logo/pull/114))
-- Bump tar from 6.1.11 to 6.2.1 ([#113](https://github.com/MetaMask/logo/pull/113))
-- Enabling MetaMask security code scanner ([#112](https://github.com/MetaMask/logo/pull/112))
-- Bump min Node to 18; use LTS for dev ([#108](https://github.com/MetaMask/logo/pull/108))
-- Bump browserify-sign from 4.0.4 to 4.2.2 ([#107](https://github.com/MetaMask/logo/pull/107))
-
 ### Added
 
 - Add options for controlling render perspective ([#122](https://github.com/MetaMask/logo/pull/122))
@@ -36,7 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **BREAKING:** Bump minimum Node.js version from v12 to v18 ([#108](https://github.com/MetaMask/logo/pull/108))
 - Add material labels to default JSON model (`fox.json`) ([#119](https://github.com/MetaMask/logo/pull/119))
+  - No functional impact, just for ease of debugging
 
 ## [3.1.2]
 
