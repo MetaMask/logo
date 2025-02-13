@@ -1,21 +1,17 @@
 name: Build and Lint
 
 on:
-  push:
-    branches: [main]
-  pull_request:
+  workflow_call:
 
 jobs:
-  build-lint:
-    name: Build and Lint
-    env:
-      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
-    runs-on: ubuntu-20.04
+  prepare:
+    name: Prepare
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [18.x, 20.x]
+        node-version: [18.x, 20.x, 22.x]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Install Corepack via Node
         uses: actions/setup-node@v4
         with:
@@ -27,20 +23,74 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'yarn'
-      - run: yarn --immutable
-      - run: yarn lint
+      - name: Install dependencies via Yarn
+        run: yarn --immutable
+
+  build:
+    name: Build
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Corepack via Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+      - name: Install Yarn
+        run: corepack enable
+      - name: Install Node.js ${{ matrix.node-version }} and restore Yarn cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'yarn'
+      - name: Install dependencies via Yarn
+        run: yarn --immutable --immutable-cache
       - name: Ensure demo build script works
         run: yarn demo --all
+      - name: Require clean working directory
+        shell: bash
+        run: |
+          if ! git diff --exit-code; then
+            echo "Working tree dirty at end of job"
+            exit 1
+          fi
+
+  lint:
+    name: Lint
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22.x]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Corepack via Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+      - name: Install Yarn
+        run: corepack enable
+      - name: Install Node.js ${{ matrix.node-version }} and restore Yarn cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'yarn'
+      - name: Install dependencies via Yarn
+        run: yarn --immutable --immutable-cache
+      - run: yarn lint
       - name: Validate RC changelog
         if: ${{ startsWith(github.head_ref, 'release/') }}
-        run: yarn auto-changelog validate --rc
+        run: yarn lint:changelog --rc
       - name: Validate changelog
         if: ${{ !startsWith(github.head_ref, 'release/') }}
-        run: yarn auto-changelog validate
-  all-jobs-pass:
-    name: All jobs pass
-    runs-on: ubuntu-20.04
-    needs:
-      - build-lint
-    steps:
-      - run: echo "Great success!"
+        run: yarn lint:changelog
+      - name: Require clean working directory
+        shell: bash
+        run: |
+          if ! git diff --exit-code; then
+            echo "Working tree dirty at end of job"
+            exit 1
+          fi

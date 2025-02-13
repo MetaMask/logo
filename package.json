@@ -23,6 +23,7 @@
     "demo": "node demo/build.js",
     "demo:all": "yarn demo --all",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
+    "lint:changelog": "auto-changelog validate",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' '**/*.yml' --ignore-path .gitignore"
