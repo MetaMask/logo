@@ -1,55 +1,95 @@
 # Changelog
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [4.0.0]
+
+### Uncategorized
+
+- chore: Update workflows and automate releases ([#125](https://github.com/MetaMask/logo/pull/125))
+- chore: Migrate from Yarn v1 to v4 ([#124](https://github.com/MetaMask/logo/pull/124))
+- Bump the npm_and_yarn group with 3 updates ([#115](https://github.com/MetaMask/logo/pull/115))
+- chore: Add JSDoc comments ([#121](https://github.com/MetaMask/logo/pull/121))
+- chore: Remove CODEOWNERS ([#123](https://github.com/MetaMask/logo/pull/123))
+- chore: Move default camera distance to constant ([#120](https://github.com/MetaMask/logo/pull/120))
+- chore: Update `convert` to support four-sided polygon inputs ([#118](https://github.com/MetaMask/logo/pull/118))
+- Restructure project to match others ([#110](https://github.com/MetaMask/logo/pull/110))
+- Upgrade allow-scripts; add preinstall-always-fail ([#109](https://github.com/MetaMask/logo/pull/109))
+- chore: Simplify `.mtl` color conversion ([#116](https://github.com/MetaMask/logo/pull/116))
+- chore: Add scale/translate conversion options ([#117](https://github.com/MetaMask/logo/pull/117))
+- Bump braces in the npm_and_yarn group across 1 directory ([#114](https://github.com/MetaMask/logo/pull/114))
+- Bump tar from 6.1.11 to 6.2.1 ([#113](https://github.com/MetaMask/logo/pull/113))
+- Enabling MetaMask security code scanner ([#112](https://github.com/MetaMask/logo/pull/112))
+- Bump min Node to 18; use LTS for dev ([#108](https://github.com/MetaMask/logo/pull/108))
+- Bump browserify-sign from 4.0.4 to 4.2.2 ([#107](https://github.com/MetaMask/logo/pull/107))
+
 ### Added
+
 - Add options for controlling render perspective ([#122](https://github.com/MetaMask/logo/pull/122))
   - The options are `verticalFieldOfView`, `near`, and `far`.
   - These options were added to `createLogo`, `createModelRenderer`, and `createMatrixComputer`.
 
 ### Changed
+
 - Add material labels to default JSON model (`fox.json`) ([#119](https://github.com/MetaMask/logo/pull/119))
 
 ## [3.1.2]
+
 ### Added
+
 - Add `institutional` support ([#98](https://github.com/MetaMask/logo/pull/98))
 
 ## [3.1.1]
+
 ### Fixed
+
 - Add a ponyfill for `replaceChildren`, so that the call to it does not break on old browsers ([#81](https://github.com/MetaMask/logo/pull/81))
 
 ## [3.1.0]
+
 ### Added
+
 - Add `mask` support ([#76](https://github.com/MetaMask/logo/pull/76))
 - Add gradient support ([#71](https://github.com/MetaMask/logo/pull/71))
 - Add `@lavamoat/allow-scripts` ([#58](https://github.com/MetaMask/logo/pull/58))
 
 ## [3.0.1] - 2021-06-08
+
 ### Fixed
+
 - Provides missing util.js when used as dependency ([#54](https://github.com/MetaMask/logo/pull/54))
 
 ### Security
+
 - Bump glob-parent from 5.1.1 to 5.1.2 to fix security vulnerability ([#53](https://github.com/MetaMask/logo/pull/53))
 
 ## [3.0.0] - 2021-06-08 [DEPRECATED]
+
 ### Changed
+
 - **BREAKING**: Update minimum Node version to 12 ([#46](https://github.com/MetaMask/logo/pull/46))
 - Provide beta fox assets, demo, and meshJson option ([#50](https://github.com/MetaMask/logo/pull/50))
 
 ### Security
+
 - Bump hosted-git-info from 2.8.8 to 2.8.9 to fix security vulnerability ([#48](https://github.com/MetaMask/logo/pull/48))
 - Bump lodash from 4.17.20 to 4.17.21 to fix security vulnerability ([#47](https://github.com/MetaMask/logo/pull/47))
 - Bump elliptic from 6.5.3 to 6.5.4 to fix security vulnerability ([#41](https://github.com/MetaMask/logo/pull/41))
 
 ## [2.5.0] - 2020-08-19
+
 ### Changed
+
 - Removed unnecessary files from published package
   - Node and browser consumers should be unaffected
 
-[Unreleased]: https://github.com/MetaMask/logo/compare/v3.1.2...HEAD
+[Unreleased]: https://github.com/MetaMask/logo/compare/v4.0.0...HEAD
+[4.0.0]: https://github.com/MetaMask/logo/compare/v3.1.2...v4.0.0
 [3.1.2]: https://github.com/MetaMask/logo/compare/v3.1.1...v3.1.2
 [3.1.1]: https://github.com/MetaMask/logo/compare/v3.1.0...v3.1.1
 [3.1.0]: https://github.com/MetaMask/logo/compare/v3.0.1...v3.1.0
