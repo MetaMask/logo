@@ -10,15 +10,15 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - name: Install Corepack via Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version-file: '.nvmrc'
       - name: Install Yarn
         run: corepack enable
       - run: yarn --immutable
-      - uses: MetaMask/action-publish-gh-pages@v1
+      - uses: MetaMask/action-publish-gh-pages@ec08d9585e6c5ffc523920cf433ed75bb53bbbdd # v1.1.1
         with:
           npm-build-command: demo:all
           directory: demo/dist
